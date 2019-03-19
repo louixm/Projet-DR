@@ -42,7 +42,7 @@ public class Perso {
 
             PreparedStatement requete = connexion.prepareStatement("INSERT INTO players VALUES (0,?,0,0,?)");
             requete.setString(1, "Jean-Bark");
-            requete.setInt(2, 1);
+            requete.setInt(2, 2);
             requete.executeUpdate();
 
             requete.close();
