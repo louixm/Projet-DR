@@ -40,8 +40,9 @@ public class Perso {
         try {
             Connection connexion = DriverManager.getConnection("jdbc:mysql://nemrod.ens2m.fr:3306/20182019_s2_vs2_tp1_deathrun?serverTimezone=UTC", "deathrun", "111666");
 
-            PreparedStatement requete = connexion.prepareStatement("INSERT INTO players VALUES (0,?,0,0,0)");
+            PreparedStatement requete = connexion.prepareStatement("INSERT INTO players VALUES (0,?,0,0,?)");
             requete.setString(1, "Jean-Bark");
+            requete.setInt(2, 1);
             requete.executeUpdate();
 
             requete.close();
