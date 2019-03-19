@@ -15,7 +15,7 @@ import javax.imageio.ImageIO;
  */
 public class Jeu {
 
-    private BufferedImage nyancat, fond;
+    private BufferedImage nyancat, fond, plateforme;
     private int x;
     private boolean gauche, droite;
 
@@ -23,6 +23,7 @@ public class Jeu {
         try {
             this.fond = ImageIO.read(new File("fond.jpg"));
             this.nyancat = ImageIO.read(new File("nyancat.png"));
+            this.plateforme = ImageIO.read(new File("Tile (1).png"));
         } catch (IOException ex) {
             Logger.getLogger(Jeu.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -49,6 +50,7 @@ public class Jeu {
     public void Afficher(Graphics2D contexte) {
         contexte.drawImage(this.fond, 0, 0, null);
         contexte.drawImage(this.nyancat, x, 150, null);
+        contexte.drawImage(this.plateforme, 100, 150, null);
     }
 
     public void setGauche(boolean gauche) {
