@@ -11,5 +11,10 @@ package deathrun.portal;
  */
 interface Syncable {
     /// synchronise l'objet avec le serveur SQL
-    void Sync();
+    boolean sync_send = false;
+    
+    /// envoie le dernier état
+    void syncGet();	// TODO: rajouter un argument donnant la connexion a la DB
+    /// récupere le dernier état
+    void syncSet(); // TODO: rajouter un argument donnant la connexion a la DB
 }
