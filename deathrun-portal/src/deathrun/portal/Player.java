@@ -17,7 +17,8 @@ public class Player extends PObject {
     int avatar;
     static BufferedImage avatars[];
     
-    Player(String name, int avatar) {
+    public Player(String name, int avatar, int db_id) {
+		super(db_id);
         this.name = name; this.avatar = avatar;
         
         if (avatars.length == 0) {
@@ -25,19 +26,26 @@ public class Player extends PObject {
         }
     }
     
+    //--------------- interface de gestion des collisions -----------------
     public boolean collisionable() { return true; }
     @Override
     public Box collisionBox() {
         return new Box(-0.5, 0, 0.5, 1.8);
     }
     
+    //--------------- interface d'affichage -----------------
     @Override
     public void render(JPanel canvas) {
         // TODO
     }
     
+    //--------------- interface de synchronisation a la DB -----------------
     @Override
-    public void Sync() {
+    public void syncGet() {
+        // TODO
+    }
+    @Override
+    public void syncSet() {
         // TODO
     }
 }
