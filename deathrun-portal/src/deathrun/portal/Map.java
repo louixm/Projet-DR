@@ -12,5 +12,6 @@ import java.util.ArrayList;
  * @author ydejongh
  */
 class Map {
-    ArrayList<PObject> objects;
+    public ArrayList<PObject> objects;
+    public Box size;
 }

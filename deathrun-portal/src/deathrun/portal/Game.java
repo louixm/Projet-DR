@@ -14,12 +14,12 @@ import java.util.ArrayList;
  * @author ydejongh
  */
 public class Game {
-    Map map;
-    ArrayList<Player> players;
+    public Map map;
+    public ArrayList<Player> players;
     
     Sync sync;
-    
     Instant prev_time; // instant de dernier pas physique
+    
     
     Game() {
         try {
@@ -33,6 +33,8 @@ public class Game {
     }
     
     void physicStep() {
+        // TODO:  voir si il faut tout passer en getters et setters
+        
         Instant ac_time = Instant.now();
         float dt = (ac_time.getNano() - prev_time.getNano())/1000000000;
         
@@ -50,9 +52,10 @@ public class Game {
                     Box bplayer = player.collisionBox();
                     Box bobject = object.collisionBox();
                     if (bplayer.intersect(bobject)) {
-                        // corrige la position pour que player ne soit plus dans object
+                        // corriger la position pour que player ne soit plus dans object
                         newpos = bobject.outer(newpos);
-                        // supprime l'acceleration dans la direction du contact
+                        // supprimer l'acceleration dans la direction du contact 
+                        // TODO: a voir avec le product owner si cela satisfait la dynamique de jeu
                         Box intersection = bplayer.intersection(bobject);
                         if      (player.acceleration.y < 0 && intersection.p2.y == bplayer.p1.y)        player.acceleration.y = 0;
                         else if (player.acceleration.y > 0 && intersection.p1.y == bplayer.p2.y)        player.acceleration.y = 0;
@@ -62,14 +65,29 @@ public class Game {
                 }
             }
             // position maintenant corrigée
-            player.position = newpos;
+            player.setPosition(newpos);
             
             // si pas d'acceleration pas de mise a jour de vitesse
             if (player.acceleration.isnull())       continue;
-            player.velocity = player.speed.add(player.acceleration.mul(dt));
+            player.setVelocity(player.speed.add(player.acceleration.mul(dt)));
         }
         
         prev_time = ac_time;
     }
     
+    
+    /// se connecte au serveur et construit toutes les instances d'objet correspondant aux objets de la map et aux joueurs
+    void init() {
+        // TODO
+    }
+    
+    /// crée un nouveau joueur, l'ajoute dans la partie, sur le serveur et le retourne
+    Player newPlayer() {
+        // TODO
+    }
+    
+    /// met a jour l'etat local du jeu avec les dernieres modifications du serveur
+    void syncUpdate() {
+        // TODO
+    }
 }
