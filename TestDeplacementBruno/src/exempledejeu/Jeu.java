@@ -53,7 +53,7 @@ public class Jeu {
     }
     
     public void saute(){
-        perso.saute();
+        perso.saute(this.fond.getWidth());
     }
 
 }
