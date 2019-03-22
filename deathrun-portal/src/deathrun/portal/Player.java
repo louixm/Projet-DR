@@ -39,13 +39,4 @@ public class Player extends PObject {
         // TODO
     }
     
-    //--------------- interface de synchronisation a la DB -----------------
-    @Override
-    public void syncGet() {
-        // TODO
-    }
-    @Override
-    public void syncSet() {
-        // TODO
-    }
 }

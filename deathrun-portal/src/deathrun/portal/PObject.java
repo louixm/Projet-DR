@@ -11,8 +11,8 @@ import javax.swing.JPanel;
  *
  * @author ydejongh
  */
-abstract public class PObject implements Syncable {
-	int db_id;		// id dans la base de donnée
+abstract public class PObject {
+    int db_id;		// id dans la base de donnée
     Vec2 position;
     Vec2 velocity;
     Vec2 acceleration;
@@ -31,16 +31,4 @@ abstract public class PObject implements Syncable {
     /// renvoie true si l'objet doit etre affiché apres avoir rendu les joueurs (avant-plan)
     /// si non surchargée, la valeur par défaut est false
     boolean foreground()    { return false; }
-    
-    
-    //--------------- interface de synchronisation a la DB -----------------
-    @Override
-	public void syncGet() {
-		// TODO: gerer la synchronisation des parametres physiques
-	}
-	
-	@Override
-	public void syncSet() {
-		// TODO: gerer la synchronisation des parametres physiques
-	}
 }

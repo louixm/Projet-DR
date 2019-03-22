@@ -5,18 +5,12 @@
  */
 package deathrun.portal;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author ydejongh
  */
-public class DeathrunPortal {
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        Game game = new Game();
-        Gui gui = new Gui(game);
-    }
-    
+class Map {
+    ArrayList objects;
 }
