@@ -13,9 +13,14 @@ import javax.swing.JPanel;
  * @author ydejongh
  */
 public class Gui extends JPanel {
+	const float scale = 30;	// pixel/m
 
     Gui(Game game) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    // TODO: l'affichage du jeu
+    
+    @Override
+    protected void paintComponent(Graphics g) {
+		// TODO: l'affichage du jeu
+	}
 }
