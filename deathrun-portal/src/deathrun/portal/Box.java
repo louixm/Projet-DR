@@ -75,4 +75,20 @@ public class Box {
         else if (position.y > p2.y)	y = p2.y;
         return new Vec2(x, y);
     }
+    
+    public boolean intersect(Box other) {
+        // a revoir
+        return (
+                (p1.x <= other.p1.x && other.p1.x <= p2.x) || (p1.x <= other.p2.x && other.p2.x <= p2.x)) 
+            &&  (p1.y <= other.p1.y && other.p1.y <= p2.y) || (p1.y <= other.p2.y && other.p2.y <= p2.y)) 
+            );
+    }
+    
+    public boolean intersection(Box other) {
+        return new Box(
+            new Vec2 (max(p1.x, other.p1.x), max(p1.x, other.p1.x)), 
+            new Vec2 (min(p2.x, other.p2.x), min(p2.y, other.p2.y))
+            );
+    }
+    
 }
