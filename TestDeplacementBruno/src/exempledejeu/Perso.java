@@ -127,9 +127,18 @@ public class Perso {
         return droite;
     }
     
-    public void saute(){
-//        if (this.onFloor)
-            vy = -26;
+    public void saute(int width){
+        if (this.onFloor) vy = -26;
+        else if (this.isOnWall(width)){
+            if (this.isOnWall(width)){
+                if (x == 0) vx = 16;
+                else vx = -16;
+            }
+            vy = -22;  
+        }
     }
     
+    public boolean isOnWall(int width){
+        return vy > 0 && (x == width - this.robot.getWidth() || x == 0);
+    }
 }
