@@ -40,8 +40,9 @@ public class Perso {
         try {
             Connection connexion = DriverManager.getConnection("jdbc:mysql://nemrod.ens2m.fr:3306/20182019_s2_vs2_tp1_deathrun?serverTimezone=UTC", "deathrun", "111666");
 
-            PreparedStatement requete = connexion.prepareStatement("INSERT INTO players VALUES (0,?,0,0,0)");
+            PreparedStatement requete = connexion.prepareStatement("INSERT INTO players VALUES (0,?,0,0,?)");
             requete.setString(1, "Jean-Bark");
+            requete.setInt(2, 2);
             requete.executeUpdate();
 
             requete.close();
@@ -126,9 +127,18 @@ public class Perso {
         return droite;
     }
     
-    public void saute(){
-//        if (this.onFloor)
-            vy = -26;
+    public void saute(int width){
+        if (this.onFloor) vy = -26;
+        else if (this.isOnWall(width)){
+            if (this.isOnWall(width)){
+                if (x == 0) vx = 16;
+                else vx = -16;
+            }
+            vy = -22;  
+        }
     }
     
+    public boolean isOnWall(int width){
+        return vy > 0 && (x == width - this.robot.getWidth() || x == 0);
+    }
 }
