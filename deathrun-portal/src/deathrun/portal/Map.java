@@ -12,5 +12,5 @@ import java.util.ArrayList;
  * @author ydejongh
  */
 class Map {
-    ArrayList objects;
+    ArrayList<PObject> objects;
 }

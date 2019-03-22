@@ -22,7 +22,7 @@ abstract public class PObject {
     //--------------- interface de gestion des collisions -----------------
     /// retourne vrai si les deux objets peuvent entrer en collision si ils se superposent
     public boolean collisionable(PObject other) { return false; }
-    /// renvoie la boite de collision de l'objet
+    /// renvoie la boite de collision de l'objet dans l'espace courant (doit prendre en compte la position)
     public Box collisionBox() { return null; }
     
     //--------------- interface d'affichage -----------------

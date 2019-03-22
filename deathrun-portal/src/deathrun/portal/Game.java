@@ -15,9 +15,11 @@ import java.util.ArrayList;
  */
 public class Game {
     Map map;
-    ArrayList players;
+    ArrayList<Player> players;
     
     Sync sync;
+    
+    float prev_time; // instant de dernier pas physique
     
     Game() {
         try {
@@ -28,10 +30,24 @@ public class Game {
         }
     }
     
-    void physicStep() { 
-        // TODO:
-        // - mettre a jour les vitesses en fonction des collisions
-        // - mettre a jour les positions en fonction des vitesses
+    void physicStep() {
+        float ac_time;
+        float dt = ac_time - prev_time;
+        // suppose que les données sont synchronisées et que l'etat précédent est ok
+        for (Player player: players) {
+            Vec2 newpos = player.position.add(player.velocity.mul(dt));
+            // collisions
+            for (PObject object: map.objects) {
+                if (player.collisionable(object)) {
+                    // ramener la boite du joueur dans le repere 
+                    Box bplayer = player.collisionBox();
+                    Box bobject = object.collisionBox();
+                    Vec2 d = bplayer.distance(bobject);
+                }
+            }
+        }
+        
+        prev_time = ac_time;
     }
     
     void syncGet() {
