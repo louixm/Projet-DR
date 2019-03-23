@@ -82,16 +82,17 @@ public class Gui extends JFrame implements ActionListener, KeyListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         game.physicStep();
-        repaint();
+        render(bufferContext);
     }
 
-    @Override
-    protected void paintComponent(Graphics2D g) {
-        for (PObject object : game.map.objects) {
-            if (! object.foreground())	object.render(g, scale); }
+    void render(Graphics2D g) {
+		for (PObject object : game.map.objects) {
+            if (! object.foreground())	object.render(g, scale);
+		}
         for (Player player : game.players)		
             player.render(g, scale);
         for (PObject object : game.map.objects) {
-            if (object.foreground())	object.render(g, scale); }
-        }
+            if (object.foreground())	object.render(g, scale);
+		}
+    }
 }

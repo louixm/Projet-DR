@@ -45,7 +45,7 @@ public class Game {
         for (Player player: players) {
             // pas de mise a jour de vitesse si pas d'acceleration
             if (! player.acceleration.isnull()) {
-                player.setVelocity(player.speed.add(player.acceleration.mul(dt)));
+                player.setVelocity(player.velocity.add(player.acceleration.mul(dt)));
             }
         
             // pas de mise a jour de position si pas de vitesse
@@ -54,13 +54,13 @@ public class Game {
             player.setPosition(newpos);
             
             // collisions avec les bords de l'ecran
-            Box bplayer = player.collisionBox();
+            Box bplayer = player.getCollisionBox();
             if (bplayer.p1.x < map.size.p1.x) {
-				float newx = map.size.p1.x - bplayer.p1.x + player.position.x;
+				double newx = map.size.p1.x - bplayer.p1.x + player.position.x;
 				player.setPosition(new Vec2(newx, player.position.y));
             }
             else if (bplayer.p2.y > map.size.p2.y) {
-				float newy = map.size.p2.x - bplayer.p2.x + player.position.y;
+				double newy = map.size.p2.x - bplayer.p2.x + player.position.y;
 				player.setPosition(new Vec2(player.position.x, newy));
             }
             
@@ -70,11 +70,11 @@ public class Game {
             // collisions avec les objets
             for (PObject object: map.objects) {
                 if (player.collisionable(object)) {
-                    Box bplayer = player.collisionBox();
-                    Box bobject = object.collisionBox();
+                    bplayer = player.getCollisionBox();
+                    Box bobject = object.getCollisionBox();
                     if (bplayer.intersect(bobject)) {
                         // corriger la position pour que player ne soit plus dans object
-                        Vec2 contact = bobject.contact(bplayer.contact);
+                        Vec2 contact = bobject.contact(bplayer);
                         Vec2 correction = bobject.outer(contact).sub(contact);
                         // supprimer l'acceleration dans la direction du contact 
                         // TODO: a voir avec le product owner si cela satisfait la dynamique de jeu
