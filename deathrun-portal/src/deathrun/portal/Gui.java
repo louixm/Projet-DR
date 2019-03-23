@@ -29,12 +29,14 @@ public class Gui extends JFrame implements ActionListener, KeyListener {
     public final int WINDOW_WIDTH = 1280, WINDOW_HEIGHT = 1080;
     
     private JLabel jLabel1;
-    public Game game;
     private BufferedImage buffer;
     private Graphics2D bufferContext;
     private Timer timer;
 
+	public Game game;
+	public Player controled;
     
+	
     Gui(Game game) {
         //initilalisation de la fenêtre graphique
         this.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -67,16 +69,16 @@ public class Gui extends JFrame implements ActionListener, KeyListener {
     
     @Override
     public void keyPressed(KeyEvent evt) {
-        if (evt.getKeyCode() == evt.VK_D) this.game.getFirstPlayer().setRight(true);
-        if (evt.getKeyCode() == evt.VK_Q) this.game.getFirstPlayer().setLeft(true);
-        if (evt.getKeyCode() == evt.VK_SPACE) this.game.getFirstPlayer().setJump(true);
+        if (evt.getKeyCode() == evt.VK_D)		this.controled.setRight(true);
+        if (evt.getKeyCode() == evt.VK_Q)		this.controled.setLeft(true);
+        if (evt.getKeyCode() == evt.VK_SPACE)	this.controled.setJump(true);
     }
 
     @Override
     public void keyReleased(KeyEvent evt) {
-        if (evt.getKeyCode() == evt.VK_D) this.game.getFirstPlayer().setRight(false);
-        if (evt.getKeyCode() == evt.VK_Q) this.game.getFirstPlayer().setLeft(false);
-//        if (evt.getKeyCode() == evt.VK_SPACE) this.game.getFirstPlayer().setJump(false); //peut etre pas besoin si on remet jump à false direct après le saut
+        if (evt.getKeyCode() == evt.VK_D)       this.controled.setRight(false);
+        if (evt.getKeyCode() == evt.VK_Q)       this.controled.setLeft(false);
+        if (evt.getKeyCode() == evt.VK_SPACE)   this.game.controled.setJump(false); //peut etre pas besoin si on remet jump à false direct après le saut
     }
     
     @Override
