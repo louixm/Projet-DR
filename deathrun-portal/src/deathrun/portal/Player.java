@@ -15,20 +15,23 @@ import java.awt.Graphics;
 public class Player extends PObject {
     public String name;
     public int avatar;
-    public static BufferedImage avatars[];
-    
-    private boolean right, left, jump;
     
     Box collision_box;
+    boolean right, left, jump;
+    
+    public static BufferedImage avatars[];
+    
     
     public Player(String name, int avatar, int db_id) {
 		super(db_id);
-        this.name = name; this.avatar = avatar;
+        this.name = name; 
+        this.avatar = avatar;
         collision_box = new Box(-0.5, 0, 0.5, 1.8);
         
-        if (avatars.length == 0) {
-            // charger les images des avatars si pas deja fait
-        }
+        if (avatars == null) {
+			this.avatars = new BufferedImage[0];
+			// charger les images des avatars si pas deja fait
+		}
     }
     
     @Override

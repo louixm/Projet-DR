@@ -33,6 +33,7 @@ public class Game {
         //}
         
         prev_time = Instant.now();
+		players = new ArrayList<Player>();
     }
     
     void physicStep() {
@@ -112,7 +113,7 @@ public class Game {
     
     /// se connecte au serveur et construit toutes les instances d'objet correspondant aux objets de la map et aux joueurs
     void init() {
-        // TODO
+        map = new Map(new Box(0, 0, 40, 20));
     }
     
     /// met a jour l'etat local du jeu avec les dernieres modifications du serveur

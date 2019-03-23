@@ -14,4 +14,9 @@ import java.util.ArrayList;
 class Map {
     public ArrayList<PObject> objects;
     public Box size;
+    
+    Map(Box size) { 
+		this.size = size; 
+		this.objects = new ArrayList<PObject>();
+	}
 }

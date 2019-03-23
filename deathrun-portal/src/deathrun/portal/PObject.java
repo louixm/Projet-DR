@@ -17,7 +17,12 @@ abstract public class PObject {
     public Vec2 velocity;
     public Vec2 acceleration;
     
-    PObject(int db_id) 	{ this.db_id = db_id; }
+    PObject(int db_id) 	{ 
+        this.db_id = db_id; 
+        this.position = new Vec2();
+        this.velocity = new Vec2();
+        this.acceleration = new Vec2();
+    }
 
     //--------------- interface de gestion des collisions -----------------
     /// retourne vrai si les deux objets peuvent entrer en collision si ils se superposent
