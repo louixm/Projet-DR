@@ -7,6 +7,7 @@ import java.awt.event.KeyListener;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.event.ActionListener;
+import javax.swing.Timer;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -19,8 +20,8 @@ import java.awt.event.ActionListener;
  *
  * @author ydejongh
  */
-public class Gui extends JPanel  implements ActionListener {
-    public const float scale = 30;	// pixel/m
+public class Gui extends JFrame implements ActionListener, KeyListener {
+    public float scale = 30;	// pixel/m
     public Game game;
     
     Timer timer;
@@ -30,6 +31,35 @@ public class Gui extends JPanel  implements ActionListener {
         this.game = game;
         this.timer = new Timer(20, this);
         this.timer.start();
+    }
+    
+    
+    @Override
+    public void keyTyped(KeyEvent e) {
+        // NOP
+    }
+    
+    @Override
+    public void keyPressed(KeyEvent evt) {
+//        if (evt.getKeyCode() == evt.VK_D) {
+//            this.game.setDroite(true);
+//        }
+//        if (evt.getKeyCode() == evt.VK_Q) {
+//            this.game.setGauche(true);
+//        }
+//        if (evt.getKeyCode() == evt.VK_SPACE){
+//            this.game.saute();
+//        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent evt) {
+//        if (evt.getKeyCode() == evt.VK_D) {
+//            this.game.setDroite(false);
+//        }
+//        if (evt.getKeyCode() == evt.VK_Q) {
+//            this.game.setGauche(false);
+//        }
     }
     
     public void actionPerformed(ActionEvent e) {
