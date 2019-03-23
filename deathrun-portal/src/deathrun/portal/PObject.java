@@ -27,7 +27,15 @@ abstract public class PObject {
     
     //--------------- interface d'affichage -----------------
     /// methode d'affichage de l'objet
-    abstract public void render(Graphics g, float scale);  // methode interface
+    public void render(Graphics g, float scale)  // methode interface
+    {
+        // affichage de la boite de collision (pour l'instant)
+        Box collision_box = getCollisionBox();
+        g.drawRect(
+            collision_box.p1.x*scale, collision_box.p1.y*scale, 
+            collision_box.p2.x*scale, collision_box.p2.y*scale
+            );
+    }
     /// renvoie true si l'objet doit etre affiché apres avoir rendu les joueurs (avant-plan)
     /// si non surchargée, la valeur par défaut est false
     boolean foreground()    { return false; }
@@ -36,4 +44,9 @@ abstract public class PObject {
     public void setPosition()       { return position; }
     public void setVelocity()       { return velocity; }
     public void setAcceleration()   { return acceleration; }
+    
+    /// methode d'envoi des données locales a la base de donnée
+    public void syncSet(Sync sync)	{
+		// TODO
+    }
 }

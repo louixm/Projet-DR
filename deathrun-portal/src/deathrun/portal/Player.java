@@ -42,13 +42,8 @@ public class Player extends PObject {
     //--------------- interface d'affichage -----------------
     @Override
     public void render(Graphics g, float scale) {
+		super.render(g, scale);
         // TODO
-        
-        // affichage de la boite de collision (pour l'instant)
-        g.drawRect(
-            collision_box.p1.x*scale, collision_box.p1.y*scale, 
-            collision_box.p2.x*scale, collision_box.p2.y*scale
-            );
     }
     
 }
