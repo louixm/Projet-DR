@@ -6,27 +6,44 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import java.awt.event.ActionListener;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+ 
 
 /**
  *
  * @author ydejongh
  */
-public class Gui extends JFrame implements ActionListener, KeyListener {
-	const float scale = 30;	// pixel/m
+public class Gui extends JPanel  implements ActionListener {
+    public const float scale = 30;	// pixel/m
+    public Game game;
+    
+    Timer timer;
 
+    
     Gui(Game game) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-
+        this.game = game;
+        this.timer = new Timer(20, this);
+        this.timer.start();
     }
     
+    public void actionPerformed(ActionEvent e) {
+        game.physicStep();
+        repaint();
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
-		// TODO: l'affichage du game
-	}
+        for (PObject object : game.map.objects) {
+            if (! object.foreground())	object.render(g, scale);
+        for (Player player : game.players)		
+            player.render(g, scale);
+        for (PObject object : game.map.objects) {
+            if (object.foreground())	object.render(g, scale);
+    }
 }
