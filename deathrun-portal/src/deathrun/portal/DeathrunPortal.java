@@ -20,9 +20,12 @@ public class DeathrunPortal {
     public static void main(String[] args) throws SQLException {
         Game game = new Game();
         game.init();	// connecte au serveur et construit tous les objets tels que dans la base de donnnées
-        game.map.objects.add(new Platform(1));
         Player controled = new Player("myname", 0, 0);	// TODO: choisir le nom et l'avatar du joueur
         game.players.add(controled);
+        
+        game.map.objects.add(new Platform(1));
+        
+        controled.setPosition(new Vec2(10, 0));
         
         Gui gui = new Gui(game, controled);
 		gui.setVisible(true);

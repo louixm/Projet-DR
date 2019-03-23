@@ -26,7 +26,7 @@ import javax.swing.Timer;
  */
 public class Gui extends JFrame implements ActionListener, KeyListener {
     public final float scale = 30;	// pixel/m
-    public final int WINDOW_WIDTH = 1280, WINDOW_HEIGHT = 1080;
+    public final int WINDOW_WIDTH = 1000, WINDOW_HEIGHT = 600;
     
     private JLabel jLabel1;
     private BufferedImage buffer;
