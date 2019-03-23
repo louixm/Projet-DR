@@ -30,7 +30,7 @@ public class Player extends PObject {
     }
     
     @Override
-    public setPosition(Vec2D pos) {
+    public void setPosition(Vec2 pos) {
 		collision_box = collision_box.add(pos);
     }
     
