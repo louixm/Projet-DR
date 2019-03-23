@@ -7,6 +7,7 @@ package deathrun.portal;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.ArrayList;
 
 /**
@@ -116,4 +117,9 @@ public class Game {
     void syncUpdate() {
         // TODO
     }
+    
+    public Player getFirstPlayer() { return this.players.get(0); }
+
+  
+            
 }
