@@ -19,47 +19,10 @@ import javax.swing.JPanel;
  */
 public class Gui extends JFrame implements ActionListener, KeyListener {
 	const float scale = 30;	// pixel/m
-        private Game game;
 
     Gui(Game game) {
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        this.game = game;
-    }
-    
-        // Methode appelee par le timer et qui contient la boucle de game
-//    @Override
-//    public void actionPerformed(ActionEvent e) {
-//        this.game.MettreAJour();
-//        this.game.Afficher(contexteBuffer);
-//        this.jLabel1.repaint();
-//    }
 
-    @Override
-    public void keyTyped(KeyEvent e) {
-        // NOP
-    }
-    
-    @Override
-    public void keyPressed(KeyEvent evt) {
-        if (evt.getKeyCode() == evt.VK_D) {
-            this.game.setDroite(true);
-        }
-        if (evt.getKeyCode() == evt.VK_Q) {
-            this.game.setGauche(true);
-        }
-        if (evt.getKeyCode() == evt.VK_SPACE){
-            this.game.saute();
-        }
-    }
-
-    @Override
-    public void keyReleased(KeyEvent evt) {
-        if (evt.getKeyCode() == evt.VK_D) {
-            this.game.setDroite(false);
-        }
-        if (evt.getKeyCode() == evt.VK_Q) {
-            this.game.setGauche(false);
-        }
     }
     
     @Override
