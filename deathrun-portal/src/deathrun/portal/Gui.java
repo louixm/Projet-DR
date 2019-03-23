@@ -37,7 +37,7 @@ public class Gui extends JFrame implements ActionListener, KeyListener {
 	public Player controled;
     
 	
-    Gui(Game game) {
+    Gui(Game game, Player controled) {
         //initilalisation de la fenêtre graphique
         this.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         this.setResizable(false);
@@ -49,7 +49,8 @@ public class Gui extends JFrame implements ActionListener, KeyListener {
         this.pack();
         
         // Creation du jeu
-        this.game = new Game();
+        this.controled = controled;
+        this.game = game;
 
         // Creation du buffer pour l'affichage du jeu et recuperation du contexte graphique
         this.buffer = new BufferedImage(this.jLabel1.getWidth(), this.jLabel1.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -78,7 +79,7 @@ public class Gui extends JFrame implements ActionListener, KeyListener {
     public void keyReleased(KeyEvent evt) {
         if (evt.getKeyCode() == evt.VK_D)       this.controled.setRight(false);
         if (evt.getKeyCode() == evt.VK_Q)       this.controled.setLeft(false);
-        if (evt.getKeyCode() == evt.VK_SPACE)   this.game.controled.setJump(false); //peut etre pas besoin si on remet jump à false direct après le saut
+        if (evt.getKeyCode() == evt.VK_SPACE)   this.controled.setJump(false); //peut etre pas besoin si on remet jump à false direct après le saut
     }
     
     @Override

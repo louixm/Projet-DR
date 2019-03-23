@@ -21,8 +21,10 @@ public class DeathrunPortal {
     
         Game game = new Game();
         game.init();	// connecte au serveur et construit tous les objets tels que dans la base de donnnées
+        Player controled = new Player("myname", 0, 0);	// TODO: choisir le nom et l'avatar du joueur
+        game.players.add(controled);
         
-        Gui gui = new Gui(game, game.players.get(0));	// TODO: pouvoir choisir le joueur
+        Gui gui = new Gui(game, controled);
         window.add(gui);
     }
     
