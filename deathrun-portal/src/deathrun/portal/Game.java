@@ -42,34 +42,65 @@ public class Game {
         // suppose que les données sont synchronisées et que l'etat précédent est ok
         
         for (Player player: players) {
-            // pas de mise a jour si pas de mise a jour de vitesse
+            // pas de mise a jour de vitesse si pas d'acceleration
+            if (! player.acceleration.isnull()) {
+                player.setVelocity(player.speed.add(player.acceleration.mul(dt)));
+            }
+        
+            // pas de mise a jour de position si pas de vitesse
             if (player.velocity.isnull())       continue;
             Vec2 newpos = player.position.add(player.velocity.mul(dt));
+            player.setPosition(newpos);
             
-            // collisions
+            // collisions avec les bords de l'ecran
+            Box bplayer = player.collisionBox();
+            if (bplayer.p1.x < map.size.p1.x) {
+				float newx = map.size.p1.x - bplayer.p1.x + player.position.x;
+				player.setPosition(new Vec2(newx, player.position.y));
+            }
+            else if (bplayer.p2.y > map.size.p2.y) {
+				float newy = map.size.p2.x - bplayer.p2.x + player.position.y;
+				player.setPosition(new Vec2(player.position.x, newy));
+            }
+            
+            // acceleration gagnée automatiquement si pas de contact en dessous (corrigé par la boucle de collision)
+            player.acceleration.y = -9.81; 
+            
+            // collisions avec les objets
             for (PObject object: map.objects) {
                 if (player.collisionable(object)) {
                     Box bplayer = player.collisionBox();
                     Box bobject = object.collisionBox();
                     if (bplayer.intersect(bobject)) {
                         // corriger la position pour que player ne soit plus dans object
-                        newpos = bobject.outer(newpos);
+                        Vec2 contact = bobject.contact(bplayer.contact);
+                        Vec2 correction = bobject.outer(contact).sub(contact);
                         // supprimer l'acceleration dans la direction du contact 
                         // TODO: a voir avec le product owner si cela satisfait la dynamique de jeu
-                        Box intersection = bplayer.intersection(bobject);
-                        if      (player.acceleration.y < 0 && intersection.p2.y == bplayer.p1.y)        player.acceleration.y = 0;
-                        else if (player.acceleration.y > 0 && intersection.p1.y == bplayer.p2.y)        player.acceleration.y = 0;
-                        else if (player.acceleration.x < 0 && intersection.p2.x == bplayer.p1.x)        player.acceleration.x = 0;
-                        else if (player.acceleration.x > 0 && intersection.p1.x == bplayer.p2.x)        player.acceleration.x = 0;
+                        if (correction.y < 0) {
+                            if (player.acceleration.y < 0)        player.acceleration.y = 0;
+                            if (player.velocity.y < 0)            player.velocity.y = 0;
+                        }
+                        else if (correction.y > 0) {
+                            if (player.acceleration.y > 0)        player.acceleration.y = 0;
+                            if (player.velocity.y > 0)            player.velocity.y = 0;
+                        }
+                        if (correction.x < 0) {
+                            if (player.acceleration.x < 0)        player.acceleration.x = 0;
+                            if (player.velocity.x < 0)            player.velocity.x = 0;
+                        }
+                        else if (correction.x > 0) {
+                            if (player.acceleration.x > 0)        player.acceleration.x = 0;
+                            if (player.velocity.x > 0)            player.velocity.x = 0;
+                        }
+                        
+                        player.setPosition(player.position.add(correction));
                     }
                 }
             }
-            // position maintenant corrigée
-            player.setPosition(newpos);
             
-            // si pas d'acceleration pas de mise a jour de vitesse
-            if (player.acceleration.isnull())       continue;
-            player.setVelocity(player.speed.add(player.acceleration.mul(dt)));
+            // position maintenant corrigée
+            player.syncSet(sync);
         }
         
         prev_time = ac_time;
@@ -78,11 +109,6 @@ public class Game {
     
     /// se connecte au serveur et construit toutes les instances d'objet correspondant aux objets de la map et aux joueurs
     void init() {
-        // TODO
-    }
-    
-    /// crée un nouveau joueur, l'ajoute dans la partie, sur le serveur et le retourne
-    Player newPlayer() {
         // TODO
     }
     
