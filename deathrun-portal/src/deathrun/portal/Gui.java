@@ -85,6 +85,7 @@ public class Gui extends JFrame implements ActionListener, KeyListener {
         repaint();
     }
 
+    @Override
     protected void paintComponent(Graphics2D g) {
         for (PObject object : game.map.objects) {
             if (! object.foreground())	object.render(g, scale); }
