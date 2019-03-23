@@ -85,6 +85,7 @@ public class Gui extends JFrame implements ActionListener, KeyListener {
     public void actionPerformed(ActionEvent e) {
         game.physicStep();
         render(bufferContext);
+        this.jLabel1.repaint();
     }
 
     void render(Graphics2D g) {
