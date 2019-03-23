@@ -78,7 +78,7 @@ public class Gui extends JFrame implements ActionListener, KeyListener {
     public void keyReleased(KeyEvent evt) {
         if (evt.getKeyCode() == evt.VK_D)       this.controled.setRight(false);
         if (evt.getKeyCode() == evt.VK_Q)       this.controled.setLeft(false);
-        if (evt.getKeyCode() == evt.VK_SPACE)   this.game.controled.setJump(false); //peut etre pas besoin si on remet jump à false direct après le saut
+        if (evt.getKeyCode() == evt.VK_SPACE)   this.controled.setJump(false); //peut etre pas besoin si on remet jump à false direct après le saut
     }
     
     @Override
