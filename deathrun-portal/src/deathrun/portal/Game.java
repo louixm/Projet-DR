@@ -22,13 +22,15 @@ public class Game {
     Instant prev_time; // instant de dernier pas physique
     
     
-    Game() {
-        try {
-            sync = new Sync(DriverManager.getConnection("jdbc:mysql://nemrod.ens2m.fr:3306/tp_jdbc?serverTimezone=UTC", "etudiant", "YTDTvj9TR3CDYCmP"));
-        }
-        catch (SQLException e) {
-            System.out.println("sql connection error, fail to init game");
-        }
+    Game() throws SQLException {
+        //try {
+            //sync = new Sync(
+          //  DriverManager.getConnection("jdbc:mysql://nemrod.ens2m.fr:3306/tp_jdbc?serverTimezone=UTC", "etudiant", "YTDTvj9TR3CDYCmP")
+            //);
+        //}
+        //catch (SQLException e) {
+         //   System.out.println("sql connection error, fail to init game");
+        //}
         
         prev_time = Instant.now();
     }
