@@ -5,6 +5,9 @@
  */
 package deathrun.portal;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 /**
  *
  * @author ydejongh
@@ -22,6 +25,8 @@ public class Box {
  
 
     public Vec2 center() { return p1.add(p2).mul(0.5); }
+    
+    public Box translate(Vec2 vector)  { return new Box(p1.add(vector), p2.add(vector)); }
 
     /// retourne vrai si le point est strictement a l'interieur du rectangle
     public boolean contains(Vec2 position) {
@@ -95,8 +100,8 @@ public class Box {
     /// retourne le coin de other qui est dans this
     public Vec2 contact(Box other) {
         if (intersect(other)) {
-            float x = other.p1.x;
-            float y = other.p1.y;
+            double x = other.p1.x;
+            double y = other.p1.y;
             if (x < p1.x)   x = other.p2.x;
             if (y < p1.y)   x = other.p2.y;
             return new Vec2(x,y);

@@ -5,7 +5,7 @@
  */
 package deathrun.portal;
 
-import javax.swing.JPanel;
+import java.awt.Graphics;
 
 /**
  *
@@ -18,18 +18,15 @@ public class Platform extends PObject {
         super(db_id);
     }
     
-    @Override
-    public setPosition(Vec2D pos) {
-		collision_box = collision_box.add(pos);
+    public void setPosition(Vec2 pos) {
+		collision_box = collision_box.translate(pos);
     }
      
     //--------------- interface de gestion des collisions -----------------
     public boolean collisionable()  { return true; }
-    @Override
-    public Box collisionBox()       { return collision_box; }
+    public Box getCollisionBox()       { return collision_box; }
     
     //--------------- interface d'affichage -----------------
-    @Override
     public void render(Graphics g, float scale) {
 		super.render(g, scale);
         // TODO
