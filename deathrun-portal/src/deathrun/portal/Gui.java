@@ -67,25 +67,16 @@ public class Gui extends JFrame implements ActionListener, KeyListener {
     
     @Override
     public void keyPressed(KeyEvent evt) {
-//        if (evt.getKeyCode() == evt.VK_D) {
-//            this.game.setDroite(true);
-//        }
-//        if (evt.getKeyCode() == evt.VK_Q) {
-//            this.game.setGauche(true);
-//        }
-//        if (evt.getKeyCode() == evt.VK_SPACE){
-//            this.game.saute();
-//        }
+        if (evt.getKeyCode() == evt.VK_D) this.game.getFirstPlayer().setRight(true);
+        if (evt.getKeyCode() == evt.VK_Q) this.game.getFirstPlayer().setLeft(true);
+        if (evt.getKeyCode() == evt.VK_SPACE) this.game.getFirstPlayer().setJump(true);
     }
 
     @Override
     public void keyReleased(KeyEvent evt) {
-//        if (evt.getKeyCode() == evt.VK_D) {
-//            this.game.setDroite(false);
-//        }
-//        if (evt.getKeyCode() == evt.VK_Q) {
-//            this.game.setGauche(false);
-//        }
+        if (evt.getKeyCode() == evt.VK_D) this.game.getFirstPlayer().setRight(false);
+        if (evt.getKeyCode() == evt.VK_Q) this.game.getFirstPlayer().setLeft(false);
+//        if (evt.getKeyCode() == evt.VK_SPACE) this.game.getFirstPlayer().setJump(false); //peut etre pas besoin si on remet jump à false direct après le saut
     }
     
     @Override
