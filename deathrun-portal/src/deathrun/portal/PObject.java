@@ -5,7 +5,7 @@
  */
 package deathrun.portal;
 
-import javax.swing.JPanel;
+import java.awt.Graphics;
 
 /**
  *
@@ -32,8 +32,8 @@ abstract public class PObject {
         // affichage de la boite de collision (pour l'instant)
         Box collision_box = getCollisionBox();
         g.drawRect(
-            collision_box.p1.x*scale, collision_box.p1.y*scale, 
-            collision_box.p2.x*scale, collision_box.p2.y*scale
+            (int) (collision_box.p1.x*scale), (int) (collision_box.p1.y*scale), 
+            (int) (collision_box.p2.x*scale), (int) (collision_box.p2.y*scale)
             );
     }
     /// renvoie true si l'objet doit etre affiché apres avoir rendu les joueurs (avant-plan)
@@ -41,9 +41,9 @@ abstract public class PObject {
     boolean foreground()    { return false; }
     
     
-    public void setPosition()       { return position; }
-    public void setVelocity()       { return velocity; }
-    public void setAcceleration()   { return acceleration; }
+    public void setPosition(Vec2 p)       { this.position = p; }
+    public void setVelocity(Vec2 v)       { this.velocity = v; }
+    public void setAcceleration(Vec2 a)   { this.acceleration = a; }
     
     /// methode d'envoi des données locales a la base de donnée
     public void syncSet(Sync sync)	{

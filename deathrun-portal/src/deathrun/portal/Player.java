@@ -6,7 +6,7 @@
 package deathrun.portal;
 
 import java.awt.image.BufferedImage;
-import javax.swing.JPanel;
+import java.awt.Graphics;
 
 /**
  *
@@ -22,7 +22,7 @@ public class Player extends PObject {
     public Player(String name, int avatar, int db_id) {
 		super(db_id);
         this.name = name; this.avatar = avatar;
-        collision_box = new Collision_box(-0.5, 0, 0.5, 1.8);
+        collision_box = new Box(-0.5, 0, 0.5, 1.8);
         
         if (avatars.length == 0) {
             // charger les images des avatars si pas deja fait
@@ -31,7 +31,7 @@ public class Player extends PObject {
     
     @Override
     public void setPosition(Vec2 pos) {
-		collision_box = collision_box.add(pos);
+		collision_box = collision_box.translate(pos);
     }
     
     //--------------- interface de gestion des collisions -----------------
@@ -40,7 +40,6 @@ public class Player extends PObject {
     public Box getCollisionBox() 	{ return collision_box; }
     
     //--------------- interface d'affichage -----------------
-    @Override
     public void render(Graphics g, float scale) {
 		super.render(g, scale);
         // TODO

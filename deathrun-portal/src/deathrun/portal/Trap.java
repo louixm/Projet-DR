@@ -5,6 +5,8 @@
  */
 package deathrun.portal;
 
+import java.awt.Graphics;
+
 /**
  *
  * @author jimy
@@ -12,25 +14,22 @@ package deathrun.portal;
 public class Trap extends PObject {
 	boolean enabled;
 	Box collision_box;
+
+	public Trap(int db_id) {
+		super(db_id);
+	}
 	
     @Override
-    public setPosition(Vec2D pos) {
-		collision_box = collision_box.add(pos);
+    public void setPosition(Vec2 pos) {
+		collision_box = collision_box.translate(pos);
     }
 	
 	public boolean collisionable() { return enabled; }
-	@Override
-    public Box collisionBox()       { return collision_box; }
+    public Box getCollisionBox()       { return collision_box; }
     
     //--------------- interface d'affichage -----------------
-    @Override
     public void render(Graphics g, float scale) {
+		super.render(g, scale);
         // TODO
-        
-        // affichage de la boite de collision (pour l'instant)
-        g.drawRect(
-            collision_box.p1.x*scale, collision_box.p1.y*scale, 
-            collision_box.p2.x*scale, collision_box.p2.y*scale
-            );
     }
 }
