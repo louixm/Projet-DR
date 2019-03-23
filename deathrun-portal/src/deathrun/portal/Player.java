@@ -17,6 +17,8 @@ public class Player extends PObject {
     public int avatar;
     public static BufferedImage avatars[];
     
+    private boolean right, left, jump;
+    
     Box collision_box;
     
     public Player(String name, int avatar, int db_id) {
@@ -44,5 +46,9 @@ public class Player extends PObject {
 		super.render(g, scale);
         // TODO
     }
+    
+    public void setLeft(boolean left) { this.left = left; }
+    public void setRight(boolean right) { this.right = right; }
+    public void setJump(boolean jump) { this.jump = jump; }
     
 }
