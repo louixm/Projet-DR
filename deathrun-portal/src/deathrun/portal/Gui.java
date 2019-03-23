@@ -1,7 +1,10 @@
 package deathrun.portal;
 
+import java.awt.Graphics;
+import java.awt.event.ActionEvent;
 import javax.swing.JPanel;
 import java.awt.event.ActionListener;
+import javax.swing.Timer;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -15,7 +18,7 @@ import java.awt.event.ActionListener;
  * @author ydejongh
  */
 public class Gui extends JPanel  implements ActionListener {
-    public const float scale = 30;	// pixel/m
+    public float scale = 30;	// pixel/m
     public Game game;
     
     Timer timer;
@@ -34,11 +37,13 @@ public class Gui extends JPanel  implements ActionListener {
 
     @Override
     protected void paintComponent(Graphics g) {
-        for (PObject object : game.map.objects) {
+		for (PObject object : game.map.objects) {
             if (! object.foreground())	object.render(g, scale);
+		}
         for (Player player : game.players)		
             player.render(g, scale);
         for (PObject object : game.map.objects) {
             if (object.foreground())	object.render(g, scale);
+		}
     }
 }
