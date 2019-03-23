@@ -6,6 +6,7 @@
 package deathrun.portal;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 /**
  *
@@ -25,10 +26,11 @@ public class Platform extends PObject {
      
     //--------------- interface de gestion des collisions -----------------
     public boolean collisionable()  { return true; }
+        @Override
     public Box getCollisionBox()       { return collision_box; }
     
     //--------------- interface d'affichage -----------------
-    public void render(Graphics g, float scale) {
+    public void render(Graphics2D g, float scale) {
 		super.render(g, scale);
         // TODO
     }
