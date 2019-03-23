@@ -78,8 +78,8 @@ public class Box {
     
     public boolean intersect(Box other) {
         return (
-                (p1.x <= other.p1.x && other.p1.x <= p2.x) || (p1.x <= other.p2.x && other.p2.x <= p2.x)) 
-            &&  (p1.y <= other.p1.y && other.p1.y <= p2.y) || (p1.y <= other.p2.y && other.p2.y <= p2.y)) 
+                p1.x <= other.p2.x && p2.x >= other.p1.x
+			&&	p1.y <= other.p2.y && p2.y >= other.p1.y
             );
     }
     
