@@ -5,6 +5,8 @@
  */
 package deathrun.portal;
 
+import javax.swing.JFrame;
+
 /**
  *
  * @author ydejongh
