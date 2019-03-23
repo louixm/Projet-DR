@@ -76,6 +76,7 @@ public class Box {
         return new Vec2(x, y);
     }
     
+    /// retourne true si this et other presentent une intersection
     public boolean intersect(Box other) {
         return (
                 p1.x <= other.p2.x && p2.x >= other.p1.x
@@ -83,11 +84,24 @@ public class Box {
             );
     }
     
-    public boolean intersection(Box other) {
+    /// retourne la boite intersection des deux boites
+    public Box intersection(Box other) {
         return new Box(
             new Vec2 (max(p1.x, other.p1.x), max(p1.x, other.p1.x)), 
             new Vec2 (min(p2.x, other.p2.x), min(p2.y, other.p2.y))
             );
     }
     
+    /// retourne le coin de other qui est dans this
+    public Vec2 contact(Box other) {
+        if (intersect(other)) {
+            float x = other.p1.x;
+            float y = other.p1.y;
+            if (x < p1.x)   x = other.p2.x;
+            if (y < p1.y)   x = other.p2.y;
+            return new Vec2(x,y);
+		}
+		else
+            return null;
+    }
 }
