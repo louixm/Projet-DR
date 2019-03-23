@@ -25,8 +25,17 @@ public class Box {
  
 
     public Vec2 center() { return p1.add(p2).mul(0.5); }
+    public double getWidth() { return p2.x - p1.x; }
+    public double getHeight() { return p2.y - p1.y; }
     
     public Box translate(Vec2 vector)  { return new Box(p1.add(vector), p2.add(vector)); }
+    
+    public Box translateToPosition(Vec2 pos)  {
+        Vec2 translated_p1 = new Vec2(pos.x, pos.y);
+        Vec2 translated_p2 = new Vec2(pos.x + this.getWidth(), pos.y + this.getHeight());
+//        System.out.println(translated_p1 + ", " + translated_p2);
+        return new Box(translated_p1, translated_p2);
+    }
 
     /// retourne vrai si le point est strictement a l'interieur du rectangle
     public boolean contains(Vec2 position) {
@@ -109,4 +118,7 @@ public class Box {
 		else
             return null;
     }
+
+
+    
 }
