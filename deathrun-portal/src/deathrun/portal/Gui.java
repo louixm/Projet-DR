@@ -24,7 +24,7 @@ import javax.swing.Timer;
  *
  * @author ydejongh
  */
-public class Gui extends JFrame implements ActionListener, KeyListener {
+public class Gui extends JFrame implements KeyListener {
     public final float scale = 30;	// pixel/m
     public final int WINDOW_WIDTH = 1000, WINDOW_HEIGHT = 600;
     
@@ -58,7 +58,15 @@ public class Gui extends JFrame implements ActionListener, KeyListener {
         this.bufferContext = this.buffer.createGraphics();
 
         // Creation du Timer qui appelle this.actionPerformed() tous les 20 ms
-        this.timer = new Timer(20, this);
+        this.timer = new Timer(20, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("timer");
+                game.physicStep();
+                render(bufferContext);
+                jLabel1.repaint();
+            }
+        });
         this.timer.start();
     }
     
@@ -70,8 +78,8 @@ public class Gui extends JFrame implements ActionListener, KeyListener {
     
     @Override
     public void keyPressed(KeyEvent evt) {
-        if (evt.getKeyCode() == evt.VK_D)		this.controled.setRight(true);
-        if (evt.getKeyCode() == evt.VK_Q)		this.controled.setLeft(true);
+        if (evt.getKeyCode() == evt.VK_D)	this.controled.setRight(true);
+        if (evt.getKeyCode() == evt.VK_Q)	this.controled.setLeft(true);
         if (evt.getKeyCode() == evt.VK_SPACE)	this.controled.setJump(true);
     }
 
@@ -82,21 +90,15 @@ public class Gui extends JFrame implements ActionListener, KeyListener {
         if (evt.getKeyCode() == evt.VK_SPACE)   this.controled.setJump(false); //peut etre pas besoin si on remet jump à false direct après le saut
     }
     
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        this.game.physicStep();
-        this.render(this.bufferContext);
-        this.jLabel1.repaint();
-    }
 
     public void render(Graphics2D g) {
-		for (PObject object : game.map.objects) {
+        for (PObject object : game.map.objects) {
             if (! object.foreground())	object.render(g, scale);
-		}
+        }
         for (Player player : game.players)		
             player.render(g, scale);
         for (PObject object : game.map.objects) {
             if (object.foreground())	object.render(g, scale);
-		}
+        }
     }
 }

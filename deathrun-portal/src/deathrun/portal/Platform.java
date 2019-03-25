@@ -13,11 +13,13 @@ import java.awt.Graphics2D;
  * @author ydejongh
  */
 public class Platform extends PObject {
-	Box collision_box;
+    Box collision_box;
+    Vec2 position;
 
-    public Platform(int db_id) {
+    public Platform(int db_id, Vec2 position) {
         super(db_id);
         this.collision_box = new Box(-1, -0.2, 1, 0);
+        this.position = position;
     }
     
     public void setPosition(Vec2 pos) {

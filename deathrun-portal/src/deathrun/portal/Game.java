@@ -19,7 +19,7 @@ public class Game {
     public ArrayList<Player> players;
     
     Sync sync;
-    Instant prev_time; // instant de dernier pas physique
+    long prev_time; // instant de dernier pas physique
     
     
     Game() throws SQLException {
@@ -32,15 +32,16 @@ public class Game {
          //   System.out.println("sql connection error, fail to init game");
         //}
         
-        prev_time = Instant.now();
-		players = new ArrayList<Player>();
+        prev_time = System.nanoTime();
+	players = new ArrayList<Player>();
     }
     
     void physicStep() {
         // TODO:  voir si il faut tout passer en getters et setters
+        System.out.println("physicstep");
         
-        Instant ac_time = Instant.now();
-        float dt = (ac_time.getNano() - prev_time.getNano())/1000000000;
+        long ac_time = System.nanoTime();
+        float dt = ((float)(ac_time - prev_time))/1000000000;
         
         // simulation de mecanique des objets (rectangles) avec Euler directe
         // suppose que les données sont synchronisées et que l'etat précédent est ok
@@ -56,15 +57,19 @@ public class Game {
             Vec2 newpos = player.position.add(player.velocity.mul(dt));
             player.setPosition(newpos);
             
+            System.out.println("dt = "+dt);
+            System.out.println("velocity: "+player.velocity);
+            System.out.println("new position: "+newpos);
+            
             // collisions avec les bords de l'ecran
             Box bplayer = player.getCollisionBox();
             if (bplayer.p1.x < map.size.p1.x) {
-				double newx = map.size.p1.x - bplayer.p1.x + player.position.x;
-				player.setPosition(new Vec2(newx, player.position.y));
+                double newx = map.size.p1.x - bplayer.p1.x + player.position.x;
+                player.setPosition(new Vec2(newx, player.position.y));
             }
-            else if (bplayer.p2.y > map.size.p2.y) {
-				double newy = map.size.p2.x - bplayer.p2.x + player.position.y;
-				player.setPosition(new Vec2(player.position.x, newy));
+            else if (bplayer.p2.x > map.size.p2.x) {
+                double newx = map.size.p2.x - bplayer.p2.x + player.position.x;
+                player.setPosition(new Vec2(newx, player.position.y));
             }
             
             // acceleration gagnée automatiquement si pas de contact en dessous (corrigé par la boucle de collision)
@@ -72,30 +77,33 @@ public class Game {
             
             // collisions avec les objets
             for (PObject object: map.objects) {
+                System.out.println("object: "+object.db_id);
                 if (player.collisionable(object)) {
                     bplayer = player.getCollisionBox();
                     Box bobject = object.getCollisionBox();
+                    System.out.println("collisionable    "+bplayer+"   "+bobject);
                     if (bplayer.intersect(bobject)) {
+                        System.out.println("collision detected between"+player.db_id+" and "+object.db_id);
                         // corriger la position pour que player ne soit plus dans object
                         Vec2 contact = bobject.contact(bplayer);
                         Vec2 correction = bobject.outer(contact).sub(contact);
                         // supprimer l'acceleration dans la direction du contact 
                         // TODO: a voir avec le product owner si cela satisfait la dynamique de jeu
                         if (correction.y < 0) {
-                            if (player.acceleration.y < 0)        player.acceleration.y = 0;
-                            if (player.velocity.y < 0)            player.velocity.y = 0;
-                        }
-                        else if (correction.y > 0) {
                             if (player.acceleration.y > 0)        player.acceleration.y = 0;
                             if (player.velocity.y > 0)            player.velocity.y = 0;
                         }
-                        if (correction.x < 0) {
-                            if (player.acceleration.x < 0)        player.acceleration.x = 0;
-                            if (player.velocity.x < 0)            player.velocity.x = 0;
+                        else if (correction.y > 0) {
+                            if (player.acceleration.y < 0)        player.acceleration.y = 0;
+                            if (player.velocity.y < 0)            player.velocity.y = 0;
                         }
-                        else if (correction.x > 0) {
+                        if (correction.x < 0) {
                             if (player.acceleration.x > 0)        player.acceleration.x = 0;
                             if (player.velocity.x > 0)            player.velocity.x = 0;
+                        }
+                        else if (correction.x > 0) {
+                            if (player.acceleration.x < 0)        player.acceleration.x = 0;
+                            if (player.velocity.x < 0)            player.velocity.x = 0;
                         }
                         
                         player.setPosition(player.position.add(correction));

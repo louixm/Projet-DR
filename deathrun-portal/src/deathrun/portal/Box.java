@@ -120,5 +120,8 @@ public class Box {
     }
 
 
+    public String toString() {
+        return "Box("+String.valueOf(p1.x)+", "+String.valueOf(p1.y)+", "+String.valueOf(p2.x)+", "+String.valueOf(p2.y)+")";
+    }
     
 }
