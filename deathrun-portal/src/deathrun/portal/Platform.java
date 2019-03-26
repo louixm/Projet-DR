@@ -14,26 +14,28 @@ import java.awt.Graphics2D;
  */
 public class Platform extends PObject {
     Box collision_box;
-    Vec2 position;
 
     public Platform(int db_id, Vec2 position) {
         super(db_id);
         this.collision_box = new Box(-1, -0.2, 1, 0);
-        this.position = position;
+        setPosition(position);
     }
     
     public void setPosition(Vec2 pos) {
-		collision_box = collision_box.translate(pos);
+        super.setPosition(pos);
+        collision_box = collision_box.translateToPosition(pos);
     }
      
     //--------------- interface de gestion des collisions -----------------
-    public boolean collisionable()  { return true; }
-        @Override
+    public boolean collisionable(PObject other)  { 
+        return (other instanceof Player);
+    }
+    @Override
     public Box getCollisionBox()       { return collision_box; }
     
     //--------------- interface d'affichage -----------------
     public void render(Graphics2D g, float scale) {
-		super.render(g, scale);
+        super.render(g, scale);
         // TODO
     }
     
