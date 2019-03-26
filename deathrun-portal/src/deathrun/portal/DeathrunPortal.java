@@ -26,8 +26,8 @@ public class DeathrunPortal {
         
         game.players.add(controled);
         
-        game.map.objects.add(new Platform(1, new Vec2(10, 2)));
-        controled.setPosition(new Vec2(10, 10));
+        game.map.objects.add(new Platform(1, new Vec2(10, 5)));
+        controled.setPosition(new Vec2(10, 2));
         
         Gui gui = new Gui(game, controled);
         gui.setVisible(true);

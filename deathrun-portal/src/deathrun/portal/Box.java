@@ -31,7 +31,7 @@ public class Box {
     public Box translate(Vec2 vector)  { return new Box(p1.add(vector), p2.add(vector)); }
     
     public Box translateToPosition(Vec2 pos)  {
-        Vec2 translated_p1 = new Vec2(pos.x, pos.y);
+        Vec2 translated_p1 = pos;
         Vec2 translated_p2 = new Vec2(pos.x + this.getWidth(), pos.y + this.getHeight());
 //        System.out.println(translated_p1 + ", " + translated_p2);
         return new Box(translated_p1, translated_p2);
@@ -53,7 +53,9 @@ public class Box {
 
     /// retourne un rectangle elargi par les dimensions d'un autre
     public Box outline(Box margin) {
-        return new Box(p1.add(margin.p1), p2.add(margin.p2));
+        double w = margin.getWidth()/2;
+        double h = margin.getHeight()/2;
+        return new Box(new Vec2(p1.x - w, p1.y - h), new Vec2(p2.x +w, p2.y+h));
     }
 
     /// retourne le point d'intersection du segment [start end] avec les bords si end est a l'intérieur, sinon retourne end
@@ -63,15 +65,15 @@ public class Box {
                 Vec2 v = end.sub(start);
                 double x;
                 double y;
-                y = v.y/v.x * p1.x;
+                y = v.y/v.x * p1.x + start.y;
                 if (p1.y <= y && y <= p2.y)		return new Vec2(p1.x, y);
-                y = v.y/v.x * p2.x;
+                y = v.y/v.x * p2.x + start.y;
                 if (p1.y <= y && y <= p2.y)		return new Vec2(p2.x, y);
 
-                x = v.x/v.y * p1.y;
+                x = v.x/v.y * p1.y + start.x;
                 if (p1.x <= x && x <= p2.x)		return new Vec2(x, p1.y);
-                x = v.x/v.y * p2.y;
-                if (p1.x <= x && y <= p2.x)		return new Vec2(x, p2.y);
+                x = v.x/v.y * p2.y + start.x;
+                if (p1.x <= x && x <= p2.x)		return new Vec2(x, p2.y);
 
                 return null;	// ne peut pas arriver normalement mais servira a detecter les bugs
         }
@@ -83,10 +85,10 @@ public class Box {
     public Vec2 outer(Vec2 position) {
         double x = position.x;
         double y = position.y;
-        if 		(position.x < p1.x)	x = p1.x;
-        else if (position.x > p2.x)	x = p2.x;
-        if		(position.y < p1.y)	y = p1.y;
-        else if (position.y > p2.y)	y = p2.y;
+        if 	(x < p1.x)	x = p1.x;
+        else if (x > p2.x)	x = p2.x;
+        if	(y < p1.y)	y = p1.y;
+        else if (y > p2.y)	y = p2.y;
         return new Vec2(x, y);
     }
     
