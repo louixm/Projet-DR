@@ -36,12 +36,13 @@ public class Player extends PObject {
     
     @Override
     public void setPosition(Vec2 pos) {
+        super.setPosition(pos);
         collision_box = collision_box.translateToPosition(pos);
     }
     
     //--------------- interface de gestion des collisions -----------------
     public boolean collisionable(PObject other) { 
-        return ! other instanceof(Player);
+        return ! (other instanceof Player);
     }
     @Override
     public Box getCollisionBox() 	{ return collision_box; }
@@ -61,6 +62,9 @@ public class Player extends PObject {
         if (right)  this.velocity.x = 10;
         else        this.velocity.x = 0;
     }
-    public void setJump(boolean jump) { /*this.jump = jump;*/ }
+    public void setJump(boolean jump) { 
+        if (jump && acceleration.y == 0)
+            this.velocity.y = -4;
+    }
     
 }

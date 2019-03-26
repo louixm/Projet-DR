@@ -22,7 +22,8 @@ public class Trap extends PObject {
 	
     @Override
     public void setPosition(Vec2 pos) {
-		collision_box = collision_box.translate(pos);
+        super.setPosition(pos);
+        collision_box = collision_box.translateToPosition(pos);
     }
 	
 	public boolean collisionable() { return enabled; }
