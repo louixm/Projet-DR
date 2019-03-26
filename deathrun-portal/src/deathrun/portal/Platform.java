@@ -21,6 +21,13 @@ public class Platform extends PObject {
         setPosition(position);
     }
     
+    public Platform(int db_id, Vec2 position, double width, double height) {
+        super(db_id);
+        this.collision_box = new Box(0, 0, width, height);
+        setPosition(position);
+    }
+    
+    @Override
     public void setPosition(Vec2 pos) {
         super.setPosition(pos);
         collision_box = collision_box.translateToPosition(pos);
