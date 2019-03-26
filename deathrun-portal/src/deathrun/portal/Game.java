@@ -86,10 +86,10 @@ public class Game {
                     if (bplayer.intersect(bobject)) {
                         //System.out.println("collision detected between"+player.db_id+" and "+object.db_id);
                         // corriger la position pour que player ne soit plus dans object
-                        Vec2 contact = bobject.contact(bplayer);
-                        //Vec2 correction = bobject.outer(contact).sub(contact);
-                        Vec2 newpos2 = bobject.outline(bplayer).intersectionBorder(oldpos, newpos);
-                        Vec2 correction = newpos2.sub(newpos);
+                        //Vec2 contact = bobject.contact(bplayer);
+                        Vec2 correction = bobject.outline(bplayer).outer(bplayer.center()).sub(bplayer.center());
+                        //Vec2 newpos2 = bobject.outline(bplayer).intersectionBorder(oldpos, newpos);
+                        //Vec2 correction = newpos2.sub(newpos);
                         System.out.println("correction: "+correction);
                         // supprimer l'acceleration dans la direction du contact 
                         // TODO: a voir avec le product owner si cela satisfait la dynamique de jeu
@@ -110,7 +110,8 @@ public class Game {
                             if (player.velocity.x < 0)            player.velocity.x = 0;
                         }
                         
-                        player.setPosition(newpos2);
+                        //player.setPosition(newpos2);
+                        player.setPosition(player.position.add(correction));
                     }
                 }
             }

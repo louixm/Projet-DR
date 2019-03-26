@@ -17,7 +17,7 @@ public class Platform extends PObject {
 
     public Platform(int db_id, Vec2 position) {
         super(db_id);
-        this.collision_box = new Box(-1, -0.2, 1, 0);
+        this.collision_box = new Box(-2, -0.2, 2, 0);
         setPosition(position);
     }
     

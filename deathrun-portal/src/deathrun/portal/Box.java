@@ -62,41 +62,56 @@ public class Box {
     /// note: se fiche de si start est dedans ou pas
     public Vec2 intersectionBorder(Vec2 start, Vec2 end) {
         if (contains(end)) {
-                Vec2 v = end.sub(start);
-                double x;
-                double y;
-                y = v.y/v.x * p1.x + start.y;
-                if (p1.y <= y && y <= p2.y)		return new Vec2(p1.x, y);
-                y = v.y/v.x * p2.x + start.y;
-                if (p1.y <= y && y <= p2.y)		return new Vec2(p2.x, y);
+            System.out.println("start = "+start+"   end = "+end);
+            System.out.println("box"+this);
+            Vec2 v = end.sub(start);
+            double y;
+            y = v.y/v.x * p1.x + start.y;
+            if (p1.y <= y && y <= p2.y)		return new Vec2(p1.x, y);
+            y = v.y/v.x * p2.x + start.y;
+            if (p1.y <= y && y <= p2.y)		return new Vec2(p2.x, y);
 
-                x = v.x/v.y * p1.y + start.x;
-                if (p1.x <= x && x <= p2.x)		return new Vec2(x, p1.y);
-                x = v.x/v.y * p2.y + start.x;
-                if (p1.x <= x && x <= p2.x)		return new Vec2(x, p2.y);
+            double x;
+            x = v.x/v.y * p1.y + start.x;
+            if (p1.x <= x && x <= p2.x)		return new Vec2(x, p1.y);
+            x = v.x/v.y * p2.y + start.x;
+            if (p1.x <= x && x <= p2.x)		return new Vec2(x, p2.y);
 
-                return null;	// ne peut pas arriver normalement mais servira a detecter les bugs
+            return null;	// ne peut pas arriver normalement mais servira a detecter les bugs
         }
         else
-                return end;
+            return end;
     }
 
     /// retourne le point de la bordure le plus proche de position
     public Vec2 outer(Vec2 position) {
-        double x = position.x;
-        double y = position.y;
-        if 	(x < p1.x)	x = p1.x;
-        else if (x > p2.x)	x = p2.x;
-        if	(y < p1.y)	y = p1.y;
-        else if (y > p2.y)	y = p2.y;
-        return new Vec2(x, y);
+        if (contains(position)) {
+            Vec2 v = position.sub(center());
+            v.x /= getWidth();
+            v.y /= getHeight();
+            if (v.x >= 0 && v.x >= v.y)   return new Vec2(p2.x, position.y);
+            if (v.x <= 0 && v.x <= v.y)   return new Vec2(p1.x, position.y);
+            if (v.y >= 0 && v.y >= v.x)   return new Vec2(position.x, p2.y);
+            if (v.y <= 0 && v.y <= v.x)   return new Vec2(position.x, p1.y);
+            
+            return null;
+        }
+        else {
+            double x = position.x;
+            double y = position.y;
+            if      (x < p1.x)	x = p1.x;
+            else if (x > p2.x)	x = p2.x;
+            if      (y < p1.y)	y = p1.y;
+            else if (y > p2.y)	y = p2.y;
+            return new Vec2(x, y);
+        }
     }
     
     /// retourne true si this et other presentent une intersection
     public boolean intersect(Box other) {
         return (
                 p1.x <= other.p2.x && p2.x >= other.p1.x
-			&&	p1.y <= other.p2.y && p2.y >= other.p1.y
+            &&	p1.y <= other.p2.y && p2.y >= other.p1.y
             );
     }
     
@@ -108,16 +123,16 @@ public class Box {
             );
     }
     
-    /// retourne le coin de other qui est dans this
+    /// retourne le/un coin de other qui est dans this
     public Vec2 contact(Box other) {
         if (intersect(other)) {
             double x = other.p1.x;
             double y = other.p1.y;
-            if (x < p1.x)   x = other.p2.x;
-            if (y < p1.y)   x = other.p2.y;
+            if (x <= p1.x)   x = other.p2.x;
+            if (y <= p1.y)   y = other.p2.y;
             return new Vec2(x,y);
-		}
-		else
+        }
+        else
             return null;
     }
 
