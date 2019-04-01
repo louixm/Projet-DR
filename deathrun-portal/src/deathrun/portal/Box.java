@@ -7,6 +7,7 @@ package deathrun.portal;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
+import static java.lang.Math.abs;
 
 /**
  *
@@ -89,10 +90,10 @@ public class Box {
             Vec2 v = position.sub(center());
             v.x /= getWidth();
             v.y /= getHeight();
-            if (v.x >= 0 && v.x >= v.y)   return new Vec2(p2.x, position.y);
-            if (v.x <= 0 && v.x <= v.y)   return new Vec2(p1.x, position.y);
-            if (v.y >= 0 && v.y >= v.x)   return new Vec2(position.x, p2.y);
-            if (v.y <= 0 && v.y <= v.x)   return new Vec2(position.x, p1.y);
+            if (v.x >= 0 && v.x >=  abs(v.y))   return new Vec2(p2.x, position.y);
+            if (v.x <= 0 && v.x <= -abs(v.y))   return new Vec2(p1.x, position.y);
+            if (v.y >= 0 && v.y >=  abs(v.x))   return new Vec2(position.x, p2.y);
+            if (v.y <= 0 && v.y <= -abs(v.x))   return new Vec2(position.x, p1.y);
             
             return null;
         }
