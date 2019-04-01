@@ -55,11 +55,11 @@ public class Player extends PObject {
     }
     
     public void setLeft(boolean left) { 
-        if (left)   this.velocity.x = -10;
+        if (left)   this.velocity.x = -5;
         else        this.velocity.x = 0;
     }
     public void setRight(boolean right) { 
-        if (right)  this.velocity.x = 10;
+        if (right)  this.velocity.x = 5;
         else        this.velocity.x = 0;
     }
     public void setJump(boolean jump) { 
