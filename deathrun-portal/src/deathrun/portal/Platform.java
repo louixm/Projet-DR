@@ -20,19 +20,19 @@ import javax.imageio.ImageIO;
  */
 public class Platform extends PObject {
     Box collision_box;
-    Image img;
+    static Image img;
     
-    public Platform(int db_id, Vec2 position) {
+    public Platform(int db_id, Vec2 position, Box box) throws IOException {
         super(db_id);
-        this.collision_box = new Box(-2, -0.2, 2, 0);
+        this.collision_box = box;
         setPosition(position);
+        
+        if (img == null)
+            img = ImageIO.read(new File("./images/patterns/Tile (5).png"));
     }
     
     public Platform(int db_id, Vec2 position, double width, double height) throws IOException {
-        super(db_id);
-        this.collision_box = new Box(0, 0, width, height);
-        setPosition(position);
-        img = ImageIO.read(new File("./deathrun.portal/images/plateforme.png"));
+        this(db_id, position, new Box(0, 0, width, height));
     }
     
     @Override
@@ -50,8 +50,9 @@ public class Platform extends PObject {
     
     //--------------- interface d'affichage -----------------
     public void render(Graphics2D g, float scale) {
+        super.render(g, scale);
         Box collision_box = getCollisionBox();
-        g.drawRect(img,); // A finir
+        //g.drawRect(img,); // A finir
         
         // TODO
     }
