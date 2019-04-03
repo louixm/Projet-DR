@@ -20,6 +20,7 @@ public class Sync {
     */
     
     public Connection srv;
+    
     public Sync(Connection srv) {
         this.srv = srv;
     }
