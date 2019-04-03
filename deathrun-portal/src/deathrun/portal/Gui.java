@@ -9,6 +9,11 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.Timer;
@@ -26,10 +31,10 @@ import javax.swing.Timer;
  */
 public class Gui extends JFrame implements KeyListener {
     public final float scale = 30;	// pixel/m
-    public final int WINDOW_WIDTH = 1000, WINDOW_HEIGHT = 600;
+    public final int WINDOW_WIDTH = 1080, WINDOW_HEIGHT = 720;
     
     private JLabel jLabel1;
-    private BufferedImage buffer;
+    private BufferedImage buffer, background;
     private Graphics2D bufferContext;
     private Timer timer;
 
@@ -51,6 +56,12 @@ public class Gui extends JFrame implements KeyListener {
         // Creation du jeu
         this.controled = controled;
         this.game = game;
+        
+        try {
+            this.background = ImageIO.read(new File("fond_base.png"));
+        } catch (IOException ex) {
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         // Creation du buffer pour l'affichage du jeu et recuperation du contexte graphique
         this.buffer = new BufferedImage(this.jLabel1.getWidth(), this.jLabel1.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -92,6 +103,7 @@ public class Gui extends JFrame implements KeyListener {
     
 
     public void render(Graphics2D g) {
+        g.drawImage(this.background, 0, 0, null);
         for (PObject object : game.map.objects) {
             if (! object.foreground())	object.render(g, scale);
         }

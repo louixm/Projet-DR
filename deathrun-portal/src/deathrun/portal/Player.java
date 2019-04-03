@@ -64,7 +64,7 @@ public class Player extends PObject {
     }
     public void setJump(boolean jump) { 
         if (jump && acceleration.y == 0)
-            this.velocity.y = -4;
+            this.velocity.y = -6;
     }
     
 }
