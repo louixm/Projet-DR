@@ -8,6 +8,8 @@ package deathrun.portal;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 /**
  *
@@ -57,6 +59,20 @@ abstract public class PObject {
     
     /// methode d'envoi des données locales a la base de donnée
     public void syncSet(Sync sync)	{
-		// TODO
+        try {
+            PreparedStatement req = sync.srv.prepareStatement("UPDATE pobjects SET x=?, y=?, vx=?, vy=? WHERE id = ?");
+            req.setInt(1, (int) position.x);
+            req.setInt(2, (int) position.y);
+            req.setDouble(3, velocity.x);
+            req.setDouble(4, velocity.y);
+            // id de l'objet a modifier
+            req.setInt(5, db_id);
+            // execution de la requete
+            req.executeUpdate();
+            req.close();
+        }
+        catch (SQLException err) {
+            System.out.println("sql exception:\n"+err);
+        }
     }
 }
