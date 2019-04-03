@@ -9,7 +9,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.Instant;
 import java.util.ArrayList;
 
 /**
@@ -26,15 +25,17 @@ public class Game {
     public final double gravity = 9.81;
     
     
-    Game() throws SQLException {
-        //try {
-            //sync = new Sync(
-          //  DriverManager.getConnection("jdbc:mysql://nemrod.ens2m.fr:3306/tp_jdbc?serverTimezone=UTC", "etudiant", "YTDTvj9TR3CDYCmP")
-            //);
-        //}
-        //catch (SQLException e) {
-         //   System.out.println("sql connection error, fail to init game");
-        //}
+    Game() {
+        try {
+            sync = new Sync(DriverManager.getConnection(
+                    "jdbc:mysql://nemrod.ens2m.fr:3306/20182019_s2_vs2_tp1_deathrun?serverTimezone=UTC", 
+                    "game", 
+                    "machinchose"
+                ));
+        }
+        catch (SQLException err) {
+            System.out.println("sql connection error, fail to init game:\n\t"+err);
+        }
         
         prev_time = System.nanoTime();
 	players = new ArrayList<>();
@@ -59,7 +60,6 @@ public class Game {
             if (player.velocity.isnull())       continue;
             //System.out.println("new position: "+player.position);
             Vec2 newpos = player.position.add(player.velocity.mul(dt));
-            Vec2 oldpos = player.position;
             player.setPosition(newpos);
             
             // collisions avec les bords de l'ecran
@@ -110,7 +110,8 @@ public class Game {
             }
             
             // position maintenant corrigée
-            player.syncSet(sync);
+            // si sync n'est pas instancié, fonctionnement hors ligne
+            if (sync != null)   player.syncSet(sync);
         }
         
         prev_time = ac_time;
@@ -125,13 +126,18 @@ public class Game {
     
     /// met a jour l'etat local du jeu avec les dernieres modifications du serveur
     void syncUpdate() {
+        // si sync n'est pas instancié, fonctionnement hors ligne
+        if (sync == null)   return;
+        // sinon essai de connexion
         try {
             PreparedStatement requete = sync.srv.prepareStatement("SELECT * FROM pobjects");
             // TODO: ne demander que les objets dont la date de mise a jour est plus recente que la derniere reception
             ResultSet r = requete.executeQuery();
             while (r.next()) {
                 int id = r.getInt("db_id");
-                PObject obj = map.objects.get(id);
+                PObject obj;
+                if (id < 0) obj = players.get(-id);
+                else        obj = map.objects.get(id);
                 obj.position.x = r.getInt("x");
                 obj.position.y = r.getInt("y");
                 obj.velocity.x = r.getDouble("vx");
