@@ -60,7 +60,7 @@ abstract public class PObject {
     /// methode d'envoi des données locales a la base de donnée
     public void syncSet(Sync sync)	{
         try {
-            PreparedStatement req = sync.srv.prepareStatement("UPDATE pobjects SET x=?, y=?, vx=?, vy=? date_sync=NOW() WHERE id = ?");
+            PreparedStatement req = sync.srv.prepareStatement("UPDATE pobjects SET x=?, y=?, vx=?, vy=?, date_sync=NOW() WHERE id = ?");
             req.setInt(1, (int) position.x);
             req.setInt(2, (int) position.y);
             req.setDouble(3, velocity.x);

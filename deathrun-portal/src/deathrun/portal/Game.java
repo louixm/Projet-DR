@@ -29,8 +29,8 @@ public class Game {
         try {
             sync = new Sync(DriverManager.getConnection(
                     "jdbc:mysql://nemrod.ens2m.fr:3306/20182019_s2_vs2_tp1_deathrun?serverTimezone=UTC", 
-                    "game", 
-                    "machinchose"
+                    "deathrun2", 
+                    "5V8HVbDZMtkOHwaX"
                 ));
         }
         catch (SQLException err) {
