@@ -63,8 +63,6 @@ public class Box {
     /// note: se fiche de si start est dedans ou pas
     public Vec2 intersectionBorder(Vec2 start, Vec2 end) {
         if (contains(end)) {
-            System.out.println("start = "+start+"   end = "+end);
-            System.out.println("box"+this);
             Vec2 v = end.sub(start);
             double y;
             y = v.y/v.x * p1.x + start.y;

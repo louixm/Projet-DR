@@ -38,8 +38,8 @@ public class Gui extends JFrame implements KeyListener {
     private Graphics2D bufferContext;
     private Timer timer;
 
-	public Game game;
-	public Player controled;
+    public Game game;
+    public Player controled;
     
 	
     Gui(Game game, Player controled) {
@@ -58,7 +58,7 @@ public class Gui extends JFrame implements KeyListener {
         this.game = game;
         
         try {
-            this.background = ImageIO.read(new File("fond_base.png"));
+            this.background = ImageIO.read(new File("images/fond_base.png"));
         } catch (IOException ex) {
             Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -72,7 +72,6 @@ public class Gui extends JFrame implements KeyListener {
         this.timer = new Timer(20, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("timer");
                 game.physicStep();
                 render(bufferContext);
                 jLabel1.repaint();

@@ -35,15 +35,14 @@ public class Game {
         //}
         
         prev_time = System.nanoTime();
-	players = new ArrayList<Player>();
+	players = new ArrayList<>();
     }
     
     void physicStep() {
         // TODO:  voir si il faut tout passer en getters et setters
-        System.out.println("physicstep");
         
         long ac_time = System.nanoTime();
-        float dt = ((float)(ac_time - prev_time))/1000000000;
+        float dt = ((float)(ac_time - prev_time))/1e9f;
         
         // simulation de mecanique des objets (rectangles) avec Euler directe
         // suppose que les données sont synchronisées et que l'etat précédent est ok
@@ -78,34 +77,26 @@ public class Game {
             
             // collisions avec les objets
             for (PObject object: map.objects) {
-                //System.out.println("object: "+object.db_id);
                 if (player.collisionable(object)) {
                     bplayer = player.getCollisionBox();
                     Box bobject = object.getCollisionBox();
-                    //System.out.println("collisionable    "+bplayer+"   "+bobject);
                     if (bplayer.intersect(bobject)) {
-                        //System.out.println("collision detected between"+player.db_id+" and "+object.db_id);
                         // corriger la position pour que player ne soit plus dans object
-                        //Vec2 contact = bobject.contact(bplayer);
                         Vec2 correction = bobject.outline(bplayer).outer(bplayer.center()).sub(bplayer.center());
-                        //Vec2 newpos2 = bobject.outline(bplayer).intersectionBorder(oldpos, newpos);
-                        //Vec2 correction = newpos2.sub(newpos);
-                        System.out.println("correction: "+correction);
                         // supprimer l'acceleration dans la direction du contact 
-                        // TODO: a voir avec le product owner si cela satisfait la dynamique de jeu
-                        if (correction.y < 0) {
+                        if (correction.y <= 0) {
                             if (player.acceleration.y > 0)        player.acceleration.y = 0;
                             if (player.velocity.y > 0)            player.velocity.y = 0;
                         }
-                        else if (correction.y > 0) {
+                        else if (correction.y >= 0) {
                             if (player.acceleration.y < 0)        player.acceleration.y = 0;
                             if (player.velocity.y < 0)            player.velocity.y = 0;
                         }
-                        if (correction.x < 0) {
+                        if (correction.x <= 0) {
                             if (player.acceleration.x > 0)        player.acceleration.x = 0;
                             if (player.velocity.x > 0)            player.velocity.x = 0;
                         }
-                        else if (correction.x > 0) {
+                        else if (correction.x >= 0) {
                             if (player.acceleration.x < 0)        player.acceleration.x = 0;
                             if (player.velocity.x < 0)            player.velocity.x = 0;
                         }

@@ -29,7 +29,7 @@ public class Player extends PObject {
         collision_box = new Box(-0.5, 0, 0.5, 1.8);
         
         if (avatars == null) {
-            this.avatars = new BufferedImage[0];
+            Player.avatars = new BufferedImage[0];
             // charger les images des avatars si pas deja fait
         }
     }
@@ -55,16 +55,16 @@ public class Player extends PObject {
     }
     
     public void setLeft(boolean left) { 
-        if (left)   this.velocity.x = -5;
+        if (left)   this.velocity.x = -6;
         else        this.velocity.x = 0;
     }
     public void setRight(boolean right) { 
-        if (right)  this.velocity.x = 5;
+        if (right)  this.velocity.x = 6;
         else        this.velocity.x = 0;
     }
     public void setJump(boolean jump) { 
         if (jump && acceleration.y == 0)
-            this.velocity.y = -6;
+            this.velocity.y = -4;
     }
     
 }
