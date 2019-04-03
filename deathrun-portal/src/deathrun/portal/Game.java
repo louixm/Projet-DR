@@ -84,19 +84,19 @@ public class Game {
                         // corriger la position pour que player ne soit plus dans object
                         Vec2 correction = bobject.outline(bplayer).outer(bplayer.center()).sub(bplayer.center());
                         // supprimer l'acceleration dans la direction du contact 
-                        if (correction.y <= 0) {
+                        if (correction.y < 0) {
                             if (player.acceleration.y > 0)        player.acceleration.y = 0;
                             if (player.velocity.y > 0)            player.velocity.y = 0;
                         }
-                        else if (correction.y >= 0) {
+                        else if (correction.y > 0) {
                             if (player.acceleration.y < 0)        player.acceleration.y = 0;
                             if (player.velocity.y < 0)            player.velocity.y = 0;
                         }
-                        if (correction.x <= 0) {
+                        if (correction.x < 0) {
                             if (player.acceleration.x > 0)        player.acceleration.x = 0;
                             if (player.velocity.x > 0)            player.velocity.x = 0;
                         }
-                        else if (correction.x >= 0) {
+                        else if (correction.x > 0) {
                             if (player.acceleration.x < 0)        player.acceleration.x = 0;
                             if (player.velocity.x < 0)            player.velocity.x = 0;
                         }
