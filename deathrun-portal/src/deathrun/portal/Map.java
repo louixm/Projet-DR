@@ -19,4 +19,15 @@ public class Map {
         this.size = size; 
         this.objects = new ArrayList<PObject>();
     }
+    
+    
+    public static Map MapInitialization(){
+        Box b = new Box(0,0,40,20);
+        Map m = new Map(b);
+        m.objects.add(new Platform(1, new Vec2(0,5)));
+        for (int i=0; i<40; i++){
+            
+        } 
+        return m;
+    }
 }

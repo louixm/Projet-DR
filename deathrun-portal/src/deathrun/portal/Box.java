@@ -13,7 +13,8 @@ import static java.lang.Math.abs;
  *
  * @author ydejongh
  */
-public class Box {
+// Box est une boîte (rectangle) de collision définie par deux coins; (en bas à gauche) et (en haut à droite) 
+public class Box {   
     public Vec2 p1;
     public Vec2 p2;
     
