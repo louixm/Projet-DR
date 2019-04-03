@@ -6,6 +6,8 @@
 package deathrun.portal;
 
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -120,9 +122,25 @@ public class Game {
         map = new Map(new Box(0, 0, 40, 20));
     }
     
+    
     /// met a jour l'etat local du jeu avec les dernieres modifications du serveur
     void syncUpdate() {
-        // TODO
+        try {
+            PreparedStatement requete = sync.srv.prepareStatement("SELECT * FROM pobjects");
+            // TODO: ne demander que les objets dont la date de mise a jour est plus recente que la derniere reception
+            ResultSet r = requete.executeQuery();
+            while (r.next()) {
+                int id = r.getInt("db_id");
+                PObject obj = map.objects.get(id);
+                obj.position.x = r.getInt("x");
+                obj.position.y = r.getInt("y");
+                obj.velocity.x = r.getDouble("vx");
+                obj.velocity.y = r.getDouble("vy");
+            }
+        }
+        catch (SQLException err) {
+            System.out.println("syncUpdate: "+err);
+        }
     }
     
     public Player getFirstPlayer() { return this.players.get(0); }
