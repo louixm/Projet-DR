@@ -5,6 +5,7 @@
  */
 package deathrun.portal;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -21,10 +22,10 @@ public class Map {
     }
     
     
-    public static Map MapInitialization(){
+    public static Map MapInitialization() throws IOException{
         Box b = new Box(0,0,40,20);
         Map m = new Map(b);
-        m.objects.add(new Platform(1, new Vec2(0,5)));
+        m.objects.add(new Platform(1, new Vec2(0,5), 2, 0.5));
         for (int i=0; i<40; i++){
             
         } 
