@@ -53,7 +53,7 @@ public class Platform extends PObject {
     public void render(Graphics2D canvas, float scale) {
         
         Box collision_box = getCollisionBox();
-        canvas.drawImage(img, (int) (position.x*scale), (int) (position.y*scale), null);     
+        canvas.drawImage(img, (int) (position.x*scale), (int) (position.y*scale), null); 
         // TODO
     }
     
