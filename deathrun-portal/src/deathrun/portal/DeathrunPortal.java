@@ -28,10 +28,10 @@ public class DeathrunPortal {
 
             game.players.add(controled);
 
-            game.map.objects.add(new Platform(1, new Vec2(10, 5),   2, 0.2));
-            game.map.objects.add(new Platform(2, new Vec2(17, 6.5), 10, 3));
-            game.map.objects.add(new Platform(3, new Vec2(3, 6.5), 1, 10));
-            game.map.objects.add(new Platform(4, new Vec2(3, 16.5), 5, 1));
+            game.map.objects.add(new Platform(1, new Vec2(10, 5),   2, 0.2, 0));
+            game.map.objects.add(new Platform(2, new Vec2(17, 6.5), 10, 3, 1));
+            game.map.objects.add(new Platform(3, new Vec2(3, 6.5), 1, 10, 2));
+            game.map.objects.add(new Platform(4, new Vec2(3, 16.5), 5, 1, 3));
             controled.setPosition(new Vec2(10, 2));
         }
         catch (Exception err) {

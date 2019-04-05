@@ -54,7 +54,8 @@ public class Game {
         // simulation de mecanique des objets (rectangles) avec Euler directe
         // suppose que les données sont synchronisées et que l'etat précédent est ok
         
-        for (Player player: players) {
+        for (Player player: players) { 
+            player.applyMovementChanges();
             // pas de mise a jour de vitesse si pas d'acceleration
             if (! player.acceleration.isnull()) {
                 player.setVelocity(player.velocity.add(player.acceleration.mul(dt)));
