@@ -72,6 +72,7 @@ public class Gui extends JFrame implements KeyListener {
         this.timer = new Timer(20, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                game.syncUpdate();
                 game.physicStep();
                 render(bufferContext);
                 jLabel1.repaint();
