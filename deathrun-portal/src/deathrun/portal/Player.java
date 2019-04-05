@@ -16,6 +16,7 @@ import java.awt.Graphics2D;
 public class Player extends PObject {
     public String name;
     public int avatar;
+    private boolean left, right, jump, leftAndRightWithPriorityOnRight;
     
     Box collision_box;
     
@@ -53,18 +54,41 @@ public class Player extends PObject {
         super.render(g, scale);
         // TODO
     }
+//    
+//    public void setLeft(boolean left) { 
+//        if (left)   this.velocity.x = -6;
+//        else        this.velocity.x = 0;
+//    }
+//    public void setRight(boolean right) { 
+//        if (right)  this.velocity.x = 6;
+//        else        this.velocity.x = 0;
+//    }
+//    public void setJump(boolean jump) { 
+//        if (jump && acceleration.y == 0)
+//            this.velocity.y = -4;
+//    }
     
     public void setLeft(boolean left) { 
-        if (left)   this.velocity.x = -6;
-        else        this.velocity.x = 0;
+        this.left = left;
+        if (this.right) this.leftAndRightWithPriorityOnRight = false;
     }
     public void setRight(boolean right) { 
-        if (right)  this.velocity.x = 6;
-        else        this.velocity.x = 0;
+        this.right = right;
+        if (this.left) this.leftAndRightWithPriorityOnRight = true;
     }
     public void setJump(boolean jump) { 
-        if (jump && acceleration.y == 0)
+        this.jump = jump;
+    }
+    
+    public void applyMovementChanges(){
+        if (this.left && (!this.right || !this.leftAndRightWithPriorityOnRight)) this.velocity.x = -6;
+        else if (this.right && (!this.left || this.leftAndRightWithPriorityOnRight)) this.velocity.x = 6;
+        else this.velocity.x = 0;
+        
+        if (this.jump && acceleration.y == 0) {
             this.velocity.y = -4;
+            this.jump = false;
+        }
     }
     
 }
