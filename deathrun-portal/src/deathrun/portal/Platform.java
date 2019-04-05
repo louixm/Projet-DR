@@ -58,8 +58,19 @@ public class Platform extends PObject {
     //--------------- interface d'affichage -----------------
     @Override
     public void render(Graphics2D canvas, float scale) {
-        
-        canvas.drawImage(img[typePlateforme], (int) (position.x*scale), (int) (position.y*scale), null);    
+        /*
+        canvas.drawImage(img[typePlateforme], 
+                (int) (position.x*scale), 
+                (int) (position.y*scale), 
+                null);    */
+        canvas.drawImage(img[typePlateforme], 
+                (int) (collision_box.p1.x*scale), 
+                (int) (collision_box.p1.y*scale), 
+                (int) (collision_box.p2.x*scale), 
+                (int) (collision_box.p2.y*scale), 
+                0, 0,
+                img[typePlateforme].getWidth(null), img[typePlateforme].getHeight(null),
+                null);
         super.render(canvas, scale);
         // TODO
     }
