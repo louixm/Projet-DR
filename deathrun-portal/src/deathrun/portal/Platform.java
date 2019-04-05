@@ -49,11 +49,11 @@ public class Platform extends PObject {
     public Box getCollisionBox()       { return collision_box; }
     
     //--------------- interface d'affichage -----------------
-    public void render(Graphics2D g, float scale) {
-        super.render(g, scale);
-        Box collision_box = getCollisionBox();
-        //g.drawRect(img,); // A finir
+    @Override
+    public void render(Graphics2D canvas, float scale) {
         
+        Box collision_box = getCollisionBox();
+        canvas.drawImage(img, (int) (position.x*scale), (int) (position.y*scale), null);     
         // TODO
     }
     
