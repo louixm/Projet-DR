@@ -32,10 +32,10 @@ public class Map {
     
     
     public static Map MapInitialization(int mapNumber) throws IOException{
-        Box b = new Box(0,0,35,20);
+        Box b = new Box(0,0,30,15);
         Map m = new Map(b); 
-        double ratioY = b.getHeight()/20;
-        double ratioX = b.getWidth()/40;
+        double ratioY = b.getHeight()/15;
+        double ratioX = b.getWidth()/30;
         double hauteurDeSaut = 2;
         
         if (mapNumber == 1){
@@ -57,29 +57,51 @@ public class Map {
         }
         if (mapNumber == 2){
             
-            Vec2 v1 = new Vec2(0*ratioX,2*ratioY);
-            Vec2 v2 = new Vec2(b.getWidth()*ratioX,2*ratioY);
-            double diag = Math.sqrt(b.getHeight()*b.getHeight() + b.getWidth()*b.getWidth());
-            int pasDiag = (int)diag/6;
+            double l = b.getWidth()/15;
+            double h = b.getHeight()/40;
+            double decalage = hauteurDeSaut;  //revoir le dimensionnement de sorte la modification de ça comprime la map au lieu de la translater
+            int nbPlatform=10;
+            Vec2 v1 = new Vec2(0*ratioX,decalage*ratioY);
+            Vec2 v2 = new Vec2(b.getWidth()-l,decalage*ratioY);
             
-            // La box de la Map n'est pas carrée, donc le pas suivant un axe est fonction de la diagonale et son inclinaison par rapport à l'axe 
+            double ecartX1 = (b.getWidth()-(nbPlatform*l))/(nbPlatform-1);
+            double ecartY1 = ((b.getHeight()/*-2*decalage*/)-(nbPlatform*h))/(nbPlatform-1);
+            double pasX1 = ecartX1 + l;
+            double pasY1 = ecartY1 + h;
             
-            double cos = b.getWidth()/diag;
-            double sin = b.getHeight()/diag;
-            double pasX = pasDiag*cos;
-            double pasY = pasDiag*sin;
-            
-            int i = 0;
-            while (v1.x+2*ratioX < b.getWidth() & v1.y+0.5*ratioY <b.getHeight() ){
+            boolean verif = false;
+            int a1 = 0;
+            int a2 = 0;
+            while (!verif){
+                if ((int)v1.x <= (int)b.getWidth()-l){
+                    m.objects.add(new Platform(1, v1, l, h));
+                    v1=v1.add(new Vec2(pasX1,pasY1));
+                    a1 = 1;
+                } else{
+                    a1=0;
+                }
                 
-                m.objects.add(new Platform(1, v1, 2*ratioX, 0.5*ratioY));
-                v1=v1.add(new Vec2(pasX*ratioX,pasY*ratioY));
-                
-                m.objects.add(new Platform(1, v2, 2*ratioX, 0.5*ratioY));
-                v2=v2.add(new Vec2(-pasX*ratioX,pasY*ratioY));
-                
-                i=i+(int)pasDiag;
+                if ((int)v2.x >= 0){
+                    m.objects.add(new Platform(1, v2, l, h));
+                    v2=v2.add(new Vec2(-pasX1,pasY1));
+                    a2 = 1;
+                } else{
+                    a2=0;
+                }
+                if (a1==0 & a2==0){
+                    verif = true;
+                }
             }
+            m.objects.add(new Platform(1, new Vec2(0.5*pasX1,((b.getHeight()-2*h)/2)+decalage),2.5*l,1.5*h));
+            m.objects.add(new Platform(1, new Vec2(0,((b.getHeight()-2*h)/4)+decalage),l,1.5*h));
+            m.objects.add(new Platform(1, new Vec2(0,((b.getHeight()-2*h)*3/4)+decalage),l,1.5*h));
+            
+            m.objects.add(new Platform(1, new Vec2(b.getWidth()-(2.5*l),((b.getHeight()-2*h)/2)+decalage),2.5*l,1.5*h));
+            m.objects.add(new Platform(1, new Vec2(b.getWidth()-l,((b.getHeight()-2*h)/4)+decalage),l,1.5*h));
+            m.objects.add(new Platform(1, new Vec2(b.getWidth()-l,((b.getHeight()-2*h)*3/4)+decalage),l,1.5*h));
+            
+            m.objects.add(new Platform(1, new Vec2(0.5*(b.getWidth()-h),pasY1),h,2*l));
+            m.objects.add(new Platform(1, new Vec2((0.5*(b.getWidth()-h))-2*l, decalage+pasY1), l, h)); //revoir la position de son x
         }
         return m;
     }
