@@ -21,21 +21,12 @@ public class Map {
         this.objects = new ArrayList<PObject>();
     }
     
-    /*public ArrayList<PObject> positionnementColonne(int nbDePlatform){
-        int H = (int) this.size.getHeight();
-        int L = (int) this.size.getWidth();
-        int hauteurDeSaut = 2;
-        Vec2 v = new Vec2(0,0);
-        Platform p = new Platform(1,v,3);
-        int pas = H/nbDePlatform;
-    }*/
-    
     
     public static Map MapInitialization(int mapNumber) throws IOException{
-        Box b = new Box(0,0,30,15);
+        Box b = new Box(0,0,30,20);
         Map m = new Map(b); 
-        double ratioY = b.getHeight()/15;
-        double ratioX = b.getWidth()/30;
+        double ratioY = b.getHeight()/20;      //Les ratios permettent juste de mettre les plateformes à la bonne échelle
+        double ratioX = b.getWidth()/40;
         double hauteurDeSaut = 2;
         
         if (mapNumber == 1){
@@ -55,17 +46,28 @@ public class Map {
             m.objects.add(new Platform(4, new Vec2(9*ratioX, 6*ratioY), 10*ratioX, 0.5*ratioY));
             m.objects.add(new Platform(4, new Vec2(11*ratioX, 3*ratioY), 7*ratioX, 0.5*ratioY));
         }
-        if (mapNumber == 2){
-            
-            double l = b.getWidth()/15;
-            double h = b.getHeight()/40;
-            double decalage = hauteurDeSaut;  //revoir le dimensionnement de sorte la modification de ça comprime la map au lieu de la translater
-            int nbPlatform=10;
-            Vec2 v1 = new Vec2(0*ratioX,decalage*ratioY);
-            Vec2 v2 = new Vec2(b.getWidth()-l,decalage*ratioY);
+        else if (mapNumber == 2 || mapNumber == 3 || mapNumber == 4 || mapNumber == 5){
+            int nbPlatform = 1;
+            if (mapNumber == 2){
+                nbPlatform=5;
+            }
+            if (mapNumber == 3){
+                nbPlatform=10;
+            } 
+            if (mapNumber == 4){
+                nbPlatform=8;
+            }
+            if (mapNumber == 5){
+                nbPlatform=11;
+            }
+            double l = b.getWidth()/(2*nbPlatform);
+            double h = b.getHeight()/(4*nbPlatform);
+            double decalage = hauteurDeSaut;
+            Vec2 v1 = new Vec2(0,decalage);
+            Vec2 v2 = new Vec2(b.getWidth()-l,decalage);
             
             double ecartX1 = (b.getWidth()-(nbPlatform*l))/(nbPlatform-1);
-            double ecartY1 = ((b.getHeight()/*-2*decalage*/)-(nbPlatform*h))/(nbPlatform-1);
+            double ecartY1 = ((b.getHeight()-decalage)-(nbPlatform*h))/(nbPlatform-1);
             double pasX1 = ecartX1 + l;
             double pasY1 = ecartY1 + h;
             
@@ -92,16 +94,19 @@ public class Map {
                     verif = true;
                 }
             }
-            m.objects.add(new Platform(1, new Vec2(0.5*pasX1,((b.getHeight()-2*h)/2)+decalage),2.5*l,1.5*h));
-            m.objects.add(new Platform(1, new Vec2(0,((b.getHeight()-2*h)/4)+decalage),l,1.5*h));
-            m.objects.add(new Platform(1, new Vec2(0,((b.getHeight()-2*h)*3/4)+decalage),l,1.5*h));
+            m.objects.add(new Platform(1, new Vec2(0.5*l,((b.getHeight()+decalage-2*h)/2)),2.5*l,2*h));
+            //m.objects.add(new Platform(1, new Vec2(0,((b.getHeight()+3*decalage-0.375*h)/4)),l,1.5*h));
+           // m.objects.add(new Platform(1, new Vec2(0,((3*b.getHeight()+decalage-0.375*h)/4)),l,1.5*h));
             
-            m.objects.add(new Platform(1, new Vec2(b.getWidth()-(2.5*l),((b.getHeight()-2*h)/2)+decalage),2.5*l,1.5*h));
-            m.objects.add(new Platform(1, new Vec2(b.getWidth()-l,((b.getHeight()-2*h)/4)+decalage),l,1.5*h));
-            m.objects.add(new Platform(1, new Vec2(b.getWidth()-l,((b.getHeight()-2*h)*3/4)+decalage),l,1.5*h));
+            m.objects.add(new Platform(1, new Vec2(b.getWidth()-(3*l),((b.getHeight()+decalage-h)/2)),2.5*l,2*h));
+            //m.objects.add(new Platform(1, new Vec2(b.getWidth()-l,((b.getHeight()+3*decalage-0.375*h)/4)),l,1.5*h));
+            //m.objects.add(new Platform(1, new Vec2(b.getWidth()-l,((3*b.getHeight()+decalage-0.375*h)/4)),l,1.5*h));
             
-            m.objects.add(new Platform(1, new Vec2(0.5*(b.getWidth()-h),pasY1),h,2*l));
-            m.objects.add(new Platform(1, new Vec2((0.5*(b.getWidth()-h))-2*l, decalage+pasY1), l, h)); //revoir la position de son x
+            //m.objects.add(new Platform(1, new Vec2(0.5*(b.getWidth()-h),decalage/2),h,(b.getHeight()/2)-h-2*decalage));
+            m.objects.add(new Platform(1, new Vec2(0.5*b.getWidth()-1.5*l, decalage+pasY1), 3*l, h)); 
+            
+            m.objects.add(new Platform(1, new Vec2(0.5*b.getWidth()-3*l, b.getHeight()-2*h), 2*l, 2*h));
+            m.objects.add(new Platform(1, new Vec2(0.5*b.getWidth()+l, b.getHeight()-2*h), 2*l, 2*h));
         }
         return m;
     }
