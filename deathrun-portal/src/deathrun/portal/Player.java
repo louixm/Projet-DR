@@ -8,6 +8,7 @@ package deathrun.portal;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
 
 /**
  *
@@ -18,6 +19,8 @@ public class Player extends PObject {
     public int avatar;
     private boolean left, right, jump, leftAndRightWithPriorityOnRight; //, hasJumped;
     private Vec2 previousPosition;
+    private ArrayList<String> collisionDirection;
+    private boolean controled = false;
     
     Box collision_box;
     
@@ -82,31 +85,53 @@ public class Player extends PObject {
     }
     
     public void applyMovementChanges(){
-        if (this.left && (!this.right || !this.leftAndRightWithPriorityOnRight)) this.velocity.x = -6;
-        else if (this.right && (!this.left || this.leftAndRightWithPriorityOnRight)) this.velocity.x = 6;       
-        else this.velocity.x = 0;
+        if (this.left && (!this.right || !this.leftAndRightWithPriorityOnRight)){
+            if (this.velocity.x > 0) this.acceleration.x = -40;
+            else if (this.velocity.x > -7) this.acceleration.x = -20;
+            else this.acceleration.x = 0;
+//            if (this.velocity.x > -6) this.velocity.x += this.acceleration.x;
+        }
+        else if (this.right && (!this.left || this.leftAndRightWithPriorityOnRight)){
+            if (this.velocity.x < 0) this.acceleration.x = 40;
+            else if (this.velocity.x < 7) this.acceleration.x = 20;
+            else this.acceleration.x = 0;
+//            if (this.velocity.x < 6) this.velocity.x += this.acceleration.x;
+        }       
+        else{
+            if (this.velocity.x > 1) this.acceleration.x = -40;
+            else if (this.velocity.x < -1) this.acceleration.x = 40;
+            else {this.acceleration.x = 0; this.velocity.x = 0;}
+//            this.velocity.x = 0;
+        }
         
 //        if (!this.jump && acceleration.y == 0) this.hasJumped = false;
 //        if (!this.hasJumped && this.jump && acceleration.y == 0) {
         if (this.jump) {
-            System.out.println("Prev pos: " + previousPosition.x + ", pos: " + position.x + ", == ?: " + (previousPosition.x == position.x));
+//            System.out.println("Prev pos: " + previousPosition.x + ", pos: " + position.x + ", == ?: " + (previousPosition.x == position.x));
             if (acceleration.y == 0) {
-                this.velocity.y = -5;
+                this.velocity.y = -6;
 //            this.hasJumped = true;
             }
-            else if (velocity.y > 0 && (this.right || this.left) && previousPosition.x == position.x){ //au lieu de previouisPosition, ajouter un attribut qui dit de quelle direction vient la collsision, et l'update dans la boucle dans Game lors d'une collision
-                this.velocity.y = -4;
+            else if (velocity.y > 0 && ((this.right && this.collisionDirection.contains("right")) || (this.left && this.collisionDirection.contains("left")))){ //au lieu de previouisPosition, ajouter un attribut qui dit de quelle direction vient la collsision, et l'update dans la boucle dans Game lors d'une collision
+                this.velocity.y = -5;
                 if (this.right) {
 //                    this.leftAndRightWithPriorityOnRight = false;
-                    this.velocity.x = -10;
-                }
+                    this.velocity.x = -12;                    
+                }      
                 else {
 //                    this.leftAndRightWithPriorityOnRight = true;
-                    this.velocity.x = 10;
+                    this.velocity.x = 12;
                 }
             }
         }
         previousPosition = position;
     }
+    
+    public void setCollisionDirection(ArrayList<String> array){ this.collisionDirection = array; }
+    public void addCollisionDirection(String direction){ this.collisionDirection.add(direction); }
+    public ArrayList<String> getCollisionDirection(){ return this.collisionDirection; }
+    
+    public void setControled(boolean controled){ this.controled = controled; }
+    public boolean isControled(){ return this.controled; }
     
 }

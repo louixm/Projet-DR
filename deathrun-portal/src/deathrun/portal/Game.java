@@ -55,7 +55,7 @@ public class Game {
         // suppose que les données sont synchronisées et que l'etat précédent est ok
         
         for (Player player: players) { 
-            player.applyMovementChanges();
+            if (player.isControled()) player.applyMovementChanges();
             // pas de mise a jour de vitesse si pas d'acceleration
             if (! player.acceleration.isnull()) {
                 player.setVelocity(player.velocity.add(player.acceleration.mul(dt)));
@@ -81,6 +81,7 @@ public class Game {
             
             // acceleration gagnée automatiquement si pas de contact en dessous (corrigé par la boucle de collision)
             player.acceleration.y = gravity; 
+            player.setCollisionDirection(new ArrayList<String>());
             
             // collisions avec les objets
             for (PObject object: map.objects) {
@@ -92,18 +93,22 @@ public class Game {
                         Vec2 correction = bobject.outline(bplayer).outer(bplayer.center()).sub(bplayer.center());
                         // supprimer l'acceleration dans la direction du contact 
                         if (correction.y < 0) {
+                            player.addCollisionDirection("down");
                             if (player.acceleration.y > 0)        player.acceleration.y = 0;
                             if (player.velocity.y > 0)            player.velocity.y = 0;
                         }
                         else if (correction.y > 0) {
+                            player.addCollisionDirection("up");
                             if (player.acceleration.y < 0)        player.acceleration.y = 0;
                             if (player.velocity.y < 0)            player.velocity.y = 0;
                         }
                         if (correction.x < 0) {
+                            player.addCollisionDirection("right");
                             if (player.acceleration.x > 0)        player.acceleration.x = 0;
                             if (player.velocity.x > 0)            player.velocity.x = 0;
                         }
                         else if (correction.x > 0) {
+                            player.addCollisionDirection("left");
                             if (player.acceleration.x < 0)        player.acceleration.x = 0;
                             if (player.velocity.x < 0)            player.velocity.x = 0;
                         }
@@ -169,7 +174,7 @@ public class Game {
         }
     }
     
-    public Player getFirstPlayer() { return this.players.get(0); }
+//    public Player getFirstPlayer() { return this.players.get(0); }
 
   
             
