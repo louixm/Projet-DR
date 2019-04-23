@@ -30,7 +30,7 @@ import javax.swing.Timer;
  * @author ydejongh
  */
 public class Gui extends JFrame implements KeyListener {
-    public final float scale = 30;	// pixel/m
+    public int scale = 20;	// pixel/m
     public final int WINDOW_WIDTH = 1080, WINDOW_HEIGHT = 720;
     
     private JLabel jLabel1;
@@ -99,6 +99,9 @@ public class Gui extends JFrame implements KeyListener {
         if (evt.getKeyCode() == evt.VK_D)       this.controled.setRight(false);
         if (evt.getKeyCode() == evt.VK_Q)       this.controled.setLeft(false);
         if (evt.getKeyCode() == evt.VK_SPACE)   this.controled.setJump(false); //peut etre pas besoin si on remet jump à false direct après le saut
+        if (evt.getKeyCode() == evt.VK_SEMICOLON)      {this.scale++; System.out.println("Scale = " + this.scale);}
+        if (evt.getKeyCode() == evt.VK_COMMA)    {this.scale--; System.out.println("Scale = " + this.scale);}
+        
     }
     
 
