@@ -25,12 +25,9 @@ public class DeathrunPortal {
         Player controled, otherone;
         //try {
             game.init();	// connecte au serveur et construit tous les objets tels que dans la base de donnnées
-            controled = new Player("blue", 1, -2);	// TODO: choisir le nom et l'avatar du joueur
-            otherone = new Player("orange", 2, -1);	// TODO: choisir le nom et l'avatar du joueur
+            controled = new Player(game, "blue", 1);	// TODO: choisir le nom et l'avatar du joueur
+            otherone = new Player(game, "orange", 2);	// TODO: choisir le nom et l'avatar du joueur
             controled.setControled(true);
-            
-            game.players.add(controled);
-            game.players.add(otherone);
 
             /*game.map.objects.add(new Platform(1, new Vec2(10, 5),   2, 0.2));
             game.map.objects.add(new Platform(2, new Vec2(17, 6.5), 10, 3));
@@ -49,8 +46,10 @@ public class DeathrunPortal {
             game.map.objects.add(new Platform(4, new Vec2(5, 16.5), 5, 1, 3));
             game.map.objects.add(new Platform(5, new Vec2(0, 6.5), 1, 10, 0));
             controled.setPosition(new Vec2(12, 1));
+            */
             controled.acceleration.y = -1; // valeur différente de 0 pour forcer l'update de physicstep initiale
-        */
+            otherone.acceleration.y = -1; // valeur différente de 0 pour forcer l'update de physicstep initiale
+        
         /*
         }
         catch (Exception err) {
@@ -61,6 +60,7 @@ public class DeathrunPortal {
         
         Gui gui = new Gui(game, controled);
         gui.setVisible(true);
+        
     }
     
 }

@@ -33,8 +33,9 @@ public class Player extends PObject {
     public static BufferedImage avatars[];
     
     
-    public Player(String name, int avatar, int db_id) {
-        super(db_id);
+    public Player(Game game, String name, int avatar) {
+        super(-game.players.size()-1);  // creer en ajoutant a la fin
+        game.players.add(this);
         this.name = name; 
         this.avatar = avatar;
         collision_box = new Box(-0.5, 0, 0.5, 1.8);
@@ -66,7 +67,7 @@ public class Player extends PObject {
     
     //--------------- interface d'affichage -----------------
     @Override
-    public void render(Graphics2D g, float scale) {
+    public void render(Graphics2D g, float scale, boolean drawHitBox) {
         
         g.drawImage(avatars[avatar], 
             (int) (collision_box.p1.x*scale), 
@@ -77,7 +78,7 @@ public class Player extends PObject {
             avatars[avatar].getWidth(null), avatars[avatar].getHeight(null),
             null);
         
-        super.render(g, scale);
+        super.render(g, scale, drawHitBox);
         // TODO
     }
 //    

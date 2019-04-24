@@ -9,7 +9,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 /**
  *
@@ -20,6 +22,7 @@ abstract public class PObject {
     public Vec2 position;
     public Vec2 velocity;
     public Vec2 acceleration;
+    Timestamp last_sync;
     
     PObject(int db_id) 	{ 
         this.db_id = db_id; 
@@ -36,18 +39,24 @@ abstract public class PObject {
     
     //--------------- interface d'affichage -----------------
     /// methode d'affichage de l'objet
-    public void render(Graphics2D g, float scale)  // methode interface
+    public void render(Graphics2D g, float scale, boolean drawHitBox)  // methode interface
     {
         // affichage de la boite de collision (pour l'instant)
-        Box collision_box = getCollisionBox();
-        g.setColor(new Color(255, 0, 0));
-        g.drawRect( //drawRect(x, y, width, height)
-            (int) (collision_box.p1.x*scale),       (int) (collision_box.p1.y*scale),
-            (int) (collision_box.getWidth()*scale), (int) (collision_box.getHeight()*scale)
-            );
-//        System.out.println("p1: " + (int) (collision_box.p1.x*scale) + ", " + (int) (collision_box.p1.y*scale) + ", p2: " + (int) (collision_box.p2.x*scale) + ", " + (int) (collision_box.p2.y*scale));
-        
+        if (drawHitBox){
+            Box collision_box = getCollisionBox();
+            if (collision_box != null){
+                g.setColor(new Color(255, 0, 0));
+                g.drawRect( //drawRect(x, y, width, height)
+                    (int) (collision_box.p1.x*scale),       (int) (collision_box.p1.y*scale),
+                    (int) (collision_box.getWidth()*scale), (int) (collision_box.getHeight()*scale)
+                    );
+            }
+    //        System.out.println("p1: " + (int) (collision_box.p1.x*scale) + ", " + (int) (collision_box.p1.y*scale) + ", p2: " + (int) (collision_box.p2.x*scale) + ", " + (int) (collision_box.p2.y*scale));
+        }
     }
+    
+    public void render(Graphics2D g, float scale){}
+    
     /// renvoie true si l'objet doit etre affiché apres avoir rendu les joueurs (avant-plan)
     /// si non surchargée, la valeur par défaut est false
     boolean foreground()    { return false; }
@@ -61,8 +70,8 @@ abstract public class PObject {
     public void syncSet(Sync sync)	{
         try {
             PreparedStatement req = sync.srv.prepareStatement("UPDATE pobjects SET x=?, y=?, vx=?, vy=?, date_sync=NOW() WHERE id = ?");
-            req.setInt(1, (int) (position.x*100));
-            req.setInt(2, (int) (position.y*100));
+            req.setInt(1, (int) (position.x*1000));
+            req.setInt(2, (int) (position.y*1000));
             req.setDouble(3, velocity.x);
             req.setDouble(4, velocity.y);
             // id de l'objet a modifier
@@ -70,6 +79,11 @@ abstract public class PObject {
             // execution de la requete
             req.executeUpdate();
             req.close();
+            
+            req = sync.srv.prepareStatement("SELECT now();");
+            ResultSet r = req.executeQuery();
+            r.next();
+            last_sync = r.getTimestamp(1);
         }
         catch (SQLException err) {
             System.out.println("sql exception:\n"+err);
