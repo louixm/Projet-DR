@@ -8,6 +8,12 @@ package deathrun.portal;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -16,6 +22,10 @@ import java.awt.Graphics2D;
 public class Player extends PObject {
     public String name;
     public int avatar;
+    private boolean left, right, jump, leftAndRightWithPriorityOnRight; //, hasJumped;
+    private Vec2 previousPosition;
+    private ArrayList<String> collisionDirection;
+    private boolean controled = false;
     
     Box collision_box;
     
@@ -29,8 +39,12 @@ public class Player extends PObject {
         collision_box = new Box(-0.5, 0, 0.5, 1.8);
         
         if (avatars == null) {
-            Player.avatars = new BufferedImage[0];
-            // charger les images des avatars si pas deja fait
+            this.avatars = new BufferedImage[1];
+            try {
+                this.avatars[0] = ImageIO.read(new File("./images/robot1.png"));// charger les images des avatars si pas deja fait
+            } catch (IOException ex) {
+                Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
     
@@ -50,21 +64,93 @@ public class Player extends PObject {
     //--------------- interface d'affichage -----------------
     @Override
     public void render(Graphics2D g, float scale) {
+        
+        g.drawImage(avatars[0], 
+            (int) (collision_box.p1.x*scale), 
+            (int) (collision_box.p1.y*scale), 
+            (int) (collision_box.p2.x*scale), 
+            (int) (collision_box.p2.y*scale), 
+            0, 0,
+            avatars[0].getWidth(null), avatars[0].getHeight(null),
+            null);
+        
         super.render(g, scale);
         // TODO
     }
+//    
+//    public void setLeft(boolean left) { 
+//        if (left)   this.velocity.x = -6;
+//        else        this.velocity.x = 0;
+//    }
+//    public void setRight(boolean right) { 
+//        if (right)  this.velocity.x = 6;
+//        else        this.velocity.x = 0;
+//    }
+//    public void setJump(boolean jump) { 
+//        if (jump && acceleration.y == 0)
+//            this.velocity.y = -4;
+//    }
     
     public void setLeft(boolean left) { 
-        if (left)   this.velocity.x = -6;
-        else        this.velocity.x = 0;
+        this.left = left;
+        if (this.right) this.leftAndRightWithPriorityOnRight = false;
     }
     public void setRight(boolean right) { 
-        if (right)  this.velocity.x = 6;
-        else        this.velocity.x = 0;
+        this.right = right;
+        if (this.left) this.leftAndRightWithPriorityOnRight = true;
     }
     public void setJump(boolean jump) { 
-        if (jump && acceleration.y == 0)
-            this.velocity.y = -4;
+        this.jump = jump;  
     }
+    
+    public void applyMovementChanges(){
+        if (this.left && (!this.right || !this.leftAndRightWithPriorityOnRight)){
+            if (this.velocity.x > 0) this.acceleration.x = -40;
+            else if (this.velocity.x > -7) this.acceleration.x = -20;
+            else this.acceleration.x = 0;
+//            if (this.velocity.x > -6) this.velocity.x += this.acceleration.x;
+        }
+        else if (this.right && (!this.left || this.leftAndRightWithPriorityOnRight)){
+            if (this.velocity.x < 0) this.acceleration.x = 40;
+            else if (this.velocity.x < 7) this.acceleration.x = 20;
+            else this.acceleration.x = 0;
+//            if (this.velocity.x < 6) this.velocity.x += this.acceleration.x;
+        }       
+        else{
+            if (this.velocity.x > 1) this.acceleration.x = -40;
+            else if (this.velocity.x < -1) this.acceleration.x = 40;
+            else {this.acceleration.x = 0; this.velocity.x = 0;}
+//            this.velocity.x = 0;
+        }
+        
+//        if (!this.jump && acceleration.y == 0) this.hasJumped = false;
+//        if (!this.hasJumped && this.jump && acceleration.y == 0) {
+        if (this.jump) {
+//            System.out.println("Prev pos: " + previousPosition.x + ", pos: " + position.x + ", == ?: " + (previousPosition.x == position.x));
+            if (acceleration.y == 0) {
+                this.velocity.y = -6;
+//            this.hasJumped = true;
+            }
+            else if (velocity.y > 0 && ((this.right && this.collisionDirection.contains("right")) || (this.left && this.collisionDirection.contains("left")))){ //au lieu de previouisPosition, ajouter un attribut qui dit de quelle direction vient la collsision, et l'update dans la boucle dans Game lors d'une collision
+                this.velocity.y = -5;
+                if (this.right) {
+//                    this.leftAndRightWithPriorityOnRight = false;
+                    this.velocity.x = -12;                    
+                }      
+                else {
+//                    this.leftAndRightWithPriorityOnRight = true;
+                    this.velocity.x = 12;
+                }
+            }
+        }
+        previousPosition = position;
+    }
+    
+    public void setCollisionDirection(ArrayList<String> array){ this.collisionDirection = array; }
+    public void addCollisionDirection(String direction){ this.collisionDirection.add(direction); }
+    public ArrayList<String> getCollisionDirection(){ return this.collisionDirection; }
+    
+    public void setControled(boolean controled){ this.controled = controled; }
+    public boolean isControled(){ return this.controled; }
     
 }

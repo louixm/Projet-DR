@@ -25,15 +25,25 @@ public class DeathrunPortal {
         try {
             game.init();	// connecte au serveur et construit tous les objets tels que dans la base de donnnées
             controled = new Player("myname", 0, 0);	// TODO: choisir le nom et l'avatar du joueur
-
+            controled.setControled(true);
+            
             game.players.add(controled);
 
             /*game.map.objects.add(new Platform(1, new Vec2(10, 5),   2, 0.2));
             game.map.objects.add(new Platform(2, new Vec2(17, 6.5), 10, 3));
             game.map.objects.add(new Platform(3, new Vec2(3, 6.5), 1, 10));
             game.map.objects.add(new Platform(4, new Vec2(3, 16.5), 5, 1));*/
-            game.map = game.map.MapInitialization(5);  // choix de la map 1, 2, 3, 4, 5
+            game.map = game.map.MapInitialization(1);  // choix de la map 1, 2, 3, 4, 5
             controled.setPosition(new Vec2(10, 2));
+        /*
+            game.map.objects.add(new Platform(1, new Vec2(12, 5),   2, 0.2, 3));
+            game.map.objects.add(new Platform(2, new Vec2(19, 6.5), 10, 3, 1));
+            game.map.objects.add(new Platform(3, new Vec2(5, 6.5), 1, 10, 0));
+            game.map.objects.add(new Platform(4, new Vec2(5, 16.5), 5, 1, 3));
+            game.map.objects.add(new Platform(5, new Vec2(0, 6.5), 1, 10, 0));
+            controled.setPosition(new Vec2(12, 1));
+            controled.acceleration.y = -1; // valeur différente de 0 pour forcer l'update de physicstep initiale
+        */
         }
         catch (Exception err) {
             System.out.println("error initializing the game: "+err);

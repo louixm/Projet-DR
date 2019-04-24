@@ -38,14 +38,14 @@ abstract public class PObject {
     /// methode d'affichage de l'objet
     public void render(Graphics2D g, float scale)  // methode interface
     {
-        // affichage de la boite de collision (pour l'instant)
-        Box collision_box = getCollisionBox();
-        g.setColor(new Color(255, 0, 0));
-        g.drawRect( //drawRect(x, y, width, height)
-            (int) (collision_box.p1.x*scale),       (int) (collision_box.p1.y*scale),
-            (int) (collision_box.getWidth()*scale), (int) (collision_box.getHeight()*scale)
-            );
-//        System.out.println("p1: " + (int) (collision_box.p1.x*scale) + ", " + (int) (collision_box.p1.y*scale) + ", p2: " + (int) (collision_box.p2.x*scale) + ", " + (int) (collision_box.p2.y*scale));
+//        // affichage de la boite de collision (pour l'instant)
+//        Box collision_box = getCollisionBox();
+//        g.setColor(new Color(255, 0, 0));
+//        g.drawRect( //drawRect(x, y, width, height)
+//            (int) (collision_box.p1.x*scale),       (int) (collision_box.p1.y*scale),
+//            (int) (collision_box.getWidth()*scale), (int) (collision_box.getHeight()*scale)
+//            );
+////        System.out.println("p1: " + (int) (collision_box.p1.x*scale) + ", " + (int) (collision_box.p1.y*scale) + ", p2: " + (int) (collision_box.p2.x*scale) + ", " + (int) (collision_box.p2.y*scale));
         
     }
     /// renvoie true si l'objet doit etre affiché apres avoir rendu les joueurs (avant-plan)
@@ -61,8 +61,8 @@ abstract public class PObject {
     public void syncSet(Sync sync)	{
         try {
             PreparedStatement req = sync.srv.prepareStatement("UPDATE pobjects SET x=?, y=?, vx=?, vy=?, date_sync=NOW() WHERE id = ?");
-            req.setInt(1, (int) position.x);
-            req.setInt(2, (int) position.y);
+            req.setInt(1, (int) (position.x*100));
+            req.setInt(2, (int) (position.y*100));
             req.setDouble(3, velocity.x);
             req.setDouble(4, velocity.y);
             // id de l'objet a modifier
