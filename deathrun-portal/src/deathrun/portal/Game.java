@@ -24,7 +24,7 @@ public class Game {
     Sync sync;
     long prev_time; // (ns) instant de dernier pas physique
     long next_sync; // (ns) instant de prochaine synchronisation prévue de l'etat du jeu avec la BDD
-    final long sync_interval = 500000000; // (ns) temps minimum entre chaque synchronisation avec la BDD
+    final long sync_interval = 100000000; // (ns) temps minimum entre chaque synchronisation avec la BDD
     Timestamp db_last_sync;
     
     public final double gravity = 9.81;
@@ -170,10 +170,7 @@ public class Game {
                 req = sync.srv.prepareStatement("SELECT now();");
                 r = req.executeQuery();
                 r.next();
-                Timestamp db_ac_time = r.getTimestamp(1);
-                System.out.println(db_ac_time);
-                
-                db_last_sync = db_ac_time;
+                db_last_sync = r.getTimestamp(1);
             }
             catch (SQLException err) {
                 System.out.println("syncUpdate: "+err);
