@@ -9,7 +9,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  *
@@ -20,12 +22,16 @@ public class Game {
     public ArrayList<Player> players;
     
     Sync sync;
-    long prev_time; // instant de dernier pas physique
+    long prev_time; // (ns) instant de dernier pas physique
+    long next_sync; // (ns) instant de prochaine synchronisation prévue de l'etat du jeu avec la BDD
+    final long sync_interval = 500000000; // (ns) temps minimum entre chaque synchronisation avec la BDD
+    Timestamp db_last_sync;
     
     public final double gravity = 9.81;
     
     
     Game() {
+        /*
         try {
             sync = new Sync(DriverManager.getConnection(
                     "jdbc:mysql://nemrod.ens2m.fr:3306/20182019_s2_vs2_tp1_deathrun?serverTimezone=UTC", 
@@ -36,7 +42,7 @@ public class Game {
         catch (SQLException err) {
             System.out.println("sql connection error, fail to init game:\n\t"+err);
         }
-        
+        */
         prev_time = System.nanoTime();
 	players = new ArrayList<>();
     }
@@ -51,7 +57,7 @@ public class Game {
         // suppose que les données sont synchronisées et que l'etat précédent est ok
         
         for (Player player: players) { 
-            player.applyMovementChanges();
+            if (player.isControled()) player.applyMovementChanges();
             // pas de mise a jour de vitesse si pas d'acceleration
             if (! player.acceleration.isnull()) {
                 player.setVelocity(player.velocity.add(player.acceleration.mul(dt)));
@@ -77,10 +83,11 @@ public class Game {
             
             // acceleration gagnée automatiquement si pas de contact en dessous (corrigé par la boucle de collision)
             player.acceleration.y = gravity; 
+            player.setCollisionDirection(new ArrayList<String>());
             
             // collisions avec les objets
             for (PObject object: map.objects) {
-                if (player.collisionable(object)) {
+                if (player.collisionable(object) && object.collisionable(player)) {
                     bplayer = player.getCollisionBox();
                     Box bobject = object.getCollisionBox();
                     if (bplayer.intersect(bobject)) {
@@ -88,18 +95,22 @@ public class Game {
                         Vec2 correction = bobject.outline(bplayer).outer(bplayer.center()).sub(bplayer.center());
                         // supprimer l'acceleration dans la direction du contact 
                         if (correction.y < 0) {
+                            player.addCollisionDirection("down");
                             if (player.acceleration.y > 0)        player.acceleration.y = 0;
                             if (player.velocity.y > 0)            player.velocity.y = 0;
                         }
                         else if (correction.y > 0) {
+                            player.addCollisionDirection("up");
                             if (player.acceleration.y < 0)        player.acceleration.y = 0;
                             if (player.velocity.y < 0)            player.velocity.y = 0;
                         }
                         if (correction.x < 0) {
+                            player.addCollisionDirection("right");
                             if (player.acceleration.x > 0)        player.acceleration.x = 0;
                             if (player.velocity.x > 0)            player.velocity.x = 0;
                         }
                         else if (correction.x > 0) {
+                            player.addCollisionDirection("left");
                             if (player.acceleration.x < 0)        player.acceleration.x = 0;
                             if (player.velocity.x < 0)            player.velocity.x = 0;
                         }
@@ -112,7 +123,7 @@ public class Game {
             
             // position maintenant corrigée
             // si sync n'est pas instancié, fonctionnement hors ligne
-            if (sync != null)   player.syncSet(sync);
+            if (sync != null && player.isControled())   player.syncSet(sync);
         }
         
         prev_time = ac_time;
@@ -126,31 +137,45 @@ public class Game {
     
     
     /// met a jour l'etat local du jeu avec les dernieres modifications du serveur
-    void syncUpdate() {
-        // si sync n'est pas instancié, fonctionnement hors ligne
-        if (sync == null)   return;
-        // sinon essai de connexion
-        try {
-            PreparedStatement requete = sync.srv.prepareStatement("SELECT * FROM pobjects");
-            // TODO: ne demander que les objets dont la date de mise a jour est plus recente que la derniere reception
-            ResultSet r = requete.executeQuery();
-            while (r.next()) {
-                int id = r.getInt("db_id");
-                PObject obj;
-                if (id < 0) obj = players.get(-id);
-                else        obj = map.objects.get(id);
-                obj.position.x = r.getInt("x");
-                obj.position.y = r.getInt("y");
-                obj.velocity.x = r.getDouble("vx");
-                obj.velocity.y = r.getDouble("vy");
+    void syncUpdate()       { syncUpdate(false); }
+    void syncUpdate(boolean force) {
+        // recuperer la date
+        long ac_time = System.nanoTime();
+        if (force || ac_time > next_sync) {
+            next_sync = ac_time + sync_interval;
+            
+            // si sync n'est pas instancié, fonctionnement hors ligne
+            if (sync == null)   return;
+            // sinon essai de connexion
+            try {
+                //PreparedStatement req = sync.srv.prepareStatement("SELECT now()");
+                //ResultSet r = req.executeQuery();
+                //Timestamp db_ac_time = r.getTimestamp(1);
+                //Timestamp db_ac_time = sync.srv.getTimestamp();
+                
+                PreparedStatement req = sync.srv.prepareStatement("SELECT * FROM pobjects WHERE date_sync > ?");
+                req.setTimestamp(1, db_last_sync);
+                // TODO: ne demander que les objets dont la date de mise a jour est plus recente que la derniere reception
+                ResultSet r = req.executeQuery();
+                while (r.next()) {
+                    int id = r.getInt("id");
+                    PObject obj;
+                    if (id < 0) obj = players.get(-id-1);
+                    else        obj = map.objects.get(id);
+                    obj.setPosition(new Vec2(r.getInt("x")/100, r.getInt("y")/100));
+                    obj.velocity.x = r.getDouble("vx");
+                    obj.velocity.y = r.getDouble("vy");
+                    System.out.println("updated object "+id);
+                }
+                db_last_sync = new java.sql.Timestamp(Calendar.getInstance().getTime().getTime());
             }
-        }
-        catch (SQLException err) {
-            System.out.println("syncUpdate: "+err);
+            catch (SQLException err) {
+                System.out.println("syncUpdate: "+err);
+            }
         }
     }
     
-    public Player getFirstPlayer() { return this.players.get(0); }
+//    public Player getFirstPlayer() { return this.players.get(0); }
 
   
             
