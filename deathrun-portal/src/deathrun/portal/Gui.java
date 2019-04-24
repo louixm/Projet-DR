@@ -98,6 +98,8 @@ public class Gui extends JFrame implements KeyListener {
                     req.setInt(1, controled.db_id);
                     req.executeUpdate();
                     System.out.println("Deleted player with id " + controled.db_id);
+                    req.close();
+                    sync.srv.close();
                 }
                 catch (SQLException err) {
                     System.out.println("sync on exit: "+err);
