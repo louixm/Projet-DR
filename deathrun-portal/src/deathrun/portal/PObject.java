@@ -53,6 +53,7 @@ abstract public class PObject {
     
     //--------------- interface d'affichage -----------------
     /// methode d'affichage de l'objet
+    public void render(Graphics2D g, float scale){ render(g, scale, false);}
     public void render(Graphics2D g, float scale, boolean drawHitBox)  // methode interface
     {
         // affichage de la boite de collision (pour l'instant)
@@ -68,8 +69,6 @@ abstract public class PObject {
     //        System.out.println("p1: " + (int) (collision_box.p1.x*scale) + ", " + (int) (collision_box.p1.y*scale) + ", p2: " + (int) (collision_box.p2.x*scale) + ", " + (int) (collision_box.p2.y*scale));
         }
     }
-    
-    public void render(Graphics2D g, float scale){}
     
     /// renvoie true si l'objet doit etre affiché apres avoir rendu les joueurs (avant-plan)
     /// si non surchargée, la valeur par défaut est false
