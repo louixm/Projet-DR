@@ -76,7 +76,7 @@ public class Map {
             int a2 = 0;
             while (!verif){
                 if ((int)v1.x <= (int)b.getWidth()-l){
-                    m.objects.add(new Platform(1, v1, l, h,1));
+                    m.objects.add(new Platform(1, v1, l, h,3));
                     v1=v1.add(new Vec2(pasX1,pasY1));
                     a1 = 1;
                 } else{
@@ -84,7 +84,7 @@ public class Map {
                 }
                 
                 if ((int)v2.x >= 0){
-                    m.objects.add(new Platform(1, v2, l, h,1));
+                    m.objects.add(new Platform(1, v2, l, h,3));
                     v2=v2.add(new Vec2(-pasX1,pasY1));
                     a2 = 1;
                 } else{
@@ -103,10 +103,10 @@ public class Map {
             //m.objects.add(new Platform(1, new Vec2(b.getWidth()-l,((3*b.getHeight()+decalage-0.375*h)/4)),l,1.5*h));
             
             //m.objects.add(new Platform(1, new Vec2(0.5*(b.getWidth()-h),decalage/2),h,(b.getHeight()/2)-h-2*decalage));
-            m.objects.add(new Platform(1, new Vec2(0.5*b.getWidth()-1.5*l, decalage+pasY1), 3*l, h,1)); 
+            m.objects.add(new Platform(1, new Vec2(0.5*b.getWidth()-1.5*l, decalage+pasY1), 3*l, h,0)); 
             
-            m.objects.add(new Platform(1, new Vec2(0.5*b.getWidth()-3*l, b.getHeight()-2*h), 2*l, 2*h,1));
-            m.objects.add(new Platform(1, new Vec2(0.5*b.getWidth()+l, b.getHeight()-2*h), 2*l, 2*h,1));
+            m.objects.add(new Platform(1, new Vec2(0.5*b.getWidth()-3*l, b.getHeight()-2*h), 2*l, 2*h,2));
+            m.objects.add(new Platform(1, new Vec2(0.5*b.getWidth()+l, b.getHeight()-2*h), 2*l, 2*h,2));
         }
         return m;
     }
