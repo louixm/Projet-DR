@@ -34,8 +34,8 @@ public class Map {
             m.objects.add(new Platform(1, new Vec2(0*ratioX, 12*ratioY),   6*ratioX, 0.5*ratioY,1));
             m.objects.add(new Platform(1, new Vec2(0*ratioX, 18*ratioY), 25*ratioX, 0.5*ratioY,1));
         
-            m.objects.add(new Platform(2, new Vec2(27*ratioX, 4*ratioY), 1*ratioX, 4*ratioY,1));
-            m.objects.add(new Platform(2, new Vec2(26*ratioX, 10*ratioY), 3*ratioX, 3*ratioY,1));
+            m.objects.add(new Platform(2, new Vec2(27*ratioX, 4*ratioY), 1*ratioX, 4*ratioY,4));
+            m.objects.add(new Platform(2, new Vec2(26*ratioX, 10*ratioY), 3*ratioX, 3*ratioY,5));
         
             m.objects.add(new Platform(2, new Vec2(30*ratioX, 18*ratioY), 10*ratioX, 0.5*ratioY,1));
             m.objects.add(new Platform(2, new Vec2(33*ratioX, 10*ratioY), 7*ratioX, 0.5*ratioY,1));
