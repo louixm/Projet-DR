@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  *
@@ -23,13 +24,14 @@ public class Game {
     Sync sync;
     long prev_time; // (ns) instant de dernier pas physique
     long next_sync; // (ns) instant de prochaine synchronisation prévue de l'etat du jeu avec la BDD
-    final long sync_interval = 2500000; // (ns) temps minimum entre chaque synchronisation avec la BDD
+    final long sync_interval = 500000000; // (ns) temps minimum entre chaque synchronisation avec la BDD
     Timestamp db_last_sync;
     
     public final double gravity = 9.81;
     
     
     Game() {
+        
         try {
             sync = new Sync(DriverManager.getConnection(
                     "jdbc:mysql://nemrod.ens2m.fr:3306/20182019_s2_vs2_tp1_deathrun?serverTimezone=UTC", 
@@ -121,7 +123,7 @@ public class Game {
             
             // position maintenant corrigée
             // si sync n'est pas instancié, fonctionnement hors ligne
-            if (sync != null)   player.syncSet(sync);
+            if (sync != null && player.isControled())   player.syncSet(sync);
         }
         
         prev_time = ac_time;
@@ -146,13 +148,13 @@ public class Game {
             if (sync == null)   return;
             // sinon essai de connexion
             try {
-                //PreparedStatement req = sync.srv.prepareStatement("SELECT NOW()");
+                //PreparedStatement req = sync.srv.prepareStatement("SELECT now()");
                 //ResultSet r = req.executeQuery();
                 //Timestamp db_ac_time = r.getTimestamp(1);
                 //Timestamp db_ac_time = sync.srv.getTimestamp();
                 
-                PreparedStatement req = sync.srv.prepareStatement("SELECT * FROM pobjects");
-                //req.setTimestamp(1, db_last_sync);
+                PreparedStatement req = sync.srv.prepareStatement("SELECT * FROM pobjects WHERE date_sync > ?");
+                req.setTimestamp(1, db_last_sync);
                 // TODO: ne demander que les objets dont la date de mise a jour est plus recente que la derniere reception
                 ResultSet r = req.executeQuery();
                 while (r.next()) {
@@ -160,13 +162,12 @@ public class Game {
                     PObject obj;
                     if (id < 0) obj = players.get(-id-1);
                     else        obj = map.objects.get(id);
-                    obj.position.x = r.getInt("x")/100;
-                    obj.position.y = r.getInt("y")/100;
+                    obj.setPosition(new Vec2(r.getInt("x")/100, r.getInt("y")/100));
                     obj.velocity.x = r.getDouble("vx");
                     obj.velocity.y = r.getDouble("vy");
+                    System.out.println("updated object "+id);
                 }
-                
-                //db_last_sync = db_ac_time;
+                db_last_sync = new java.sql.Timestamp(Calendar.getInstance().getTime().getTime());
             }
             catch (SQLException err) {
                 System.out.println("syncUpdate: "+err);
