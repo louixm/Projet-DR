@@ -39,7 +39,7 @@ public class DeathrunPortal {
             otherone.setPosition(new Vec2(12, 2));
 
             game.map.objects.add(new ExitDoor(game, new Vec2(20, 15)));
-            game.map.objects.add(new Saw(1,new Vec2(2, 2)));
+            game.map.objects.add(new Saw(game, new Vec2(2, 2)));
         
 //            game.map.objects.add(new Platform(1, new Vec2(12, 5),   2, 0.2, 3));
 //            game.map.objects.add(new Platform(2, new Vec2(19, 6.5), 10, 3, 1));
