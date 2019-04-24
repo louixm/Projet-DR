@@ -61,8 +61,8 @@ abstract public class PObject {
     public void syncSet(Sync sync)	{
         try {
             PreparedStatement req = sync.srv.prepareStatement("UPDATE pobjects SET x=?, y=?, vx=?, vy=?, date_sync=NOW() WHERE id = ?");
-            req.setInt(1, (int) (position.x*100));
-            req.setInt(2, (int) (position.y*100));
+            req.setInt(1, (int) (position.x*1000));
+            req.setInt(2, (int) (position.y*1000));
             req.setDouble(3, velocity.x);
             req.setDouble(4, velocity.y);
             // id de l'objet a modifier
