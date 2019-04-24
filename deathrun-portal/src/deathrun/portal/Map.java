@@ -6,6 +6,7 @@
 package deathrun.portal;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -22,7 +23,7 @@ public class Map {
     }
     
     
-    public static Map MapInitialization(int mapNumber) throws IOException{
+    public static Map MapInitialization(Game g, int mapNumber) throws IOException, SQLException{
         Box b = new Box(0,0,30,20);
         Map m = new Map(b); 
         double ratioY = b.getHeight()/20;      //Les ratios permettent juste de mettre les plateformes à la bonne échelle
@@ -31,6 +32,7 @@ public class Map {
         double hauteurPlatform = 1;
         
         if (mapNumber == 1){
+<<<<<<< HEAD
             m.objects.add(new Platform(1, new Vec2(0*ratioX,5*ratioY), 3*ratioX, hauteurPlatform*ratioY,0));
             m.objects.add(new Platform(1, new Vec2(0*ratioX, 12*ratioY),   6*ratioX, hauteurPlatform*ratioY,1));
             m.objects.add(new Platform(1, new Vec2(0*ratioX, 18*ratioY), 25*ratioX, hauteurPlatform*ratioY,1));
@@ -81,6 +83,21 @@ public class Map {
                 arret = arret + pas;
             }
             //for int i=0; i<360
+            m.objects.add(new Platform(g, new Vec2(0*ratioX,7*ratioY), 3*ratioX, (hauteurDeSaut/4)*ratioY,1));
+            m.objects.add(new Platform(g, new Vec2(0*ratioX, 12*ratioY),   6*ratioX, 0.5*ratioY,1));
+            m.objects.add(new Platform(g, new Vec2(0*ratioX, 18*ratioY), 25*ratioX, 0.5*ratioY,1));
+        
+            m.objects.add(new Platform(g, new Vec2(27*ratioX, 4*ratioY), 1*ratioX, 4*ratioY,4));
+            m.objects.add(new Platform(g, new Vec2(26*ratioX, 10*ratioY), 3*ratioX, 3*ratioY,5));
+        
+            m.objects.add(new Platform(g, new Vec2(30*ratioX, 18*ratioY), 10*ratioX, 0.5*ratioY,1));
+            m.objects.add(new Platform(g, new Vec2(33*ratioX, 10*ratioY), 7*ratioX, 0.5*ratioY,1));
+        
+            m.objects.add(new Platform(g, new Vec2(5*ratioX, 16*ratioY), 3.5*ratioX, 0.5*ratioY,1));
+        
+            m.objects.add(new Platform(g, new Vec2(4*ratioX, 10*ratioY), 12*ratioX, 0.5*ratioY,1));
+            m.objects.add(new Platform(g, new Vec2(9*ratioX, 6*ratioY), 10*ratioX, 0.5*ratioY,1));
+            m.objects.add(new Platform(g, new Vec2(11*ratioX, 3*ratioY), 7*ratioX, 0.5*ratioY,1));
         }
         else if (mapNumber == 2 || mapNumber == 3 || mapNumber == 4 || mapNumber == 5){
             int nbPlatform = 1;
@@ -112,7 +129,7 @@ public class Map {
             int a2 = 0;
             while (!verif){
                 if ((int)v1.x <= (int)b.getWidth()-l){
-                    m.objects.add(new Platform(1, v1, l, h,3));
+                    m.objects.add(new Platform(g, v1, l, h,3));
                     v1=v1.add(new Vec2(pasX1,pasY1));
                     a1 = 1;
                 } else{
@@ -120,7 +137,7 @@ public class Map {
                 }
                 
                 if ((int)v2.x >= 0){
-                    m.objects.add(new Platform(1, v2, l, h,3));
+                    m.objects.add(new Platform(g, v2, l, h,3));
                     v2=v2.add(new Vec2(-pasX1,pasY1));
                     a2 = 1;
                 } else{
@@ -130,19 +147,19 @@ public class Map {
                     verif = true;
                 }
             }
-            m.objects.add(new Platform(1, new Vec2(0.5*l,((b.getHeight()+decalage-2*h)/2)),2.5*l,2*h,1));
+            m.objects.add(new Platform(g, new Vec2(0.5*l,((b.getHeight()+decalage-2*h)/2)),2.5*l,2*h,1));
             //m.objects.add(new Platform(1, new Vec2(0,((b.getHeight()+3*decalage-0.375*h)/4)),l,1.5*h));
            // m.objects.add(new Platform(1, new Vec2(0,((3*b.getHeight()+decalage-0.375*h)/4)),l,1.5*h));
             
-            m.objects.add(new Platform(1, new Vec2(b.getWidth()-(3*l),((b.getHeight()+decalage-h)/2)),2.5*l,2*h,1));
+            m.objects.add(new Platform(g, new Vec2(b.getWidth()-(3*l),((b.getHeight()+decalage-h)/2)),2.5*l,2*h,1));
             //m.objects.add(new Platform(1, new Vec2(b.getWidth()-l,((b.getHeight()+3*decalage-0.375*h)/4)),l,1.5*h));
             //m.objects.add(new Platform(1, new Vec2(b.getWidth()-l,((3*b.getHeight()+decalage-0.375*h)/4)),l,1.5*h));
             
             //m.objects.add(new Platform(1, new Vec2(0.5*(b.getWidth()-h),decalage/2),h,(b.getHeight()/2)-h-2*decalage));
-            m.objects.add(new Platform(1, new Vec2(0.5*b.getWidth()-1.5*l, decalage+pasY1), 3*l, h,0)); 
+            m.objects.add(new Platform(g, new Vec2(0.5*b.getWidth()-1.5*l, decalage+pasY1), 3*l, h,0)); 
             
-            m.objects.add(new Platform(1, new Vec2(0.5*b.getWidth()-3*l, b.getHeight()-2*h), 2*l, 2*h,2));
-            m.objects.add(new Platform(1, new Vec2(0.5*b.getWidth()+l, b.getHeight()-2*h), 2*l, 2*h,2));
+            m.objects.add(new Platform(g, new Vec2(0.5*b.getWidth()-3*l, b.getHeight()-2*h), 2*l, 2*h,2));
+            m.objects.add(new Platform(g, new Vec2(0.5*b.getWidth()+l, b.getHeight()-2*h), 2*l, 2*h,2));
         }
         return m;
     }

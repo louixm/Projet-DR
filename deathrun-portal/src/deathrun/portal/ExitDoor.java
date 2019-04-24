@@ -7,6 +7,7 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import javax.imageio.ImageIO;
 /**
  *
@@ -15,22 +16,17 @@ import javax.imageio.ImageIO;
 public class ExitDoor extends PObject{
     Box box;
     static Image img[];
+    final double size = 3;
     
-    
-    public ExitDoor(int db_id, Vec2 position, Box box) throws IOException {
-        super(db_id);
-        this.box = box;
-        setPosition(position);
-        
+    public ExitDoor(Game game, Vec2 position) throws IOException, SQLException {
+        super(game);
+        this.box = new Box(position.x-size/2, position.y-size/2, position.x+size/2, position.y+size/2);
+        this.position = position;
         
         if (img == null) {
             img = new Image[1];
             img[0] = ImageIO.read(new File("./images/porteSortie.png"));
         }
-    }
-    
-    public ExitDoor(int db_id, Vec2 position, double width, double height) throws IOException {
-        this(db_id, position, new Box(0, 0, width, height));
     }
     
     @Override

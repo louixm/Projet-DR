@@ -24,11 +24,25 @@ abstract public class PObject {
     public Vec2 acceleration;
     Timestamp last_sync;
     
-    PObject(int db_id) 	{ 
+    PObject(Game game) throws SQLException { this(game, game.map.objects.size()); }
+    PObject(Game game, int db_id) throws SQLException 	{ 
         this.db_id = db_id; 
         this.position = new Vec2();
         this.velocity = new Vec2();
         this.acceleration = new Vec2();
+        
+        if (game.sync != null) {
+            PreparedStatement req = game.sync.srv.prepareStatement("SELECT EXISTS(SELECT id FROM pobjects WHERE id = ?)");
+            req.setInt(1, db_id);
+            ResultSet r = req.executeQuery();
+            r.next();
+            if (!r.getBoolean(1)) {
+                req = game.sync.srv.prepareStatement("INSERT INTO pobjects VALUES (?,0,0,0,0,0)");
+                req.setInt(1, db_id);
+                req.executeUpdate();
+                req.close();
+            }
+        }
     }
 
     //--------------- interface de gestion des collisions -----------------

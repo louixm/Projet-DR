@@ -12,6 +12,7 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import javax.imageio.ImageIO;
 
 /**
@@ -23,8 +24,8 @@ public class Platform extends PObject {
     static Image img[];
     int typePlateforme;
     
-    public Platform(int db_id, Vec2 position, Box box, int typePlateforme) throws IOException {
-        super(db_id);
+    public Platform(Game game, Vec2 position, Box box, int typePlateforme) throws IOException, SQLException {
+        super(game);
         this.collision_box = box;
         setPosition(position);
         this.typePlateforme = typePlateforme;
@@ -40,8 +41,8 @@ public class Platform extends PObject {
         }
     }
     
-    public Platform(int db_id, Vec2 position, double width, double height, int typePlateforme) throws IOException {
-        this(db_id, position, new Box(0, 0, width, height),typePlateforme);
+    public Platform(Game game, Vec2 position, double width, double height, int typePlateforme) throws IOException, SQLException {
+        this(game, position, new Box(0, 0, width, height),typePlateforme);
     }
     
     @Override
