@@ -39,9 +39,11 @@ public class Player extends PObject {
         collision_box = new Box(-0.5, 0, 0.5, 1.8);
         
         if (avatars == null) {
-            this.avatars = new BufferedImage[1];
+            this.avatars = new BufferedImage[3];
             try {
-                this.avatars[0] = ImageIO.read(new File("./images/robot1.png"));// charger les images des avatars si pas deja fait
+                this.avatars[0] = ImageIO.read(new File("./images/sentrybot.png"));
+                this.avatars[1] = ImageIO.read(new File("./images/robotBleu.png"));
+                this.avatars[2] = ImageIO.read(new File("./images/robotOrange.png"));
             } catch (IOException ex) {
                 Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
             }
