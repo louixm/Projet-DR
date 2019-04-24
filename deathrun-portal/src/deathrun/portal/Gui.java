@@ -30,7 +30,7 @@ import javax.swing.Timer;
  * @author ydejongh
  */
 public class Gui extends JFrame implements KeyListener {
-    public int scale = 20;	// pixel/m
+    public int scale = 36;	// pixel/m
     public final int WINDOW_WIDTH = 1080, WINDOW_HEIGHT = 720;
     
     private JLabel jLabel1;

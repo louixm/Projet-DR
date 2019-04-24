@@ -8,7 +8,12 @@ package deathrun.portal;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -34,8 +39,12 @@ public class Player extends PObject {
         collision_box = new Box(-0.5, 0, 0.5, 1.8);
         
         if (avatars == null) {
-            Player.avatars = new BufferedImage[0];
-            // charger les images des avatars si pas deja fait
+            this.avatars = new BufferedImage[1];
+            try {
+                this.avatars[0] = ImageIO.read(new File("./images/robot1.png"));// charger les images des avatars si pas deja fait
+            } catch (IOException ex) {
+                Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
     
@@ -55,6 +64,16 @@ public class Player extends PObject {
     //--------------- interface d'affichage -----------------
     @Override
     public void render(Graphics2D g, float scale) {
+        
+        g.drawImage(avatars[0], 
+            (int) (collision_box.p1.x*scale), 
+            (int) (collision_box.p1.y*scale), 
+            (int) (collision_box.p2.x*scale), 
+            (int) (collision_box.p2.y*scale), 
+            0, 0,
+            avatars[0].getWidth(null), avatars[0].getHeight(null),
+            null);
+        
         super.render(g, scale);
         // TODO
     }
