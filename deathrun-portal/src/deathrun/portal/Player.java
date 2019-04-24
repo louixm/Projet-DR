@@ -33,8 +33,9 @@ public class Player extends PObject {
     public static BufferedImage avatars[];
     
     
-    public Player(String name, int avatar, int db_id) {
-        super(db_id);
+    public Player(Game game, String name, int avatar) {
+        super(-game.players.size()-1);  // creer en ajoutant a la fin
+        game.players.add(this);
         this.name = name; 
         this.avatar = avatar;
         collision_box = new Box(-0.5, 0, 0.5, 1.8);
