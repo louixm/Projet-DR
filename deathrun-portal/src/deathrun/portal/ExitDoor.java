@@ -25,7 +25,7 @@ public class ExitDoor extends PObject{
         
         if (img == null) {
             img = new Image[1];
-            img[0] = ImageIO.read(new File("./images/porteSortie.png"));
+//            img[0] = ImageIO.read(new File("./images/porteSortie.png"));
         }
     }
     
@@ -49,15 +49,15 @@ public class ExitDoor extends PObject{
     //--------------- interface d'affichage -----------------
     @Override
     public void render(Graphics2D canvas, float scale) {
-        canvas.drawImage(img[typePlateforme], 
-                (int) (box.p1.x*scale), 
-                (int) (box.p1.y*scale), 
-                (int) (box.p2.x*scale), 
-                (int) (box.p2.y*scale), 
-                0, 0,
-                img[typePlateforme].getWidth(null), img[typePlateforme].getHeight(null),
-                null);
-        super.render(canvas, scale);
+//        canvas.drawImage(img[typePlateforme], 
+//                (int) (box.p1.x*scale), 
+//                (int) (box.p1.y*scale), 
+//                (int) (box.p2.x*scale), 
+//                (int) (box.p2.y*scale), 
+//                0, 0,
+//                img[typePlateforme].getWidth(null), img[typePlateforme].getHeight(null),
+//                null);
+//        super.render(canvas, scale);
         // TODO
     }
     
