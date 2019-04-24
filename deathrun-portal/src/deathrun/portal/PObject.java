@@ -9,7 +9,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 /**
  *
@@ -20,6 +22,7 @@ abstract public class PObject {
     public Vec2 position;
     public Vec2 velocity;
     public Vec2 acceleration;
+    Timestamp last_sync;
     
     PObject(int db_id) 	{ 
         this.db_id = db_id; 
@@ -76,6 +79,11 @@ abstract public class PObject {
             // execution de la requete
             req.executeUpdate();
             req.close();
+            
+            req = sync.srv.prepareStatement("SELECT now();");
+            ResultSet r = req.executeQuery();
+            r.next();
+            last_sync = r.getTimestamp(1);
         }
         catch (SQLException err) {
             System.out.println("sql exception:\n"+err);
