@@ -22,6 +22,7 @@ import javax.imageio.ImageIO;
 public class Player extends PObject {
     public String name;
     public int avatar;
+    
     private boolean left, right, jump, leftAndRightWithPriorityOnRight; //, hasJumped;
     private Vec2 previousPosition;
     private ArrayList<String> collisionDirection;
@@ -73,7 +74,7 @@ public class Player extends PObject {
             (int) (collision_box.p2.x*scale), 
             (int) (collision_box.p2.y*scale), 
             0, 0,
-            avatars[0].getWidth(null), avatars[0].getHeight(null),
+            avatars[avatar].getWidth(null), avatars[avatar].getHeight(null),
             null);
         
         super.render(g, scale);
