@@ -31,18 +31,19 @@ public class Game {
     
     
     Game() {
-        /*
+        
         try {
             sync = new Sync(DriverManager.getConnection(
                     "jdbc:mysql://nemrod.ens2m.fr:3306/20182019_s2_vs2_tp1_deathrun?serverTimezone=UTC", 
                     "deathrun2", 
                     "5V8HVbDZMtkOHwaX"
                 ));
+            db_last_sync = new Timestamp(0);
         }
         catch (SQLException err) {
             System.out.println("sql connection error, fail to init game:\n\t"+err);
         }
-        */
+        
         prev_time = System.nanoTime();
 	players = new ArrayList<>();
     }
@@ -123,7 +124,10 @@ public class Game {
             
             // position maintenant corrigée
             // si sync n'est pas instancié, fonctionnement hors ligne
-            if (sync != null && player.isControled())   player.syncSet(sync);
+            if (sync != null && player.isControled())   {
+                System.out.println("send sync for "+player.db_id);
+                player.syncSet(sync);
+            }
         }
         
         prev_time = ac_time;
@@ -147,13 +151,8 @@ public class Game {
             // si sync n'est pas instancié, fonctionnement hors ligne
             if (sync == null)   return;
             // sinon essai de connexion
-            try {
-                //PreparedStatement req = sync.srv.prepareStatement("SELECT now()");
-                //ResultSet r = req.executeQuery();
-                //Timestamp db_ac_time = r.getTimestamp(1);
-                //Timestamp db_ac_time = sync.srv.getTimestamp();
-                
-                PreparedStatement req = sync.srv.prepareStatement("SELECT * FROM pobjects WHERE date_sync > ?");
+            try {                
+                PreparedStatement req = sync.srv.prepareStatement("SELECT * FROM pobjects WHERE date_sync > ?;");
                 req.setTimestamp(1, db_last_sync);
                 // TODO: ne demander que les objets dont la date de mise a jour est plus recente que la derniere reception
                 ResultSet r = req.executeQuery();
@@ -162,12 +161,19 @@ public class Game {
                     PObject obj;
                     if (id < 0) obj = players.get(-id-1);
                     else        obj = map.objects.get(id);
-                    obj.setPosition(new Vec2(r.getInt("x")/100, r.getInt("y")/100));
+                    obj.setPosition(new Vec2(r.getInt("x")/1000, r.getInt("y")/1000));
                     obj.velocity.x = r.getDouble("vx");
                     obj.velocity.y = r.getDouble("vy");
                     System.out.println("updated object "+id);
                 }
-                db_last_sync = new java.sql.Timestamp(Calendar.getInstance().getTime().getTime());
+                
+                req = sync.srv.prepareStatement("SELECT now();");
+                r = req.executeQuery();
+                r.next();
+                Timestamp db_ac_time = r.getTimestamp(1);
+                System.out.println(db_ac_time);
+                
+                db_last_sync = db_ac_time;
             }
             catch (SQLException err) {
                 System.out.println("syncUpdate: "+err);
