@@ -5,6 +5,7 @@
  */
 package deathrun.portal;
 
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -13,35 +14,27 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import java.awt.geom.AffineTransform;
 
 /**
  *
- * @author ydejongh
+ * @author pdemiche
  */
-public class Platform extends PObject {
+public class Saw extends PObject {
     Box collision_box;
-    static Image img[];
+    static Image img;
     int typePlateforme;
+    int step;
     
-    public Platform(int db_id, Vec2 position, Box box, int typePlateforme) throws IOException {
+    public Saw(int db_id, Vec2 position) throws IOException {
         super(db_id);
-        this.collision_box = box;
+        this.collision_box = new Box(-1, -1, 1, 1).translate(position);
         setPosition(position);
-        this.typePlateforme = typePlateforme;
         
         if (img == null) {
-            img = new Image[6];
-            img[0] = ImageIO.read(new File("./images/patterns/Tile (5).png")); //plateforme 1x1
-            img[1] = ImageIO.read(new File("./images/patterns/Tile (16).png")); //plateforme 1x3
-            img[2] = ImageIO.read(new File("./images/patterns/Tile (13).png")); //plateforme 1/2x1
-            img[3] = ImageIO.read(new File("./images/patterns/Tile (17).png")); //plateforme 1/2x3
-            img[4] = ImageIO.read(new File("./images/Barrel_1_3.png"));
-            img[5] = ImageIO.read(new File("./images/Barrel_2_4.png"));
+            img = ImageIO.read(new File("./images/saw.png")); //scie circulaire
         }
-    }
     
-    public Platform(int db_id, Vec2 position, double width, double height, int typePlateforme) throws IOException {
-        this(db_id, position, new Box(0, 0, width, height),typePlateforme);
     }
     
     @Override
@@ -49,7 +42,7 @@ public class Platform extends PObject {
         super.setPosition(pos);
         collision_box = collision_box.translateToPosition(pos);
     }
-     
+    
     //--------------- interface de gestion des collisions -----------------
     public boolean collisionable(PObject other)  { 
         return (other instanceof Player);
@@ -65,16 +58,32 @@ public class Platform extends PObject {
                 (int) (position.x*scale), 
                 (int) (position.y*scale), 
                 null);    */
-        canvas.drawImage(img[typePlateforme], 
-                (int) (collision_box.p1.x*scale), 
-                (int) (collision_box.p1.y*scale), 
-                (int) (collision_box.p2.x*scale), 
-                (int) (collision_box.p2.y*scale), 
-                0, 0,
-                img[typePlateforme].getWidth(null), img[typePlateforme].getHeight(null),
-                null);
+        AffineTransform transform = new AffineTransform();
+        step ++;
+        Vec2 c = collision_box.p1;
+        transform.translate(c.x*scale, c.y*scale);
+        transform.scale(
+                scale*collision_box.getWidth()/img.getWidth(null),
+                scale*collision_box.getHeight()/img.getHeight(null)
+        );
+        transform.rotate(Math.PI / 40 * step,img.getWidth(null)/2,img.getHeight(null)/2);
+
+        //transform.translate(c.x, c.y);
+        //transform.scale(e,scale);
+        canvas.drawImage(img, 
+            transform,
+            null);
         super.render(canvas, scale, drawHitBox);
-        // TODO
+//        canvas.drawImage(img, 
+//                (int) (collision_box.p1.x*scale), 
+//                (int) (collision_box.p1.y*scale), 
+//                (int) (collision_box.p2.x*scale), 
+//                (int) (collision_box.p2.y*scale), 
+//                0, 0,
+//                img.getWidth(null), img.getHeight(null),
+//                null);
+//        super.render(canvas, scale);
+//        // TODO
     }
     
 }

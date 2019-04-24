@@ -27,9 +27,11 @@ public class Trap extends PObject {
     }
 	
 	public boolean collisionable() { return enabled; }
+        @Override
     public Box getCollisionBox()       { return collision_box; }
     
     //--------------- interface d'affichage -----------------
+        @Override
     public void render(Graphics2D g, float scale) {
 		super.render(g, scale);
         // TODO
