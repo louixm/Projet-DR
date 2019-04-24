@@ -10,6 +10,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,8 +34,8 @@ public class Player extends PObject {
     public static BufferedImage avatars[];
     
     
-    public Player(Game game, String name, int avatar) {
-        super(-game.players.size()-1);  // creer en ajoutant a la fin
+    public Player(Game game, String name, int avatar) throws SQLException {
+        super(game, -game.players.size()-1);  // creer en ajoutant a la fin
         game.players.add(this);
         this.name = name; 
         this.avatar = avatar;

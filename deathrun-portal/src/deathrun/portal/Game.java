@@ -20,8 +20,8 @@ import java.util.Calendar;
 public class Game {
     public Map map;
     public ArrayList<Player> players;
+    public  Sync sync;
     
-    private Sync sync;
     long prev_time; // (ns) instant de dernier pas physique
     long next_sync; // (ns) instant de prochaine synchronisation prévue de l'etat du jeu avec la BDD
     final long sync_interval = 100000000; // (ns) temps minimum entre chaque synchronisation avec la BDD
