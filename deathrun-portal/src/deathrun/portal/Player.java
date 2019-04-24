@@ -68,7 +68,7 @@ public class Player extends PObject {
     @Override
     public void render(Graphics2D g, float scale) {
         
-        g.drawImage(avatars[0], 
+        g.drawImage(avatars[avatar], 
             (int) (collision_box.p1.x*scale), 
             (int) (collision_box.p1.y*scale), 
             (int) (collision_box.p2.x*scale), 
