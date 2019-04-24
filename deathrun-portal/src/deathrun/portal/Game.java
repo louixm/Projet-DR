@@ -30,6 +30,7 @@ public class Game {
     
     
     Game() {
+        /*
         try {
             sync = new Sync(DriverManager.getConnection(
                     "jdbc:mysql://nemrod.ens2m.fr:3306/20182019_s2_vs2_tp1_deathrun?serverTimezone=UTC", 
@@ -40,7 +41,7 @@ public class Game {
         catch (SQLException err) {
             System.out.println("sql connection error, fail to init game:\n\t"+err);
         }
-        
+        */
         prev_time = System.nanoTime();
 	players = new ArrayList<>();
     }
