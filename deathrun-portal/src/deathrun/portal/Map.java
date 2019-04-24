@@ -31,23 +31,22 @@ public class Map {
         double hauteurDeSaut = 2;
         double hauteurPlatform = 1;
         
-        if (mapNumber == 1){
-<<<<<<< HEAD
-            m.objects.add(new Platform(1, new Vec2(0*ratioX,5*ratioY), 3*ratioX, hauteurPlatform*ratioY,0));
-            m.objects.add(new Platform(1, new Vec2(0*ratioX, 12*ratioY),   6*ratioX, hauteurPlatform*ratioY,1));
-            m.objects.add(new Platform(1, new Vec2(0*ratioX, 18*ratioY), 25*ratioX, hauteurPlatform*ratioY,1));
+        if (mapNumber == 1) {
+            m.objects.add(new Platform(g, new Vec2(0*ratioX,5*ratioY), 3*ratioX, hauteurPlatform*ratioY,0));
+            m.objects.add(new Platform(g, new Vec2(0*ratioX, 12*ratioY),   6*ratioX, hauteurPlatform*ratioY,1));
+            m.objects.add(new Platform(g, new Vec2(0*ratioX, 18*ratioY), 25*ratioX, hauteurPlatform*ratioY,1));
         
-            m.objects.add(new Platform(2, new Vec2(26.5*ratioX, 3*ratioY), 2*ratioX, 5*ratioY,4));
-            m.objects.add(new Platform(2, new Vec2(25.5*ratioX, 10*ratioY), 4*ratioX, 4*ratioY,5));
+            m.objects.add(new Platform(g, new Vec2(26.5*ratioX, 3*ratioY), 2*ratioX, 5*ratioY,4));
+            m.objects.add(new Platform(g, new Vec2(25.5*ratioX, 10*ratioY), 4*ratioX, 4*ratioY,5));
         
-            m.objects.add(new Platform(2, new Vec2(30*ratioX, 18*ratioY), 10*ratioX, hauteurPlatform*ratioY,1));
-            m.objects.add(new Platform(2, new Vec2(33*ratioX, 10*ratioY), 7*ratioX, hauteurPlatform*ratioY,1));
+            m.objects.add(new Platform(g, new Vec2(30*ratioX, 18*ratioY), 10*ratioX, hauteurPlatform*ratioY,1));
+            m.objects.add(new Platform(g, new Vec2(33*ratioX, 10*ratioY), 7*ratioX, hauteurPlatform*ratioY,1));
         
-            m.objects.add(new Platform(3, new Vec2(12*ratioX, 14*ratioY), 3.5*ratioX, hauteurPlatform*ratioY,1));
+            m.objects.add(new Platform(g, new Vec2(12*ratioX, 14*ratioY), 3.5*ratioX, hauteurPlatform*ratioY,1));
         
-            m.objects.add(new Platform(4, new Vec2(6*ratioX, 8.5*ratioY), 12*ratioX, hauteurPlatform*ratioY,1));
-            m.objects.add(new Platform(4, new Vec2(10*ratioX, 5*ratioY), 10*ratioX, hauteurPlatform*ratioY,1));
-            m.objects.add(new Platform(4, new Vec2(12*ratioX, 2*ratioY), 7*ratioX, hauteurPlatform*ratioY,1));
+            m.objects.add(new Platform(g, new Vec2(6*ratioX, 8.5*ratioY), 12*ratioX, hauteurPlatform*ratioY,1));
+            m.objects.add(new Platform(g, new Vec2(10*ratioX, 5*ratioY), 10*ratioX, hauteurPlatform*ratioY,1));
+            m.objects.add(new Platform(g, new Vec2(12*ratioX, 2*ratioY), 7*ratioX, hauteurPlatform*ratioY,1));
         }
         else if (mapNumber == 0){
             int nbPlatform=10;   //doit être un diviseur de 360;
@@ -79,7 +78,7 @@ public class Map {
                     translationY = translationY - pasY;
                 }
                 v = v1.add(trans);
-                m.objects.add(new Platform(1, v, l, h,3));
+                m.objects.add(new Platform(g, v, l, h,3));
                 arret = arret + pas;
             }
             //for int i=0; i<360
