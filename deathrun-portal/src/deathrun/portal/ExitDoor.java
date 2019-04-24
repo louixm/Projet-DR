@@ -15,13 +15,13 @@ import javax.imageio.ImageIO;
 public class ExitDoor extends PObject{
     Box box;
     static Image img[];
-    int typePlateforme;
+    
     
     public ExitDoor(int db_id, Vec2 position, Box box) throws IOException {
         super(db_id);
         this.box = box;
         setPosition(position);
-        this.typePlateforme = typePlateforme;
+        
         
         if (img == null) {
             img = new Image[1];
@@ -49,16 +49,16 @@ public class ExitDoor extends PObject{
     //--------------- interface d'affichage -----------------
     @Override
     public void render(Graphics2D canvas, float scale) {
-        canvas.drawImage(img[typePlateforme], 
+        canvas.drawImage(img[0], 
                 (int) (box.p1.x*scale), 
                 (int) (box.p1.y*scale), 
                 (int) (box.p2.x*scale), 
                 (int) (box.p2.y*scale), 
                 0, 0,
-                img[typePlateforme].getWidth(null), img[typePlateforme].getHeight(null),
+                img[0].getWidth(null), img[0].getHeight(null),
                 null);
-        super.render(canvas, scale);
-        // TODO
+//        super.render(canvas, scale);
+         //TODO
     }
     
 }

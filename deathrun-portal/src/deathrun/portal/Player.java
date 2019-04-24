@@ -66,9 +66,9 @@ public class Player extends PObject {
     
     //--------------- interface d'affichage -----------------
     @Override
-    public void render(Graphics2D g, float scale) {
+    public void render(Graphics2D g, float scale, boolean drawHitBox) {
         
-        g.drawImage(avatars[0], 
+        g.drawImage(avatars[avatar], 
             (int) (collision_box.p1.x*scale), 
             (int) (collision_box.p1.y*scale), 
             (int) (collision_box.p2.x*scale), 
@@ -77,7 +77,7 @@ public class Player extends PObject {
             avatars[avatar].getWidth(null), avatars[avatar].getHeight(null),
             null);
         
-        super.render(g, scale);
+        super.render(g, scale, drawHitBox);
         // TODO
     }
 //    

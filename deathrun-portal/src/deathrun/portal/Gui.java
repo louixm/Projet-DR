@@ -31,6 +31,7 @@ import javax.swing.Timer;
  */
 public class Gui extends JFrame implements KeyListener {
     public int scale = 36;	// pixel/m
+    public boolean drawHitBox = false;
     public final int WINDOW_WIDTH = 1080, WINDOW_HEIGHT = 720;
     
     private JLabel jLabel1;
@@ -101,19 +102,19 @@ public class Gui extends JFrame implements KeyListener {
         if (evt.getKeyCode() == evt.VK_SPACE)   this.controled.setJump(false); //peut etre pas besoin si on remet jump à false direct après le saut
         if (evt.getKeyCode() == evt.VK_SEMICOLON)      {this.scale++; System.out.println("Scale = " + this.scale);}
         if (evt.getKeyCode() == evt.VK_COMMA)    {this.scale--; System.out.println("Scale = " + this.scale);}
-        
+        if (evt.getKeyCode() == evt.VK_H)       this.drawHitBox = !this.drawHitBox;
     }
     
 
     public void render(Graphics2D g) {
         g.drawImage(this.background, 0, 0, null);
         for (PObject object : game.map.objects) {
-            if (! object.foreground())	object.render(g, scale);
+            if (! object.foreground())	object.render(g, scale, drawHitBox);
         }
         for (Player player : game.players)		
-            player.render(g, scale);
+            player.render(g, scale, drawHitBox);
         for (PObject object : game.map.objects) {
-            if (object.foreground())	object.render(g, scale);
+            if (object.foreground())	object.render(g, scale, drawHitBox);
         }
     }
 }
