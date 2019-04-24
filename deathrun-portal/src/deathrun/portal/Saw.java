@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import java.awt.geom.AffineTransform;
+import java.sql.SQLException;
 
 /**
  *
@@ -26,8 +27,8 @@ public class Saw extends PObject {
     int typePlateforme;
     int step;
     
-    public Saw(int db_id, Vec2 position) throws IOException {
-        super(db_id);
+    public Saw(Game game, Vec2 position) throws IOException, SQLException {
+        super(game);
         this.collision_box = new Box(-1, -1, 1, 1).translate(position);
         setPosition(position);
         
