@@ -52,7 +52,7 @@ public class Saw extends PObject {
     
     //--------------- interface d'affichage -----------------
     @Override
-    public void render(Graphics2D canvas, float scale) {
+    public void render(Graphics2D canvas, float scale, boolean drawHitBox) {
         /*
         canvas.drawImage(img[typePlateforme], 
                 (int) (position.x*scale), 
@@ -73,7 +73,7 @@ public class Saw extends PObject {
         canvas.drawImage(img, 
             transform,
             null);
-        super.render(canvas, scale);
+        super.render(canvas, scale, drawHitBox);
 //        canvas.drawImage(img, 
 //                (int) (collision_box.p1.x*scale), 
 //                (int) (collision_box.p1.y*scale), 
