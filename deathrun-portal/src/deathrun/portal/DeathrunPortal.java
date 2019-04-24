@@ -63,6 +63,7 @@ public class DeathrunPortal {
         
         Gui gui = new Gui(game, controled);
         gui.setVisible(true);
+        
     }
     
 }

@@ -8,9 +8,14 @@ import java.awt.event.KeyListener;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -80,6 +85,26 @@ public class Gui extends JFrame implements KeyListener {
             }
         });
         this.timer.start();
+        
+        this.addWindowListener(new WindowAdapter() {
+            @Override      
+            public void windowClosing(WindowEvent e) {
+                Sync sync = game.getSync();
+                try {
+                    PreparedStatement req = sync.srv.prepareStatement("DELETE FROM pobjects WHERE id = ?");
+                    req.setInt(1, controled.db_id);
+                    req.executeUpdate();
+                    req = sync.srv.prepareStatement("DELETE FROM players WHERE id = ?");
+                    req.setInt(1, controled.db_id);
+                    req.executeUpdate();
+                    System.out.println("Deleted player with id " + controled.db_id);
+                }
+                catch (SQLException err) {
+                    System.out.println("sync on exit: "+err);
+                }
+//                System.exit(0);
+            }
+        });
     }
     
     
@@ -103,8 +128,7 @@ public class Gui extends JFrame implements KeyListener {
         if (evt.getKeyCode() == evt.VK_SEMICOLON)      {this.scale++; System.out.println("Scale = " + this.scale);}
         if (evt.getKeyCode() == evt.VK_COMMA)    {this.scale--; System.out.println("Scale = " + this.scale);}
         if (evt.getKeyCode() == evt.VK_H)       this.drawHitBox = !this.drawHitBox;
-    }
-    
+    } 
 
     public void render(Graphics2D g) {
         g.drawImage(this.background, 0, 0, null);

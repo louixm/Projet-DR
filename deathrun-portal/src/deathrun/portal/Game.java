@@ -21,10 +21,10 @@ public class Game {
     public Map map;
     public ArrayList<Player> players;
     
-    Sync sync;
+    private Sync sync;
     long prev_time; // (ns) instant de dernier pas physique
     long next_sync; // (ns) instant de prochaine synchronisation prévue de l'etat du jeu avec la BDD
-    final long sync_interval = 500000000; // (ns) temps minimum entre chaque synchronisation avec la BDD
+    final long sync_interval = 100000000; // (ns) temps minimum entre chaque synchronisation avec la BDD
     Timestamp db_last_sync;
     
     public final double gravity = 9.81;
@@ -181,7 +181,7 @@ public class Game {
         }
     }
     
-//    public Player getFirstPlayer() { return this.players.get(0); }
+    public Sync getSync() {return sync;}
 
   
             
