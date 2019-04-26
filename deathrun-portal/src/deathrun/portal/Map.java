@@ -48,55 +48,32 @@ public class Map {
             m.objects.add(new Platform(g, new Vec2(10*ratioX, 5*ratioY), 10*ratioX, hauteurPlatform*ratioY,1));
             m.objects.add(new Platform(g, new Vec2(12*ratioX, 2*ratioY), 7*ratioX, hauteurPlatform*ratioY,1));
         }
-        else if (mapNumber == 0){
+        else if (mapNumber == 6){
             int nbPlatform=10;   //doit être un diviseur de 360;
-            int pas = 360/nbPlatform;
-            double rayon = b.getHeight()/4;
-            double pasX = rayon*Math.cos(pas);
-            double pasY = rayon*Math.sin(pas);
-            double translationX = 0;
-            double translationY = 0;
+            int pas = 360/nbPlatform;  // en dégré
+            double rayon = 3*b.getHeight()/8;
             
-            double l = 4;
+            double l = 3;
             double h = 1;
             
             Vec2 v0 = new Vec2((b.getWidth()-l)/2,(b.getHeight()-h)/2);
             Vec2 v1 = v0.add(new Vec2(0,-rayon));
-            Vec2 v = new Vec2(0,0);
-            Vec2 trans = new Vec2(translationX,translationY);
             
-            int arret = 0;
-            while (arret!=360){
-                if (translationX < rayon & translationX > -rayon){
-                    translationX = translationX + pasX;
-                }else{
-                    translationX = translationX - pasX;
-                }
-                if (translationY < rayon & translationY > -rayon){
-                    translationY = translationY + pasY;
-                }else{
-                    translationY = translationY - pasY;
-                }
-                v = v1.add(trans);
-                m.objects.add(new Platform(g, v, l, h,3));
-                arret = arret + pas;
+            Platform p0 = new Platform(g,v0,l,h,3);
+            
+            int i=0;
+            while (i<nbPlatform) {
+                Platform p1 = new Platform(g,v1,l,h,3);
+                m.objects.add(p1.rotation(p0, i*pas));
+                i++;
             }
-            //for int i=0; i<360
-            m.objects.add(new Platform(g, new Vec2(0*ratioX,7*ratioY), 3*ratioX, (hauteurDeSaut/4)*ratioY,1));
-            m.objects.add(new Platform(g, new Vec2(0*ratioX, 12*ratioY),   6*ratioX, 0.5*ratioY,1));
-            m.objects.add(new Platform(g, new Vec2(0*ratioX, 18*ratioY), 25*ratioX, 0.5*ratioY,1));
-        
-            m.objects.add(new Platform(g, new Vec2(27*ratioX, 4*ratioY), 1*ratioX, 4*ratioY,4));
-            m.objects.add(new Platform(g, new Vec2(26*ratioX, 10*ratioY), 3*ratioX, 3*ratioY,5));
-        
-            m.objects.add(new Platform(g, new Vec2(30*ratioX, 18*ratioY), 10*ratioX, 0.5*ratioY,1));
-            m.objects.add(new Platform(g, new Vec2(33*ratioX, 10*ratioY), 7*ratioX, 0.5*ratioY,1));
-        
-            m.objects.add(new Platform(g, new Vec2(5*ratioX, 16*ratioY), 3.5*ratioX, 0.5*ratioY,1));
-        
-            m.objects.add(new Platform(g, new Vec2(4*ratioX, 10*ratioY), 12*ratioX, 0.5*ratioY,1));
-            m.objects.add(new Platform(g, new Vec2(9*ratioX, 6*ratioY), 10*ratioX, 0.5*ratioY,1));
-            m.objects.add(new Platform(g, new Vec2(11*ratioX, 3*ratioY), 7*ratioX, 0.5*ratioY,1));
+            m.objects.add(new Platform(g, new Vec2(0,(b.getHeight()-h)/2),l,h,2));
+            m.objects.add(new Platform(g, new Vec2(0,b.getHeight()-6*h),0.5*l,6*h,4));
+            m.objects.add(new Platform(g, new Vec2(0.5*l,b.getHeight()-4*h),l,4*h,5));
+            
+            m.objects.add(new Platform(g, new Vec2(b.getWidth()-l,((b.getHeight()-h)/2)),l,h,2));
+            m.objects.add(new Platform(g, new Vec2(b.getWidth()-0.5*l,b.getHeight()-6*h),0.5*l,6*h,4));
+            m.objects.add(new Platform(g, new Vec2(b.getWidth()-l-0.5*l,b.getHeight()-4*h),l,4*h,5));
         }
         else if (mapNumber == 2 || mapNumber == 3 || mapNumber == 4 || mapNumber == 5){
             int nbPlatform = 1;
