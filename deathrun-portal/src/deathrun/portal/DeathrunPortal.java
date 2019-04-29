@@ -25,6 +25,7 @@ public class DeathrunPortal {
         Player controled, otherone;
         //try {
             game.init();	// connecte au serveur et construit tous les objets tels que dans la base de donnnées
+            //TODO: check dans la db players et ajouter au jeu tous ceux deja existants
             controled = new Player(game, "blue", 1);	// TODO: choisir le nom et l'avatar du joueur
             otherone = new Player(game, "orange", 2);	// TODO: choisir le nom et l'avatar du joueur
             controled.setControled(true);

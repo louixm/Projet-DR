@@ -10,6 +10,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.io.File;
 import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -49,6 +51,19 @@ public class Player extends PObject {
                 this.avatars[2] = ImageIO.read(new File("./images/robotOrange.png"));
             } catch (IOException ex) {
                 Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        if (game.sync != null) {
+            PreparedStatement req = game.sync.srv.prepareStatement("SELECT EXISTS(SELECT id FROM players WHERE id = ?)");
+            req.setInt(1, db_id);
+            ResultSet r = req.executeQuery();
+            r.next();
+            if (!r.getBoolean(1)) {
+                req = game.sync.srv.prepareStatement("INSERT INTO players VALUES (?, 0, 0, 0, 0)"); //TODO
+                req.setInt(1, db_id);
+                req.executeUpdate();
+                req.close();
             }
         }
     }
