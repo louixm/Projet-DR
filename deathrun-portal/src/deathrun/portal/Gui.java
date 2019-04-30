@@ -46,6 +46,8 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
     private Graphics2D bufferContext;
     private Timer timer;
     
+    private SelectBloc selectBloc;
+    
     public Game game;
     public Player controled;
     
@@ -150,8 +152,9 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
     @Override
     public void mouseClicked(MouseEvent e) { //Moment où le bouton de la souris a été pressé et relaché
         if (e.getButton()==1) { //Si un clic gauche a été effectué
-//            this.bloc.blocAPoser = 1;
-//            if (this.bloc.blocAPoser == 1){  //Test pour savoir quel bloc a été choisi dans la fenetre SelectBloc
+            SelectBloc selection = new SelectBloc();
+            selection.setVisible(true);
+            if (selection.blocAPoser == 0){  //Test pour savoir quel bloc a été choisi dans la fenetre SelectBloc
                 try { 
                 this.game.map.objects.add(new Platform(this.game, new Vec2(e.getX()/scale, e.getY()/scale), new Box (0,0,2,1.5), 0)); //Ajout du bloc aux coordonnées du clic
                 } catch (IOException ex) {
@@ -160,7 +163,11 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
                     Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 System.out.println("Plateforme posée en (x = " + e.getX() + "; y = " + e.getY()+ ").");
-//            }
+            }
+            else{
+                System.out.println("Aucun bloc n'a été posé.");
+            }
+            selection.setVisible(false);
         }
     }
 
