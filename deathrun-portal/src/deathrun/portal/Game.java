@@ -12,6 +12,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -58,7 +60,7 @@ public class Game {
         // suppose que les données sont synchronisées et que l'etat précédent est ok
         
         for (Player player: players) { 
-            if (player.isControled()) player.onGameStep(this);
+            if (player.isControled()) player.applyMovementChanges();
             
             // pas de mise a jour de vitesse si pas d'acceleration
             if (! player.acceleration.isnull()) {
@@ -189,8 +191,14 @@ public class Game {
                     int id = r.getInt("id");
                     PObject obj; boolean isControled = false;
                     if (id < 0) {
-                        obj = players.get(-id-1);
-                        isControled = players.get(-id-1).isControled();
+                        try {
+                            obj = players.get(-id-1);
+                            isControled = players.get(-id-1).isControled();
+                        }
+                        catch (IndexOutOfBoundsException e){
+                            obj = syncNewPlayer(id);                      
+                        }
+                        
                     }
                     else        obj = map.objects.get(id);
                     if (!isControled){
@@ -213,7 +221,22 @@ public class Game {
     }
     
     public Sync getSync() {return sync;}
-
+    
+    public PObject syncNewPlayer(int db_id){
+        PObject obj;
+        if (this.sync != null) {
+            try {
+                PreparedStatement req = this.sync.srv.prepareStatement("SELECT * FROM players WHERE id = ?");
+                req.setInt(1, db_id);
+                ResultSet r = req.executeQuery();
+                obj = new Player(this, r.getString("name"), r.getInt("avatar"));
+                return obj;
+            } catch (SQLException ex) {
+                Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return null;
+    }
   
             
 }
