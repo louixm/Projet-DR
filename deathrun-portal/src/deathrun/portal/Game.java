@@ -26,7 +26,7 @@ public class Game {
     
     long prev_time; // (ns) instant de dernier pas physique
     long next_sync; // (ns) instant de prochaine synchronisation prévue de l'etat du jeu avec la BDD
-    final long sync_interval = 10000000; // (ns) temps minimum entre chaque synchronisation avec la BDD
+    final long sync_interval = 100000000; // (ns) temps minimum entre chaque synchronisation avec la BDD
     Timestamp db_last_sync;
     
     public final double gravity = 9.81;
@@ -184,33 +184,32 @@ public class Game {
             if (sync == null)   return;
             // sinon essai de connexion
             try {                
+                // recupérer les infos du serveur plus récentes que la derniere reception
                 PreparedStatement req = sync.srv.prepareStatement("SELECT * FROM pobjects WHERE date_sync > ?;");
                 req.setTimestamp(1, db_last_sync);
-                // TODO: ne demander que les objets dont la date de mise a jour est plus recente que la derniere reception
+                
                 ResultSet r = req.executeQuery();
                 while (r.next()) {
                     int id = r.getInt("id");
                     PObject obj; 
-                    //boolean isControled = false;
+                    
                     if (id < 0) {
                         try {
                             obj = players.get(-id-1);
-                            //isControled = players.get(-id-1).isControled();
                         }
                         catch (IndexOutOfBoundsException e){
                             obj = syncNewPlayer(id);                      
                         }
                     }
                     else        obj = map.objects.get(id);
-                    //if (!isControled){
+                    
                     Timestamp server_sync = r.getTimestamp("date_sync");
                     if (server_sync.compareTo(obj.last_sync) > 0) {
                         obj.setPosition(new Vec2(r.getInt("x")/1000, r.getInt("y")/1000));
                         obj.velocity.x = r.getDouble("vx");
                         obj.velocity.y = r.getDouble("vy");
-                        System.out.println("updated object "+id);
+                        //System.out.println("updated object "+id);
                     }
-                    //}
                 }
                 r.close();
                 
