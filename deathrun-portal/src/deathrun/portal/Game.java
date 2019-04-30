@@ -160,7 +160,7 @@ public class Game {
                 String name = r.getString("name");
                 int avatar = r.getInt("avatar");
                 Player player = new Player(this, name, avatar);
-                syncUpdate(true);
+                //syncUpdate(true);
                 System.out.println("initialized player " + name + " with skin #" + avatar);   
                 //id, name, score, id_object, avatar
             }
@@ -208,11 +208,13 @@ public class Game {
                         System.out.println("updated object "+id);
                     }
                 }
+                r.close();
                 
                 req = sync.srv.prepareStatement("SELECT now();");
                 r = req.executeQuery();
                 r.next();
                 db_last_sync = r.getTimestamp(1);
+                r.close();
             }
             catch (SQLException err) {
                 System.out.println("syncUpdate: "+err);
@@ -226,10 +228,15 @@ public class Game {
         PObject obj;
         if (this.sync != null) {
             try {
+                System.out.println("prep id = " + db_id);
                 PreparedStatement req = this.sync.srv.prepareStatement("SELECT * FROM players WHERE id = ?");
                 req.setInt(1, db_id);
                 ResultSet r = req.executeQuery();
-                obj = new Player(this, r.getString("name"), r.getInt("avatar"));
+                String name = r.getString("name");
+                int avatar = r.getInt("avatar");
+                obj = new Player(this, name, avatar);
+                System.out.println("initialized player " + name + " with skin #" + avatar);
+                r.close();
                 return obj;
             } catch (SQLException ex) {
                 Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
