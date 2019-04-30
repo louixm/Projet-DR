@@ -124,6 +124,11 @@ public class Player extends PObject {
         this.jump = jump;  
     }
     
+    @Override
+    public void onGameStep(Game game) {
+        applyMovementChanges();
+    }
+    
     public void applyMovementChanges(){
         if (this.left && (!this.right || !this.leftAndRightWithPriorityOnRight)){
             if (this.velocity.x > 0) this.acceleration.x = -40;
