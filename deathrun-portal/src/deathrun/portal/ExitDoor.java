@@ -36,11 +36,9 @@ public class ExitDoor extends PObject{
     }
      
     //--------------- interface de gestion des collisions -----------------
-    public boolean collisionable(PObject other)  { 
-        return false;
-    }
+    public int collisionable(PObject other)  { return 2; }
     @Override
-    public Box getCollisionBox()       { return null; }
+    public Box getCollisionBox()       { return box; }
     
     //--------------- interface d'affichage -----------------
     @Override

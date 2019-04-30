@@ -88,7 +88,9 @@ public class Game {
             
             // collisions avec les objets
             for (PObject object: map.objects) {
-                if (player.collisionable(object) && object.collisionable(player)) {
+                int obj_collisionable = object.collisionable(player);
+                int pl_collisionable = player.collisionable(object);
+                if (pl_collisionable != 0 && obj_collisionable != 0) {
                     bplayer = player.getCollisionBox();
                     Box bobject = object.getCollisionBox();
                     if (bplayer.intersect(bobject)) {

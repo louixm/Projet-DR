@@ -46,8 +46,12 @@ abstract public class PObject {
     }
 
     //--------------- interface de gestion des collisions -----------------
-    /// retourne vrai si les deux objets peuvent entrer en collision si ils se superposent
-    public boolean collisionable(PObject other) { return false; }
+    /** retourne 
+        0 si les deux objets se superposent
+        1 si les deux objets peuvent entrer en collision
+        2 si les deux objets se superposent mais qu'on veut que onCollision() soit appellée
+    */    
+    public int collisionable(PObject other) { return 0; }
     /// renvoie la boite de collision de l'objet dans l'espace courant (doit prendre en compte la position)
     public Box getCollisionBox() { return null; }
     
@@ -102,4 +106,9 @@ abstract public class PObject {
             System.out.println("sql exception:\n"+err);
         }
     }
+    
+    /// appellé a chaque iteration de la boucle principale du jeu
+    public void onGameStep(Game g) {}
+    /// appellé en cas de collision detectée
+    public void onCollision(Game g, PObject other) {}
 }
