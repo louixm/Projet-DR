@@ -13,18 +13,18 @@ import javax.imageio.ImageIO;
  *
  * @author trazafit
  */
-public class ExitDoor extends PObject{
+public class EnterDoor extends PObject{
     Box box;
     static Image img;
     final double size = 3;
     
-    public ExitDoor(Game game, Vec2 position) throws IOException, SQLException {
+    public EnterDoor(Game game, Vec2 position) throws IOException, SQLException {
         super(game);
         this.box = new Box(position.x-size/2, position.y-size/2, position.x+size/2, position.y+size/2);
         this.position = position;
         
         if (img == null) {
-            img = ImageIO.read(new File("./images/porteSortie.png"));
+            img = ImageIO.read(new File("./images/DoorUnlocked.png"));
         }
     }
     
@@ -55,3 +55,4 @@ public class ExitDoor extends PObject{
     }
     
 }
+

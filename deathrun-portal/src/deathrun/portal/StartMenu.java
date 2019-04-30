@@ -5,19 +5,26 @@
  */
 package deathrun.portal;
 
+import java.awt.Image;
+
 /**
  *
  * @author trazafit
  */
 public class StartMenu extends javax.swing.JFrame {
-
     /**
      * Creates new form StartMenu
      */
     public StartMenu() {
         initComponents();
+        imageSentryBot.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/sentrybot.png").getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT)));
+        imageBotBleu.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/robotBleu.png").getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT)));
+        imageBotOrange.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/robotOrange.png").getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT)));
+        imageFond.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/fondmenu.png").getImage().getScaledInstance(500, 500, Image.SCALE_DEFAULT)));
     }
-
+    
+    public int avatar;
+    public boolean start;
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -28,15 +35,21 @@ public class StartMenu extends javax.swing.JFrame {
     private void initComponents() {
 
         startButton = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        listeChoixAvatar = new javax.swing.JList<>();
         labelChoixAvatar = new javax.swing.JLabel();
         labelDeathRun = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         listeJoueurs = new javax.swing.JList<>();
         labelJoueursConnectes = new javax.swing.JLabel();
+        imageBotOrange = new javax.swing.JButton();
+        imageSentryBot = new javax.swing.JButton();
+        imageBotBleu = new javax.swing.JButton();
+        imageFond = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMaximumSize(new java.awt.Dimension(400, 400));
+        setMinimumSize(new java.awt.Dimension(500, 350));
+        setPreferredSize(new java.awt.Dimension(400, 280));
+        getContentPane().setLayout(null);
 
         startButton.setText("Start");
         startButton.addActionListener(new java.awt.event.ActionListener() {
@@ -44,19 +57,23 @@ public class StartMenu extends javax.swing.JFrame {
                 startButtonActionPerformed(evt);
             }
         });
+        getContentPane().add(startButton);
+        startButton.setBounds(410, 270, 57, 23);
 
-        listeChoixAvatar.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane1.setViewportView(listeChoixAvatar);
-
+        labelChoixAvatar.setFont(new java.awt.Font("Trebuchet MS", 3, 18)); // NOI18N
+        labelChoixAvatar.setForeground(new java.awt.Color(255, 153, 51));
         labelChoixAvatar.setText("Choisir un avatar");
+        labelChoixAvatar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        labelChoixAvatar.setMaximumSize(new java.awt.Dimension(100, 50));
+        labelChoixAvatar.setMinimumSize(new java.awt.Dimension(100, 50));
+        getContentPane().add(labelChoixAvatar);
+        labelChoixAvatar.setBounds(30, 100, 170, 21);
 
-        labelDeathRun.setFont(new java.awt.Font("Trebuchet MS", 1, 24)); // NOI18N
-        labelDeathRun.setForeground(new java.awt.Color(51, 51, 255));
+        labelDeathRun.setFont(new java.awt.Font("Trebuchet MS", 1, 36)); // NOI18N
+        labelDeathRun.setForeground(new java.awt.Color(0, 102, 255));
         labelDeathRun.setText("Death Run Portal");
+        getContentPane().add(labelDeathRun);
+        labelDeathRun.setBounds(90, 10, 360, 42);
 
         listeJoueurs.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -65,58 +82,73 @@ public class StartMenu extends javax.swing.JFrame {
         });
         jScrollPane2.setViewportView(listeJoueurs);
 
-        labelJoueursConnectes.setText("Joueurs connectés");
+        getContentPane().add(jScrollPane2);
+        jScrollPane2.setBounds(390, 90, 80, 140);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 99, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(startButton)
-                                .addGap(30, 30, 30))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(labelDeathRun)
-                                .addGap(100, 100, 100))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(labelChoixAvatar)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(labelJoueursConnectes))
-                        .addContainerGap())))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(labelDeathRun)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(labelChoixAvatar, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(labelJoueursConnectes, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(49, 49, 49)
-                .addComponent(startButton)
-                .addContainerGap())
-        );
+        labelJoueursConnectes.setForeground(new java.awt.Color(255, 153, 51));
+        labelJoueursConnectes.setText("Joueurs connectés");
+        getContentPane().add(labelJoueursConnectes);
+        labelJoueursConnectes.setBounds(380, 70, 150, 14);
+
+        imageBotOrange.setIcon(new javax.swing.ImageIcon("Z:\\Mes documents\\INFO\\Projet-DR\\deathrun-portal\\images\\sentrybot.png")); // NOI18N
+        imageBotOrange.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                imageBotOrangeActionPerformed(evt);
+            }
+        });
+        getContentPane().add(imageBotOrange);
+        imageBotOrange.setBounds(230, 130, 80, 70);
+
+        imageSentryBot.setIcon(new javax.swing.ImageIcon("Z:\\Mes documents\\INFO\\Projet-DR\\deathrun-portal\\images\\sentrybot.png")); // NOI18N
+        imageSentryBot.setDisabledIcon(null);
+        imageSentryBot.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                imageSentryBotActionPerformed(evt);
+            }
+        });
+        getContentPane().add(imageSentryBot);
+        imageSentryBot.setBounds(20, 130, 80, 70);
+
+        imageBotBleu.setIcon(new javax.swing.ImageIcon("Z:\\Mes documents\\INFO\\Projet-DR\\deathrun-portal\\images\\sentrybot.png")); // NOI18N
+        imageBotBleu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                imageBotBleuActionPerformed(evt);
+            }
+        });
+        getContentPane().add(imageBotBleu);
+        imageBotBleu.setBounds(120, 130, 80, 70);
+
+        imageFond.setText("jButton1");
+        imageFond.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                imageFondActionPerformed(evt);
+            }
+        });
+        getContentPane().add(imageFond);
+        imageFond.setBounds(0, 0, 510, 320);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
-        // TODO add your handling code here:
+        start=true;
     }//GEN-LAST:event_startButtonActionPerformed
+
+    private void imageBotOrangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_imageBotOrangeActionPerformed
+        avatar = 3;
+    }//GEN-LAST:event_imageBotOrangeActionPerformed
+
+    private void imageSentryBotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_imageSentryBotActionPerformed
+        avatar = 1;
+    }//GEN-LAST:event_imageSentryBotActionPerformed
+
+    private void imageBotBleuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_imageBotBleuActionPerformed
+        avatar = 2;
+    }//GEN-LAST:event_imageBotBleuActionPerformed
+
+    private void imageFondActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_imageFondActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_imageFondActionPerformed
 
     /**
      * @param args the command line arguments
@@ -154,12 +186,14 @@ public class StartMenu extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton imageBotBleu;
+    private javax.swing.JButton imageBotOrange;
+    private javax.swing.JButton imageFond;
+    private javax.swing.JButton imageSentryBot;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel labelChoixAvatar;
     private javax.swing.JLabel labelDeathRun;
     private javax.swing.JLabel labelJoueursConnectes;
-    private javax.swing.JList<String> listeChoixAvatar;
     private javax.swing.JList<String> listeJoueurs;
     private javax.swing.JButton startButton;
     // End of variables declaration//GEN-END:variables

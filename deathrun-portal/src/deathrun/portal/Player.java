@@ -10,6 +10,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.io.File;
 import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,8 +36,8 @@ public class Player extends PObject {
     public static BufferedImage avatars[];
     
     
-    public Player(Game game, String name, int avatar) {
-        super(-game.players.size()-1);  // creer en ajoutant a la fin
+    public Player(Game game, String name, int avatar) throws SQLException {
+        super(game, -game.players.size()-1);  // creer en ajoutant a la fin
         game.players.add(this);
         this.name = name; 
         this.avatar = avatar;
@@ -50,6 +53,21 @@ public class Player extends PObject {
                 Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        
+        if (game.sync != null) {
+            PreparedStatement req = game.sync.srv.prepareStatement("SELECT EXISTS(SELECT id FROM players WHERE id = ?)");
+            req.setInt(1, db_id);
+            ResultSet r = req.executeQuery();
+            r.next();
+            if (!r.getBoolean(1)) {
+                req = game.sync.srv.prepareStatement("INSERT INTO players VALUES (?, ?, 0, 0, ?)"); //TODO
+                req.setInt(1, db_id);
+                req.setString(2, name);
+                req.setInt(3, avatar);
+                req.executeUpdate();
+                req.close();
+            }
+        }
     }
     
     @Override
@@ -59,15 +77,16 @@ public class Player extends PObject {
     }
     
     //--------------- interface de gestion des collisions -----------------
-    public boolean collisionable(PObject other) { 
-        return ! (other instanceof Player);
+    public int collisionable(PObject other) { 
+        if (other instanceof Player)    return 0;
+        else                            return 1;
     }
     @Override
     public Box getCollisionBox() 	{ return collision_box; }
     
     //--------------- interface d'affichage -----------------
     @Override
-    public void render(Graphics2D g, float scale, boolean drawHitBox) {
+    public void render(Graphics2D g, float scale) {
         
         g.drawImage(avatars[avatar], 
             (int) (collision_box.p1.x*scale), 
@@ -78,7 +97,7 @@ public class Player extends PObject {
             avatars[avatar].getWidth(null), avatars[avatar].getHeight(null),
             null);
         
-        super.render(g, scale, drawHitBox);
+        super.render(g, scale);
         // TODO
     }
 //    
@@ -105,6 +124,11 @@ public class Player extends PObject {
     }
     public void setJump(boolean jump) { 
         this.jump = jump;  
+    }
+    
+    @Override
+    public void onGameStep(Game game) {
+        applyMovementChanges();
     }
     
     public void applyMovementChanges(){

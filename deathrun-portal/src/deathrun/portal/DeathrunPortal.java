@@ -25,20 +25,23 @@ public class DeathrunPortal {
         Player controled, otherone;
         //try {
             game.init();	// connecte au serveur et construit tous les objets tels que dans la base de donnnées
+            //TODO: check dans la db players et ajouter au jeu tous ceux deja existants
             controled = new Player(game, "blue", 1);	// TODO: choisir le nom et l'avatar du joueur
-            otherone = new Player(game, "orange", 2);	// TODO: choisir le nom et l'avatar du joueur
+            //otherone = new Player(game, "orange", 2);	// TODO: choisir le nom et l'avatar du joueur
             controled.setControled(true);
 
             /*game.map.objects.add(new Platform(1, new Vec2(10, 5),   2, 0.2));
             game.map.objects.add(new Platform(2, new Vec2(17, 6.5), 10, 3));
             game.map.objects.add(new Platform(3, new Vec2(3, 6.5), 1, 10));
             game.map.objects.add(new Platform(4, new Vec2(3, 16.5), 5, 1));*/
-            game.map = game.map.MapInitialization(2);  // choix de la map 1, 2, 3, 4, 5
+            game.map = game.map.MapInitialization(game, 4);  // choix de la map 1, 2, 3, 4
             controled.setPosition(new Vec2(10, 2));
 
-            otherone.setPosition(new Vec2(12, 2));
-            game.map.objects.add(new ExitDoor(1,new Vec2(20, 15), 3, 3));
-            game.map.objects.add(new Saw(1,new Vec2(2, 2)));
+            //otherone.setPosition(new Vec2(12, 2));
+            
+            game.map.objects.add(new EnterDoor(game, new Vec2(2, 2)));
+            game.map.objects.add(new ExitDoor(game, new Vec2(20, 15)));
+            game.map.objects.add(new Saw(game, new Vec2(2, 2)));
         
 //            game.map.objects.add(new Platform(1, new Vec2(12, 5),   2, 0.2, 3));
 //            game.map.objects.add(new Platform(2, new Vec2(19, 6.5), 10, 3, 1));
@@ -48,7 +51,7 @@ public class DeathrunPortal {
 //            controled.setPosition(new Vec2(12, 1));
             
             controled.acceleration.y = -1; // valeur différente de 0 pour forcer l'update de physicstep initiale
-            otherone.acceleration.y = -1; // valeur différente de 0 pour forcer l'update de physicstep initiale
+//            otherone.acceleration.y = -1; // valeur différente de 0 pour forcer l'update de physicstep initiale
         
         /*
         }

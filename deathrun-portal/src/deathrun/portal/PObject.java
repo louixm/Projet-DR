@@ -22,25 +22,50 @@ abstract public class PObject {
     public Vec2 position;
     public Vec2 velocity;
     public Vec2 acceleration;
+    
+    long prev_time; // (ns) instant de dernier pas physique
+    long next_sync; // (ns) instant de prochaine synchronisation prévue de l'etat du jeu avec la BDD
+    final long sync_interval = 100000000; // (ns) temps minimum entre chaque synchronisation avec la BDD
     Timestamp last_sync;
     
-    PObject(int db_id) 	{ 
+    static boolean drawHitBox = false;
+    
+    PObject(Game game) throws SQLException { this(game, game.map.objects.size()); }
+    PObject(Game game, int db_id) throws SQLException 	{ 
         this.db_id = db_id; 
         this.position = new Vec2();
         this.velocity = new Vec2();
         this.acceleration = new Vec2();
+        
+        this.last_sync = new Timestamp(0);
+        
+        if (game.sync != null) {
+            PreparedStatement req = game.sync.srv.prepareStatement("SELECT EXISTS(SELECT id FROM pobjects WHERE id = ?)");
+            req.setInt(1, db_id);
+            ResultSet r = req.executeQuery();
+            r.next();
+            if (!r.getBoolean(1)) {
+                req = game.sync.srv.prepareStatement("INSERT INTO pobjects VALUES (?,0,0,0,0,0)");
+                req.setInt(1, db_id);
+                req.executeUpdate();
+                req.close();
+            }
+        }
     }
 
     //--------------- interface de gestion des collisions -----------------
-    /// retourne vrai si les deux objets peuvent entrer en collision si ils se superposent
-    public boolean collisionable(PObject other) { return false; }
+    /** retourne 
+        0 si les deux objets se superposent
+        1 si les deux objets peuvent entrer en collision
+        2 si les deux objets se superposent mais qu'on veut que onCollision() soit appellée
+    */    
+    public int collisionable(PObject other) { return 0; }
     /// renvoie la boite de collision de l'objet dans l'espace courant (doit prendre en compte la position)
     public Box getCollisionBox() { return null; }
     
     //--------------- interface d'affichage -----------------
     /// methode d'affichage de l'objet
-    public void render(Graphics2D g, float scale){ render(g, scale, false);}
-    public void render(Graphics2D g, float scale, boolean drawHitBox)  // methode interface
+    public void render(Graphics2D g, float scale)  // methode interface
     {
         // affichage de la boite de collision (pour l'instant)
         if (drawHitBox){
@@ -66,26 +91,37 @@ abstract public class PObject {
     public void setAcceleration(Vec2 a)   { this.acceleration = a; }
     
     /// methode d'envoi des données locales a la base de donnée
-    public void syncSet(Sync sync)	{
-        try {
-            PreparedStatement req = sync.srv.prepareStatement("UPDATE pobjects SET x=?, y=?, vx=?, vy=?, date_sync=NOW() WHERE id = ?");
-            req.setInt(1, (int) (position.x*1000));
-            req.setInt(2, (int) (position.y*1000));
-            req.setDouble(3, velocity.x);
-            req.setDouble(4, velocity.y);
-            // id de l'objet a modifier
-            req.setInt(5, db_id);
-            // execution de la requete
-            req.executeUpdate();
-            req.close();
-            
-            req = sync.srv.prepareStatement("SELECT now();");
-            ResultSet r = req.executeQuery();
-            r.next();
-            last_sync = r.getTimestamp(1);
-        }
-        catch (SQLException err) {
-            System.out.println("sql exception:\n"+err);
+    public void syncSet(Sync sync) { syncSet(sync, false); }
+    public void syncSet(Sync sync, boolean force)	{
+        // recuperer la date
+        long ac_time = System.nanoTime();
+        if (force || ac_time > next_sync) {
+            next_sync = ac_time + sync_interval;
+            try {
+                PreparedStatement req = sync.srv.prepareStatement("UPDATE pobjects SET x=?, y=?, vx=?, vy=?, date_sync=NOW() WHERE id = ?");
+                req.setInt(1, (int) (position.x*1000));
+                req.setInt(2, (int) (position.y*1000));
+                req.setDouble(3, velocity.x);
+                req.setDouble(4, velocity.y);
+                // id de l'objet a modifier
+                req.setInt(5, db_id);
+                // execution de la requete
+                req.executeUpdate();
+                req.close();
+
+                req = sync.srv.prepareStatement("SELECT now();");
+                ResultSet r = req.executeQuery();
+                r.next();
+                last_sync = r.getTimestamp(1);
+            }
+            catch (SQLException err) {
+                System.out.println("sql exception:\n"+err);
+            }
         }
     }
+    
+    /// appellé a chaque iteration de la boucle principale du jeu
+    public void onGameStep(Game g) {}
+    /// appellé en cas de collision detectée
+    public void onCollision(Game g, PObject other) {}
 }

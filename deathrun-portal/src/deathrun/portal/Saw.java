@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import java.awt.geom.AffineTransform;
+import java.sql.SQLException;
 
 /**
  *
@@ -26,8 +27,8 @@ public class Saw extends PObject {
     int typePlateforme;
     int step;
     
-    public Saw(int db_id, Vec2 position) throws IOException {
-        super(db_id);
+    public Saw(Game game, Vec2 position) throws IOException, SQLException {
+        super(game);
         this.collision_box = new Box(-1, -1, 1, 1).translate(position);
         setPosition(position);
         
@@ -44,15 +45,15 @@ public class Saw extends PObject {
     }
     
     //--------------- interface de gestion des collisions -----------------
-    public boolean collisionable(PObject other)  { 
-        return (other instanceof Player);
+    public int collisionable(PObject other)  { 
+        return (other instanceof Player)?1:0;
     }
     @Override
     public Box getCollisionBox()       { return collision_box; }
     
     //--------------- interface d'affichage -----------------
     @Override
-    public void render(Graphics2D canvas, float scale, boolean drawHitBox) {
+    public void render(Graphics2D canvas, float scale) {
         /*
         canvas.drawImage(img[typePlateforme], 
                 (int) (position.x*scale), 
@@ -73,7 +74,7 @@ public class Saw extends PObject {
         canvas.drawImage(img, 
             transform,
             null);
-        super.render(canvas, scale, drawHitBox);
+        super.render(canvas, scale);
 //        canvas.drawImage(img, 
 //                (int) (collision_box.p1.x*scale), 
 //                (int) (collision_box.p1.y*scale), 

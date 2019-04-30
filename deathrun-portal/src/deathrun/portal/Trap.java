@@ -7,6 +7,7 @@ package deathrun.portal;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.sql.SQLException;
 
 /**
  *
@@ -16,8 +17,8 @@ public class Trap extends PObject {
 	boolean enabled;
 	Box collision_box;
 
-	public Trap(int db_id) {
-		super(db_id);
+	public Trap(Game game) throws SQLException {
+            super(game);
 	}
 	
     @Override

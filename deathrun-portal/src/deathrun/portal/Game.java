@@ -12,6 +12,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -20,8 +22,8 @@ import java.util.Calendar;
 public class Game {
     public Map map;
     public ArrayList<Player> players;
+    public  Sync sync;
     
-    private Sync sync;
     long prev_time; // (ns) instant de dernier pas physique
     long next_sync; // (ns) instant de prochaine synchronisation prévue de l'etat du jeu avec la BDD
     final long sync_interval = 100000000; // (ns) temps minimum entre chaque synchronisation avec la BDD
@@ -59,6 +61,7 @@ public class Game {
         
         for (Player player: players) { 
             if (player.isControled()) player.applyMovementChanges();
+            
             // pas de mise a jour de vitesse si pas d'acceleration
             if (! player.acceleration.isnull()) {
                 player.setVelocity(player.velocity.add(player.acceleration.mul(dt)));
@@ -88,37 +91,45 @@ public class Game {
             
             // collisions avec les objets
             for (PObject object: map.objects) {
-                if (player.collisionable(object) && object.collisionable(player)) {
+                int obj_collisionable = object.collisionable(player);
+                int pl_collisionable = player.collisionable(object);
+                if (pl_collisionable != 0 && obj_collisionable != 0) {
                     bplayer = player.getCollisionBox();
                     Box bobject = object.getCollisionBox();
-                    if (bplayer.intersect(bobject)) {
-                        // corriger la position pour que player ne soit plus dans object
-                        Vec2 correction = bobject.outline(bplayer).outer(bplayer.center()).sub(bplayer.center());
-                        // supprimer l'acceleration dans la direction du contact 
-                        if (correction.y < 0) {
-                            player.addCollisionDirection("down");
-                            if (player.acceleration.y > 0)        player.acceleration.y = 0;
-                            if (player.velocity.y > 0)            player.velocity.y = 0;
+                    
+                    if (pl_collisionable == 1 && obj_collisionable == 1) {
+                        if (bplayer.intersect(bobject)) {
+                            // corriger la position pour que player ne soit plus dans object
+                            Vec2 correction = bobject.outline(bplayer).outer(bplayer.center()).sub(bplayer.center());
+                            // supprimer l'acceleration dans la direction du contact 
+                            if (correction.y < 0) {
+                                player.addCollisionDirection("down");
+                                if (player.acceleration.y > 0)        player.acceleration.y = 0;
+                                if (player.velocity.y > 0)            player.velocity.y = 0;
+                            }
+                            else if (correction.y > 0) {
+                                player.addCollisionDirection("up");
+                                if (player.acceleration.y < 0)        player.acceleration.y = 0;
+                                if (player.velocity.y < 0)            player.velocity.y = 0;
+                            }
+                            if (correction.x < 0) {
+                                player.addCollisionDirection("right");
+                                if (player.acceleration.x > 0)        player.acceleration.x = 0;
+                                if (player.velocity.x > 0)            player.velocity.x = 0;
+                            }
+                            else if (correction.x > 0) {
+                                player.addCollisionDirection("left");
+                                if (player.acceleration.x < 0)        player.acceleration.x = 0;
+                                if (player.velocity.x < 0)            player.velocity.x = 0;
+                            }
+
+                            //player.setPosition(newpos2);
+                            player.setPosition(player.position.add(correction));
                         }
-                        else if (correction.y > 0) {
-                            player.addCollisionDirection("up");
-                            if (player.acceleration.y < 0)        player.acceleration.y = 0;
-                            if (player.velocity.y < 0)            player.velocity.y = 0;
-                        }
-                        if (correction.x < 0) {
-                            player.addCollisionDirection("right");
-                            if (player.acceleration.x > 0)        player.acceleration.x = 0;
-                            if (player.velocity.x > 0)            player.velocity.x = 0;
-                        }
-                        else if (correction.x > 0) {
-                            player.addCollisionDirection("left");
-                            if (player.acceleration.x < 0)        player.acceleration.x = 0;
-                            if (player.velocity.x < 0)            player.velocity.x = 0;
-                        }
-                        
-                        //player.setPosition(newpos2);
-                        player.setPosition(player.position.add(correction));
                     }
+                    
+                    player.onCollision(this, object);
+                    object.onCollision(this, player);
                 }
             }
             
@@ -137,6 +148,27 @@ public class Game {
     /// se connecte au serveur et construit toutes les instances d'objet correspondant aux objets de la map et aux joueurs
     void init() {
         map = new Map(new Box(0, 0, 40, 20));
+        
+        if (this.sync != null) {
+            //Players initialization
+            try {                
+                PreparedStatement req = sync.srv.prepareStatement("SELECT * FROM players");
+                ResultSet r = req.executeQuery();
+                while (r.next()) {
+    //                    Vec2 pos = new Vec2(r.getInt("x")/1000, r.getInt("y")/1000);
+    //                    Vec2 vel = new Vec2(r.getDouble("vx"), r.getDouble("vy"));
+                    String name = r.getString("name");
+                    int avatar = r.getInt("avatar");
+                    Player player = new Player(this, name, avatar);
+                    //syncUpdate(true);
+                    System.out.println("initialized player " + name + " with skin #" + avatar);   
+                    //id, name, score, id_object, avatar
+                }
+            }
+            catch (SQLException err) {
+                System.out.println("init players: "+err);
+            }
+        }
     }
     
     
@@ -152,25 +184,40 @@ public class Game {
             if (sync == null)   return;
             // sinon essai de connexion
             try {                
+                // recupérer les infos du serveur plus récentes que la derniere reception
                 PreparedStatement req = sync.srv.prepareStatement("SELECT * FROM pobjects WHERE date_sync > ?;");
                 req.setTimestamp(1, db_last_sync);
-                // TODO: ne demander que les objets dont la date de mise a jour est plus recente que la derniere reception
+                
                 ResultSet r = req.executeQuery();
                 while (r.next()) {
                     int id = r.getInt("id");
-                    PObject obj;
-                    if (id < 0) obj = players.get(-id-1);
+                    PObject obj; 
+                    
+                    if (id < 0) {
+                        try {
+                            obj = players.get(-id-1);
+                        }
+                        catch (IndexOutOfBoundsException e){
+                            obj = syncNewPlayer(id);                      
+                        }
+                    }
                     else        obj = map.objects.get(id);
-                    obj.setPosition(new Vec2(r.getInt("x")/1000, r.getInt("y")/1000));
-                    obj.velocity.x = r.getDouble("vx");
-                    obj.velocity.y = r.getDouble("vy");
-                    System.out.println("updated object "+id);
+                    
+                    Timestamp server_sync = r.getTimestamp("date_sync");
+                    if (server_sync.compareTo(obj.last_sync) > 0) {
+                        obj.setPosition(new Vec2(r.getInt("x")/1000, r.getInt("y")/1000));
+                        obj.velocity.x = r.getDouble("vx");
+                        obj.velocity.y = r.getDouble("vy");
+                        //System.out.println("updated object "+id);
+                    }
                 }
+                r.close();
                 
                 req = sync.srv.prepareStatement("SELECT now();");
                 r = req.executeQuery();
                 r.next();
                 db_last_sync = r.getTimestamp(1);
+                r.close();
             }
             catch (SQLException err) {
                 System.out.println("syncUpdate: "+err);
@@ -179,7 +226,28 @@ public class Game {
     }
     
     public Sync getSync() {return sync;}
-
+    
+    public PObject syncNewPlayer(int db_id){
+        PObject obj;
+        if (this.sync != null) {
+            try {
+                System.out.println("prep id = " + db_id);
+                PreparedStatement req = this.sync.srv.prepareStatement("SELECT * FROM players WHERE id = ?");
+                req.setInt(1, db_id);
+                ResultSet r = req.executeQuery();
+                r.next();
+                String name = r.getString("name");
+                int avatar = r.getInt("avatar");
+                obj = new Player(this, name, avatar);
+                System.out.println("added player " + name + " with skin #" + avatar);
+                r.close();
+                return obj;
+            } catch (SQLException err) {
+                System.out.println("syncNewPlayer: "+err);
+            }
+        }
+        return null;
+    }
   
             
 }
