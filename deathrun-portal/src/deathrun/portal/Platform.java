@@ -47,11 +47,7 @@ public class Platform extends PObject {
         double pasX = rayon*Math.sin(Math.PI*angle/180);
         double pasY = rayon*Math.cos(Math.PI*angle/180);
         centre1 = centre0.add(new Vec2(pasX,pasY));
-        System.out.println("x " + this.position.x);
-        System.out.println("y " + this.position.y);
         this.setPosition(centre1.add(new Vec2(-this.collision_box.getWidth()/2,-this.collision_box.getHeight()/2)));
-        System.out.println("x" + this.position.x);
-        System.out.println("y " + this.position.y);
         return this;
     }
     
