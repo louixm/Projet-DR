@@ -12,6 +12,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -60,7 +62,7 @@ public class Game {
         // suppose que les données sont synchronisées et que l'etat précédent est ok
         
         for (Player player: players) { 
-            if (player.isControled()) player.onGameStep(this);
+            if (player.isControled()) player.applyMovementChanges();
             
             // pas de mise a jour de vitesse si pas d'acceleration
             if (! player.acceleration.isnull()) {
@@ -149,24 +151,26 @@ public class Game {
     void init() {
         map = new Map(new Box(0, 0, 40, 20));
         
-        //Players initialization
-        try {                
-            PreparedStatement req = sync.srv.prepareStatement("SELECT * FROM players");
-            ResultSet r = req.executeQuery();
-            while (r.next()) {
+        if (this.sync != null) {
+            //Players initialization
+            try {                
+                PreparedStatement req = sync.srv.prepareStatement("SELECT * FROM players");
+                ResultSet r = req.executeQuery();
+                while (r.next()) {
 
-//                    Vec2 pos = new Vec2(r.getInt("x")/1000, r.getInt("y")/1000);
-//                    Vec2 vel = new Vec2(r.getDouble("vx"), r.getDouble("vy"));
-                String name = r.getString("name");
-                int avatar = r.getInt("avatar");
-                Player player = new Player(this, name, avatar);
-                syncUpdate(true);
-                System.out.println("initialized player " + name + " with skin #" + avatar);   
-                //id, name, score, id_object, avatar
+    //                    Vec2 pos = new Vec2(r.getInt("x")/1000, r.getInt("y")/1000);
+    //                    Vec2 vel = new Vec2(r.getDouble("vx"), r.getDouble("vy"));
+                    String name = r.getString("name");
+                    int avatar = r.getInt("avatar");
+                    Player player = new Player(this, name, avatar);
+                    //syncUpdate(true);
+                    System.out.println("initialized player " + name + " with skin #" + avatar);   
+                    //id, name, score, id_object, avatar
+                }
             }
-        }
-        catch (SQLException err) {
-            System.out.println("syncUpdate: "+err);
+            catch (SQLException err) {
+                System.out.println("syncUpdate: "+err);
+            }
         }
     }
     
@@ -191,8 +195,14 @@ public class Game {
                     int id = r.getInt("id");
                     PObject obj; boolean isControled = false;
                     if (id < 0) {
-                        obj = players.get(-id-1);
-                        isControled = players.get(-id-1).isControled();
+                        try {
+                            obj = players.get(-id-1);
+                            isControled = players.get(-id-1).isControled();
+                        }
+                        catch (IndexOutOfBoundsException e){
+                            obj = syncNewPlayer(id);                      
+                        }
+                        
                     }
                     else        obj = map.objects.get(id);
                     if (!isControled){
@@ -202,11 +212,13 @@ public class Game {
                         System.out.println("updated object "+id);
                     }
                 }
+                r.close();
                 
                 req = sync.srv.prepareStatement("SELECT now();");
                 r = req.executeQuery();
                 r.next();
                 db_last_sync = r.getTimestamp(1);
+                r.close();
             }
             catch (SQLException err) {
                 System.out.println("syncUpdate: "+err);
@@ -215,7 +227,27 @@ public class Game {
     }
     
     public Sync getSync() {return sync;}
-
+    
+    public PObject syncNewPlayer(int db_id){
+        PObject obj;
+        if (this.sync != null) {
+            try {
+                System.out.println("prep id = " + db_id);
+                PreparedStatement req = this.sync.srv.prepareStatement("SELECT * FROM players WHERE id = ?");
+                req.setInt(1, db_id);
+                ResultSet r = req.executeQuery();
+                String name = r.getString("name");
+                int avatar = r.getInt("avatar");
+                obj = new Player(this, name, avatar);
+                System.out.println("initialized player " + name + " with skin #" + avatar);
+                r.close();
+                return obj;
+            } catch (SQLException ex) {
+                Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return null;
+    }
   
             
 }
