@@ -5,6 +5,7 @@
  */
 package deathrun.portal;
 
+import java.io.IOException;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -75,7 +76,7 @@ public class Game {
             
             // collisions avec les bords de l'ecran
             Box bplayer = player.getCollisionBox();
-            
+            //player.setPosition(new Vec2(10,10));
             if (bplayer.p1.x < map.size.p1.x) {
                 double newx = map.size.p1.x - bplayer.p1.x + player.position.x;
                 player.setPosition(new Vec2(newx, player.position.y));
@@ -136,7 +137,7 @@ public class Game {
             // position maintenant corrigée
             // si sync n'est pas instancié, fonctionnement hors ligne
             if (sync != null && player.isControled())   {
-                System.out.println("send sync for "+player.db_id);
+                //System.out.println("send sync for "+player.db_id);
                 player.syncSet(sync);
             }
         }
@@ -146,8 +147,9 @@ public class Game {
     
     
     /// se connecte au serveur et construit toutes les instances d'objet correspondant aux objets de la map et aux joueurs
-    void init() {
+    void init(int i) throws IOException, SQLException {
         map = new Map(new Box(0, 0, 40, 20));
+        this.map = this.map.MapInitialization(this, i);
         
         if (this.sync != null) {
             //Players initialization
@@ -179,6 +181,8 @@ public class Game {
         long ac_time = System.nanoTime();
         if (force || ac_time > next_sync) {
             next_sync = ac_time + sync_interval;
+            
+            System.out.println("sync get");
             
             // si sync n'est pas instancié, fonctionnement hors ligne
             if (sync == null)   return;

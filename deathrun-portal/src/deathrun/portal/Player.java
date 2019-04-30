@@ -30,29 +30,54 @@ public class Player extends PObject {
     private Vec2 previousPosition;
     private ArrayList<String> collisionDirection;
     private boolean controled = false;
-    
+//    private BufferedImage robot, robotBase, robotDr, robotDrEx, robotSaut, robotBasegauche, robotgauche, robotgaucheex, robotsautgauche;     // rajouté par louis animation
     Box collision_box;
     
     public static BufferedImage avatars[];
     
+    public static int availableId(Game game) {
+        int id = -1;
+        boolean id_found = true;
+        while (id_found) {
+            id_found = false;
+            for (int i=0; i<game.players.size(); i++) {
+                if (game.players.get(i).db_id == id)    {
+                    id_found = true;
+                    --id;
+                    break;
+                }
+            }
+        }
+        return id;
+    }
     
     public Player(Game game, String name, int avatar) throws SQLException {
-        super(game, -game.players.size()-1);  // creer en ajoutant a la fin
+        super(game, availableId(game));  // creer en ajoutant a la fin
         game.players.add(this);
         this.name = name; 
         this.avatar = avatar;
         collision_box = new Box(-0.5, 0, 0.5, 1.8);
-        
         if (avatars == null) {
             this.avatars = new BufferedImage[3];
             try {
                 this.avatars[0] = ImageIO.read(new File("./images/sentrybot.png"));
                 this.avatars[1] = ImageIO.read(new File("./images/robotBleu.png"));
                 this.avatars[2] = ImageIO.read(new File("./images/robotOrange.png"));
+//                this.robotBase = ImageIO.read(new File("robotbase.png"));    // rajouté par louis animation
+//                this.robotDr = ImageIO.read(new File("robotdroite.png"));    // rajouté par louis animation
+//                this.robotDrEx = ImageIO.read(new File("robotdroitee.png"));    // rajouté par louis animation
+//                this.robotSaut = ImageIO.read(new File("robotsaut.png"));    // rajouté par louis animation
+//                this.robotBasegauche = ImageIO.read(new File("robotbasegauche.png"));    // rajouté par louis animation
+//                this.robotgauche = ImageIO.read(new File("robotgauche.png"));    // rajouté par louis animation
+//                this.robotgaucheex = ImageIO.read(new File("robotdgaucheex.png"));    // rajouté par louis animation
+//                this.robotsautgauche = ImageIO.read(new File("robotsautgauche.png"));    // rajouté par louis animation
             } catch (IOException ex) {
                 Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        
+        this.setPosition(game.map.enter.position.add(new Vec2(-0.25,0)));
+        
         
         if (game.sync != null) {
             PreparedStatement req = game.sync.srv.prepareStatement("SELECT EXISTS(SELECT id FROM players WHERE id = ?)");
@@ -68,6 +93,7 @@ public class Player extends PObject {
                 req.close();
             }
         }
+        //previousPosition = game.map.enter.position;
     }
     
     @Override
@@ -87,6 +113,9 @@ public class Player extends PObject {
     //--------------- interface d'affichage -----------------
     @Override
     public void render(Graphics2D g, float scale) {
+        
+        
+        
         
         g.drawImage(avatars[avatar], 
             (int) (collision_box.p1.x*scale), 

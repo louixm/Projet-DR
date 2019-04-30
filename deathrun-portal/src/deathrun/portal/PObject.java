@@ -97,6 +97,9 @@ abstract public class PObject {
         long ac_time = System.nanoTime();
         if (force || ac_time > next_sync) {
             next_sync = ac_time + sync_interval;
+            
+            System.out.println("sync set");
+            
             try {
                 PreparedStatement req = sync.srv.prepareStatement("UPDATE pobjects SET x=?, y=?, vx=?, vy=?, date_sync=NOW() WHERE id = ?");
                 req.setInt(1, (int) (position.x*1000));
