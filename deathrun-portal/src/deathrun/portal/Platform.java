@@ -70,7 +70,7 @@ public class Platform extends PObject {
     
     //--------------- interface d'affichage -----------------
     @Override
-    public void render(Graphics2D canvas, float scale, boolean drawHitBox) {
+    public void render(Graphics2D canvas, float scale) {
         /*
         canvas.drawImage(img[typePlateforme], 
                 (int) (position.x*scale), 
@@ -84,7 +84,7 @@ public class Platform extends PObject {
                 0, 0,
                 img[typePlateforme].getWidth(null), img[typePlateforme].getHeight(null),
                 null);
-        super.render(canvas, scale, drawHitBox);
+        super.render(canvas, scale);
         // TODO
     }
     
