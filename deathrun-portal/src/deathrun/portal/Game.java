@@ -5,6 +5,7 @@
  */
 package deathrun.portal;
 
+import java.io.IOException;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -75,7 +76,7 @@ public class Game {
             
             // collisions avec les bords de l'ecran
             Box bplayer = player.getCollisionBox();
-            
+            //player.setPosition(new Vec2(10,10));
             if (bplayer.p1.x < map.size.p1.x) {
                 double newx = map.size.p1.x - bplayer.p1.x + player.position.x;
                 player.setPosition(new Vec2(newx, player.position.y));
@@ -136,7 +137,7 @@ public class Game {
             // position maintenant corrigée
             // si sync n'est pas instancié, fonctionnement hors ligne
             if (sync != null && player.isControled())   {
-                System.out.println("send sync for "+player.db_id);
+                //System.out.println("send sync for "+player.db_id);
                 player.syncSet(sync);
             }
         }
@@ -146,8 +147,9 @@ public class Game {
     
     
     /// se connecte au serveur et construit toutes les instances d'objet correspondant aux objets de la map et aux joueurs
-    void init() {
+    void init(int i) throws IOException, SQLException {
         map = new Map(new Box(0, 0, 40, 20));
+        this.map = this.map.MapInitialization(this, i);
         
         if (this.sync != null) {
             //Players initialization
@@ -180,37 +182,38 @@ public class Game {
         if (force || ac_time > next_sync) {
             next_sync = ac_time + sync_interval;
             
+            System.out.println("sync get");
+            
             // si sync n'est pas instancié, fonctionnement hors ligne
             if (sync == null)   return;
             // sinon essai de connexion
             try {                
+                // recupérer les infos du serveur plus récentes que la derniere reception
                 PreparedStatement req = sync.srv.prepareStatement("SELECT * FROM pobjects WHERE date_sync > ?;");
                 req.setTimestamp(1, db_last_sync);
-                // TODO: ne demander que les objets dont la date de mise a jour est plus recente que la derniere reception
+                
                 ResultSet r = req.executeQuery();
                 while (r.next()) {
                     int id = r.getInt("id");
                     PObject obj; 
-                    //boolean isControled = false;
+                    
                     if (id < 0) {
                         try {
                             obj = players.get(-id-1);
-                            //isControled = players.get(-id-1).isControled();
                         }
                         catch (IndexOutOfBoundsException e){
                             obj = syncNewPlayer(id);                      
                         }
                     }
                     else        obj = map.objects.get(id);
-                    //if (!isControled){
+                    
                     Timestamp server_sync = r.getTimestamp("date_sync");
                     if (server_sync.compareTo(obj.last_sync) > 0) {
                         obj.setPosition(new Vec2(r.getInt("x")/1000, r.getInt("y")/1000));
                         obj.velocity.x = r.getDouble("vx");
                         obj.velocity.y = r.getDouble("vy");
-                        System.out.println("updated object "+id);
+                        //System.out.println("updated object "+id);
                     }
-                    //}
                 }
                 r.close();
                 
@@ -236,6 +239,7 @@ public class Game {
                 PreparedStatement req = this.sync.srv.prepareStatement("SELECT * FROM players WHERE id = ?");
                 req.setInt(1, db_id);
                 ResultSet r = req.executeQuery();
+                r.next();
                 String name = r.getString("name");
                 int avatar = r.getInt("avatar");
                 obj = new Player(this, name, avatar);

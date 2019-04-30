@@ -8,6 +8,8 @@ import java.awt.event.KeyListener;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -34,7 +36,7 @@ import javax.swing.Timer;
  *
  * @author ydejongh
  */
-public class Gui extends JFrame implements KeyListener {
+public class Gui extends JFrame implements KeyListener, MouseListener {
     public int scale = 36;	// pixel/m
     public boolean drawHitBox = false;
     public final int WINDOW_WIDTH = 1080, WINDOW_HEIGHT = 720;
@@ -43,7 +45,9 @@ public class Gui extends JFrame implements KeyListener {
     private BufferedImage buffer, background;
     private Graphics2D bufferContext;
     private Timer timer;
-
+    
+    private SelectBloc selectBloc;
+    
     public Game game;
     public Player controled;
     
@@ -54,6 +58,7 @@ public class Gui extends JFrame implements KeyListener {
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.addKeyListener(this);
+        this.addMouseListener(this);
         this.jLabel1 = new JLabel();
         this.jLabel1.setPreferredSize(new java.awt.Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         this.setContentPane(this.jLabel1);
@@ -142,5 +147,47 @@ public class Gui extends JFrame implements KeyListener {
         for (PObject object : game.map.objects) {
             if (object.foreground())	object.render(g, scale);
         }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) { //Moment où le bouton de la souris a été pressé et relaché
+        if (e.getButton()==1) { //Si un clic gauche a été effectué
+            SelectBloc selection = new SelectBloc();
+            selection.setVisible(true);
+            if (selection.blocAPoser == 0){  //Test pour savoir quel bloc a été choisi dans la fenetre SelectBloc
+                try { 
+                this.game.map.objects.add(new Platform(this.game, new Vec2(e.getX()/scale, e.getY()/scale), new Box (0,0,2,1.5), 0)); //Ajout du bloc aux coordonnées du clic
+                } catch (IOException ex) {
+                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                System.out.println("Plateforme posée en (x = " + e.getX() + "; y = " + e.getY()+ ").");
+            }
+            else{
+                System.out.println("Aucun bloc n'a été posé.");
+            }
+            selection.setVisible(false);
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+         //
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+         //
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+         //
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+         //
     }
 }
