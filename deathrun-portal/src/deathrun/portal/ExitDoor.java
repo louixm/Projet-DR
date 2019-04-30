@@ -15,7 +15,7 @@ import javax.imageio.ImageIO;
  */
 public class ExitDoor extends PObject{
     Box box;
-    static Image img[];
+    static Image img;
     final double size = 3;
     
     public ExitDoor(Game game, Vec2 position) throws IOException, SQLException {
@@ -24,8 +24,7 @@ public class ExitDoor extends PObject{
         this.position = position;
         
         if (img == null) {
-            img = new Image[1];
-            img[0] = ImageIO.read(new File("./images/porteSortie.png"));
+            img = ImageIO.read(new File("./images/porteSortie.png"));
         }
     }
     
@@ -44,16 +43,16 @@ public class ExitDoor extends PObject{
     
     //--------------- interface d'affichage -----------------
     @Override
-    public void render(Graphics2D canvas, float scale) {
-        canvas.drawImage(img[0], 
+    public void render(Graphics2D canvas, float scale, boolean drawHitBox) {
+        canvas.drawImage(img, 
                 (int) (box.p1.x*scale), 
                 (int) (box.p1.y*scale), 
                 (int) (box.p2.x*scale), 
                 (int) (box.p2.y*scale), 
                 0, 0,
-                img[0].getWidth(null), img[0].getHeight(null),
+                img.getWidth(null), img.getHeight(null),
                 null);
-//        super.render(canvas, scale);
+//        render(canvas, scale);
          //TODO
     }
     
