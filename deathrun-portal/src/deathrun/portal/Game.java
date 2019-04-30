@@ -93,34 +93,40 @@ public class Game {
                 if (pl_collisionable != 0 && obj_collisionable != 0) {
                     bplayer = player.getCollisionBox();
                     Box bobject = object.getCollisionBox();
-                    if (bplayer.intersect(bobject)) {
-                        // corriger la position pour que player ne soit plus dans object
-                        Vec2 correction = bobject.outline(bplayer).outer(bplayer.center()).sub(bplayer.center());
-                        // supprimer l'acceleration dans la direction du contact 
-                        if (correction.y < 0) {
-                            player.addCollisionDirection("down");
-                            if (player.acceleration.y > 0)        player.acceleration.y = 0;
-                            if (player.velocity.y > 0)            player.velocity.y = 0;
+                    
+                    if (pl_collisionable == 1 && obj_collisionable == 1) {
+                        if (bplayer.intersect(bobject)) {
+                            // corriger la position pour que player ne soit plus dans object
+                            Vec2 correction = bobject.outline(bplayer).outer(bplayer.center()).sub(bplayer.center());
+                            // supprimer l'acceleration dans la direction du contact 
+                            if (correction.y < 0) {
+                                player.addCollisionDirection("down");
+                                if (player.acceleration.y > 0)        player.acceleration.y = 0;
+                                if (player.velocity.y > 0)            player.velocity.y = 0;
+                            }
+                            else if (correction.y > 0) {
+                                player.addCollisionDirection("up");
+                                if (player.acceleration.y < 0)        player.acceleration.y = 0;
+                                if (player.velocity.y < 0)            player.velocity.y = 0;
+                            }
+                            if (correction.x < 0) {
+                                player.addCollisionDirection("right");
+                                if (player.acceleration.x > 0)        player.acceleration.x = 0;
+                                if (player.velocity.x > 0)            player.velocity.x = 0;
+                            }
+                            else if (correction.x > 0) {
+                                player.addCollisionDirection("left");
+                                if (player.acceleration.x < 0)        player.acceleration.x = 0;
+                                if (player.velocity.x < 0)            player.velocity.x = 0;
+                            }
+
+                            //player.setPosition(newpos2);
+                            player.setPosition(player.position.add(correction));
                         }
-                        else if (correction.y > 0) {
-                            player.addCollisionDirection("up");
-                            if (player.acceleration.y < 0)        player.acceleration.y = 0;
-                            if (player.velocity.y < 0)            player.velocity.y = 0;
-                        }
-                        if (correction.x < 0) {
-                            player.addCollisionDirection("right");
-                            if (player.acceleration.x > 0)        player.acceleration.x = 0;
-                            if (player.velocity.x > 0)            player.velocity.x = 0;
-                        }
-                        else if (correction.x > 0) {
-                            player.addCollisionDirection("left");
-                            if (player.acceleration.x < 0)        player.acceleration.x = 0;
-                            if (player.velocity.x < 0)            player.velocity.x = 0;
-                        }
-                        
-                        //player.setPosition(newpos2);
-                        player.setPosition(player.position.add(correction));
                     }
+                    
+                    player.onCollision(this, object);
+                    object.onCollision(this, player);
                 }
             }
             
