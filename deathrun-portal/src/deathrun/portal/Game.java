@@ -30,18 +30,20 @@ public class Game {
     public final double gravity = 9.81;
     
     
-    Game() {
-        
-        try {
-            sync = new Sync(DriverManager.getConnection(
-                    "jdbc:mysql://nemrod.ens2m.fr:3306/20182019_s2_vs2_tp1_deathrun?serverTimezone=UTC", 
-                    "deathrun2", 
-                    "5V8HVbDZMtkOHwaX"
-                ));
-            db_last_sync = new Timestamp(0);
-        }
-        catch (SQLException err) {
-            System.out.println("sql connection error, fail to init game:\n\t"+err);
+    Game() { this(false); }
+    Game(boolean sync_enable) {
+        if (sync_enable) {
+            try {
+                sync = new Sync(DriverManager.getConnection(
+                        "jdbc:mysql://nemrod.ens2m.fr:3306/20182019_s2_vs2_tp1_deathrun?serverTimezone=UTC", 
+                        "deathrun2", 
+                        "5V8HVbDZMtkOHwaX"
+                    ));
+                db_last_sync = new Timestamp(0);
+            }
+            catch (SQLException err) {
+                System.out.println("sql connection error, fail to init game:\n\t"+err);
+            }
         }
         
         prev_time = System.nanoTime();
