@@ -27,7 +27,7 @@ public class DeathrunPortal {
             game.init();	// connecte au serveur et construit tous les objets tels que dans la base de donnnées
             //TODO: check dans la db players et ajouter au jeu tous ceux deja existants
             controled = new Player(game, "blue", 1);	// TODO: choisir le nom et l'avatar du joueur
-            otherone = new Player(game, "orange", 2);	// TODO: choisir le nom et l'avatar du joueur
+            //otherone = new Player(game, "orange", 2);	// TODO: choisir le nom et l'avatar du joueur
             controled.setControled(true);
 
             /*game.map.objects.add(new Platform(1, new Vec2(10, 5),   2, 0.2));
@@ -37,7 +37,7 @@ public class DeathrunPortal {
             game.map = game.map.MapInitialization(game, 4);  // choix de la map 1, 2, 3, 4
             controled.setPosition(new Vec2(10, 2));
 
-            otherone.setPosition(new Vec2(12, 2));
+            //otherone.setPosition(new Vec2(12, 2));
             
             game.map.objects.add(new EnterDoor(game, new Vec2(2, 2)));
             game.map.objects.add(new ExitDoor(game, new Vec2(20, 15)));
@@ -51,7 +51,7 @@ public class DeathrunPortal {
 //            controled.setPosition(new Vec2(12, 1));
             
             controled.acceleration.y = -1; // valeur différente de 0 pour forcer l'update de physicstep initiale
-            otherone.acceleration.y = -1; // valeur différente de 0 pour forcer l'update de physicstep initiale
+//            otherone.acceleration.y = -1; // valeur différente de 0 pour forcer l'update de physicstep initiale
         
         /*
         }
