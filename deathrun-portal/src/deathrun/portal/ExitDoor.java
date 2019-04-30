@@ -54,4 +54,8 @@ public class ExitDoor extends PObject{
          //TODO
     }
     
+    @Override
+    public void onCollision(Game g, PObject other) {
+        
+    }
 }
