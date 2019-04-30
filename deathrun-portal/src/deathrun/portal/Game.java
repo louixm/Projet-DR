@@ -236,6 +236,7 @@ public class Game {
                 PreparedStatement req = this.sync.srv.prepareStatement("SELECT * FROM players WHERE id = ?");
                 req.setInt(1, db_id);
                 ResultSet r = req.executeQuery();
+                r.next();
                 String name = r.getString("name");
                 int avatar = r.getInt("avatar");
                 obj = new Player(this, name, avatar);
