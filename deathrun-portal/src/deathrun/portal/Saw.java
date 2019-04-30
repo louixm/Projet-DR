@@ -45,8 +45,8 @@ public class Saw extends PObject {
     }
     
     //--------------- interface de gestion des collisions -----------------
-    public boolean collisionable(PObject other)  { 
-        return (other instanceof Player);
+    public int collisionable(PObject other)  { 
+        return (other instanceof Player)?1:0;
     }
     @Override
     public Box getCollisionBox()       { return collision_box; }

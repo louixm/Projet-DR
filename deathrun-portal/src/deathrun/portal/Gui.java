@@ -127,20 +127,20 @@ public class Gui extends JFrame implements KeyListener {
         if (evt.getKeyCode() == evt.VK_D)       this.controled.setRight(false);
         if (evt.getKeyCode() == evt.VK_Q)       this.controled.setLeft(false);
         if (evt.getKeyCode() == evt.VK_SPACE)   this.controled.setJump(false); //peut etre pas besoin si on remet jump à false direct après le saut
-        if (evt.getKeyCode() == evt.VK_SEMICOLON)      {this.scale++; System.out.println("Scale = " + this.scale);}
-        if (evt.getKeyCode() == evt.VK_COMMA)    {this.scale--; System.out.println("Scale = " + this.scale);}
-        if (evt.getKeyCode() == evt.VK_H)       this.drawHitBox = !this.drawHitBox;
+        if (evt.getKeyCode() == evt.VK_SEMICOLON)   {this.scale++; System.out.println("Scale = " + this.scale);}
+        if (evt.getKeyCode() == evt.VK_COMMA)       {this.scale--; System.out.println("Scale = " + this.scale);}
+        if (evt.getKeyCode() == evt.VK_H)           PObject.drawHitBox = !this.drawHitBox;
     } 
 
     public void render(Graphics2D g) {
         g.drawImage(this.background, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, null);
         for (PObject object : game.map.objects) {
-            if (! object.foreground())	object.render(g, scale, drawHitBox);
+            if (! object.foreground())	object.render(g, scale);
         }
         for (Player player : game.players)		
-            player.render(g, scale, drawHitBox);
+            player.render(g, scale);
         for (PObject object : game.map.objects) {
-            if (object.foreground())	object.render(g, scale, drawHitBox);
+            if (object.foreground())	object.render(g, scale);
         }
     }
 }
