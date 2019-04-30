@@ -146,6 +146,26 @@ public class Game {
     /// se connecte au serveur et construit toutes les instances d'objet correspondant aux objets de la map et aux joueurs
     void init() {
         map = new Map(new Box(0, 0, 40, 20));
+        
+        //Players initialization
+        try {                
+            PreparedStatement req = sync.srv.prepareStatement("SELECT * FROM players");
+            ResultSet r = req.executeQuery();
+            while (r.next()) {
+
+//                    Vec2 pos = new Vec2(r.getInt("x")/1000, r.getInt("y")/1000);
+//                    Vec2 vel = new Vec2(r.getDouble("vx"), r.getDouble("vy"));
+                String name = r.getString("name");
+                int avatar = r.getInt("avatar");
+                Player player = new Player(this, name, avatar);
+                syncUpdate(true);
+                System.out.println("initialized player " + name + " with skin #" + avatar);   
+                //id, name, score, id_object, avatar
+            }
+        }
+        catch (SQLException err) {
+            System.out.println("syncUpdate: "+err);
+        }
     }
     
     
@@ -167,13 +187,18 @@ public class Game {
                 ResultSet r = req.executeQuery();
                 while (r.next()) {
                     int id = r.getInt("id");
-                    PObject obj;
-                    if (id < 0) obj = players.get(-id-1);
+                    PObject obj; boolean isControled = false;
+                    if (id < 0) {
+                        obj = players.get(-id-1);
+                        isControled = players.get(-id-1).isControled();
+                    }
                     else        obj = map.objects.get(id);
-                    obj.setPosition(new Vec2(r.getInt("x")/1000, r.getInt("y")/1000));
-                    obj.velocity.x = r.getDouble("vx");
-                    obj.velocity.y = r.getDouble("vy");
-                    System.out.println("updated object "+id);
+                    if (!isControled){
+                        obj.setPosition(new Vec2(r.getInt("x")/1000, r.getInt("y")/1000));
+                        obj.velocity.x = r.getDouble("vx");
+                        obj.velocity.y = r.getDouble("vy");
+                        System.out.println("updated object "+id);
+                    }
                 }
                 
                 req = sync.srv.prepareStatement("SELECT now();");
