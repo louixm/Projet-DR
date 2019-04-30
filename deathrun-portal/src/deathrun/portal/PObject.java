@@ -22,6 +22,10 @@ abstract public class PObject {
     public Vec2 position;
     public Vec2 velocity;
     public Vec2 acceleration;
+    
+    long prev_time; // (ns) instant de dernier pas physique
+    long next_sync; // (ns) instant de prochaine synchronisation prévue de l'etat du jeu avec la BDD
+    final long sync_interval = 100000000; // (ns) temps minimum entre chaque synchronisation avec la BDD
     Timestamp last_sync;
     
     static boolean drawHitBox = false;
@@ -87,26 +91,32 @@ abstract public class PObject {
     public void setAcceleration(Vec2 a)   { this.acceleration = a; }
     
     /// methode d'envoi des données locales a la base de donnée
-    public void syncSet(Sync sync)	{
-        try {
-            PreparedStatement req = sync.srv.prepareStatement("UPDATE pobjects SET x=?, y=?, vx=?, vy=?, date_sync=NOW() WHERE id = ?");
-            req.setInt(1, (int) (position.x*1000));
-            req.setInt(2, (int) (position.y*1000));
-            req.setDouble(3, velocity.x);
-            req.setDouble(4, velocity.y);
-            // id de l'objet a modifier
-            req.setInt(5, db_id);
-            // execution de la requete
-            req.executeUpdate();
-            req.close();
-            
-            req = sync.srv.prepareStatement("SELECT now();");
-            ResultSet r = req.executeQuery();
-            r.next();
-            last_sync = r.getTimestamp(1);
-        }
-        catch (SQLException err) {
-            System.out.println("sql exception:\n"+err);
+    public void syncSet(Sync sync) { syncSet(sync, false); }
+    public void syncSet(Sync sync, boolean force)	{
+        // recuperer la date
+        long ac_time = System.nanoTime();
+        if (force || ac_time > next_sync) {
+            next_sync = ac_time + sync_interval;
+            try {
+                PreparedStatement req = sync.srv.prepareStatement("UPDATE pobjects SET x=?, y=?, vx=?, vy=?, date_sync=NOW() WHERE id = ?");
+                req.setInt(1, (int) (position.x*1000));
+                req.setInt(2, (int) (position.y*1000));
+                req.setDouble(3, velocity.x);
+                req.setDouble(4, velocity.y);
+                // id de l'objet a modifier
+                req.setInt(5, db_id);
+                // execution de la requete
+                req.executeUpdate();
+                req.close();
+
+                req = sync.srv.prepareStatement("SELECT now();");
+                ResultSet r = req.executeQuery();
+                r.next();
+                last_sync = r.getTimestamp(1);
+            }
+            catch (SQLException err) {
+                System.out.println("sql exception:\n"+err);
+            }
         }
     }
     
