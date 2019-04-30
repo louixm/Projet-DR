@@ -15,11 +15,13 @@ import javafx.application.Platform;
  */
 public class SelectBloc extends javax.swing.JFrame {
 
-    private String blocAPoser; //String permettant de savoir quel bloc a été choisi par le joueur
+    public int blocAPoser; //Entier permettant de savoir quel bloc a été choisi par le joueur
+    // Dans la classe 
     
     /**
      * Creates new form SelectBloc
      */
+    
     public SelectBloc() {
         initComponents();
         
@@ -145,21 +147,17 @@ public class SelectBloc extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        this.blocAPoser = "Platform 1";
-        //game.map.objects.add(new Platform(2, new Vec2(17, 6.5), 10, 3));
-        
+        this.blocAPoser = 1;       
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        
-        this.blocAPoser = "Spike";
+        this.blocAPoser = 2;
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        
-        this.blocAPoser = "Saw";
+        this.blocAPoser = 3;
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
