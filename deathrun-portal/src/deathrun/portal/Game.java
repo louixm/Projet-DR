@@ -58,7 +58,8 @@ public class Game {
         // suppose que les données sont synchronisées et que l'etat précédent est ok
         
         for (Player player: players) { 
-            if (player.isControled()) player.onGameStep(this);
+            if (player.isControled()) player.applyMovementChanges();
+            player.onGameStep(this);
             
             // pas de mise a jour de vitesse si pas d'acceleration
             if (! player.acceleration.isnull()) {
