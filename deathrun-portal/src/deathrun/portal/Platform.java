@@ -62,8 +62,9 @@ public class Platform extends PObject {
     }
      
     //--------------- interface de gestion des collisions -----------------
-    public boolean collisionable(PObject other)  { 
-        return (other instanceof Player);
+    public int collisionable(PObject other)  { 
+        if (other instanceof Player)    return 1;
+        else                            return 0;
     }
     @Override
     public Box getCollisionBox()       { return collision_box; }
