@@ -42,7 +42,7 @@ public class Laser extends PObject {
         
         
         if (img == null) {
-            img = ImageIO.read(new File("./images/Barrel(1).png")); //Laser
+            img = ImageIO.read(new File("./images/Barrel (1).png")); //Laser
         }
     
     }
