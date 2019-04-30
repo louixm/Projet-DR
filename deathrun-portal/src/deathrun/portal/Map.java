@@ -17,6 +17,9 @@ public class Map {
     public ArrayList<PObject> objects;
     public Box size;
     
+    public ExitDoor exit;
+    //public FrontDoor front;
+    
     Map(Box size) { 
         this.size = size; 
         this.objects = new ArrayList<PObject>();

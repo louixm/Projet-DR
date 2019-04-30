@@ -54,6 +54,8 @@ public class Player extends PObject {
             }
         }
         
+        this.setPosition(game.map.exit.position);  //remplacer "exit" par "entée";
+        
         if (game.sync != null) {
             PreparedStatement req = game.sync.srv.prepareStatement("SELECT EXISTS(SELECT id FROM players WHERE id = ?)");
             req.setInt(1, db_id);
