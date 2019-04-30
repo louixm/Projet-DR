@@ -33,6 +33,8 @@ abstract public class PObject {
         this.velocity = new Vec2();
         this.acceleration = new Vec2();
         
+        this.last_sync = new Timestamp(0);
+        
         if (game.sync != null) {
             PreparedStatement req = game.sync.srv.prepareStatement("SELECT EXISTS(SELECT id FROM pobjects WHERE id = ?)");
             req.setInt(1, db_id);
