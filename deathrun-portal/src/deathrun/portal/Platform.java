@@ -12,6 +12,7 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import javax.imageio.ImageIO;
 
 /**
@@ -23,8 +24,8 @@ public class Platform extends PObject {
     static Image img[];
     int typePlateforme;
     
-    public Platform(int db_id, Vec2 position, Box box, int typePlateforme) throws IOException {
-        super(db_id);
+    public Platform(Game game, Vec2 position, Box box, int typePlateforme) throws IOException, SQLException {
+        super(game);
         this.collision_box = box;
         setPosition(position);
         this.typePlateforme = typePlateforme;
@@ -39,9 +40,19 @@ public class Platform extends PObject {
             img[5] = ImageIO.read(new File("./images/Barrel_2_4.png"));
         }
     }
+    public Platform rotation(Platform p0, double angle){  //la rotation de this autours de p0 d'un angle "angle"; [p0,this] est vertical par rapport à leur centre
+        Vec2 centre0 = p0.position.add(new Vec2(p0.collision_box.getWidth()/2,p0.collision_box.getHeight()/2)) ;
+        Vec2 centre1 = this.position.add(new Vec2(this.collision_box.getWidth()/2,this.collision_box.getHeight()/2)) ;
+        double rayon = centre0.sub(centre1).norm();
+        double pasX = rayon*Math.sin(Math.PI*angle/180);
+        double pasY = rayon*Math.cos(Math.PI*angle/180);
+        centre1 = centre0.add(new Vec2(pasX,pasY));
+        this.setPosition(centre1.add(new Vec2(-this.collision_box.getWidth()/2,-this.collision_box.getHeight()/2)));
+        return this;
+    }
     
-    public Platform(int db_id, Vec2 position, double width, double height, int typePlateforme) throws IOException {
-        this(db_id, position, new Box(0, 0, width, height),typePlateforme);
+    public Platform(Game game, Vec2 position, double width, double height, int typePlateforme) throws IOException, SQLException {
+        this(game, position, new Box(0, 0, width, height),typePlateforme);
     }
     
     @Override
