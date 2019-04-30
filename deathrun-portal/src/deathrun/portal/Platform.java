@@ -62,15 +62,16 @@ public class Platform extends PObject {
     }
      
     //--------------- interface de gestion des collisions -----------------
-    public boolean collisionable(PObject other)  { 
-        return (other instanceof Player);
+    public int collisionable(PObject other)  { 
+        if (other instanceof Player)    return 1;
+        else                            return 0;
     }
     @Override
     public Box getCollisionBox()       { return collision_box; }
     
     //--------------- interface d'affichage -----------------
     @Override
-    public void render(Graphics2D canvas, float scale, boolean drawHitBox) {
+    public void render(Graphics2D canvas, float scale) {
         /*
         canvas.drawImage(img[typePlateforme], 
                 (int) (position.x*scale), 
@@ -84,7 +85,7 @@ public class Platform extends PObject {
                 0, 0,
                 img[typePlateforme].getWidth(null), img[typePlateforme].getHeight(null),
                 null);
-        super.render(canvas, scale, drawHitBox);
+        super.render(canvas, scale);
         // TODO
     }
     

@@ -60,8 +60,10 @@ public class Player extends PObject {
             ResultSet r = req.executeQuery();
             r.next();
             if (!r.getBoolean(1)) {
-                req = game.sync.srv.prepareStatement("INSERT INTO players VALUES (?, 0, 0, 0, 0)"); //TODO
+                req = game.sync.srv.prepareStatement("INSERT INTO players VALUES (?, ?, 0, 0, ?)"); //TODO
                 req.setInt(1, db_id);
+                req.setString(2, name);
+                req.setInt(3, avatar);
                 req.executeUpdate();
                 req.close();
             }
@@ -75,15 +77,16 @@ public class Player extends PObject {
     }
     
     //--------------- interface de gestion des collisions -----------------
-    public boolean collisionable(PObject other) { 
-        return ! (other instanceof Player);
+    public int collisionable(PObject other) { 
+        if (other instanceof Player)    return 0;
+        else                            return 1;
     }
     @Override
     public Box getCollisionBox() 	{ return collision_box; }
     
     //--------------- interface d'affichage -----------------
     @Override
-    public void render(Graphics2D g, float scale, boolean drawHitBox) {
+    public void render(Graphics2D g, float scale) {
         
         g.drawImage(avatars[avatar], 
             (int) (collision_box.p1.x*scale), 
@@ -94,7 +97,7 @@ public class Player extends PObject {
             avatars[avatar].getWidth(null), avatars[avatar].getHeight(null),
             null);
         
-        super.render(g, scale, drawHitBox);
+        super.render(g, scale);
         // TODO
     }
 //    
@@ -121,6 +124,11 @@ public class Player extends PObject {
     }
     public void setJump(boolean jump) { 
         this.jump = jump;  
+    }
+    
+    @Override
+    public void onGameStep(Game game) {
+        applyMovementChanges();
     }
     
     public void applyMovementChanges(){
