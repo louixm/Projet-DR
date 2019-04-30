@@ -13,6 +13,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -60,6 +62,7 @@ public class Game {
         
         for (Player player: players) { 
             if (player.isControled()) player.applyMovementChanges();
+            
             // pas de mise a jour de vitesse si pas d'acceleration
             if (! player.acceleration.isnull()) {
                 player.setVelocity(player.velocity.add(player.acceleration.mul(dt)));
@@ -147,6 +150,27 @@ public class Game {
     void init(int i) throws IOException, SQLException {
         map = new Map(new Box(0, 0, 40, 20));
         this.map = this.map.MapInitialization(this, i);
+        
+        if (this.sync != null) {
+            //Players initialization
+            try {                
+                PreparedStatement req = sync.srv.prepareStatement("SELECT * FROM players");
+                ResultSet r = req.executeQuery();
+                while (r.next()) {
+    //                    Vec2 pos = new Vec2(r.getInt("x")/1000, r.getInt("y")/1000);
+    //                    Vec2 vel = new Vec2(r.getDouble("vx"), r.getDouble("vy"));
+                    String name = r.getString("name");
+                    int avatar = r.getInt("avatar");
+                    Player player = new Player(this, name, avatar);
+                    //syncUpdate(true);
+                    System.out.println("initialized player " + name + " with skin #" + avatar);   
+                    //id, name, score, id_object, avatar
+                }
+            }
+            catch (SQLException err) {
+                System.out.println("init players: "+err);
+            }
+        }
     }
     
     
@@ -162,25 +186,40 @@ public class Game {
             if (sync == null)   return;
             // sinon essai de connexion
             try {                
+                // recupérer les infos du serveur plus récentes que la derniere reception
                 PreparedStatement req = sync.srv.prepareStatement("SELECT * FROM pobjects WHERE date_sync > ?;");
                 req.setTimestamp(1, db_last_sync);
-                // TODO: ne demander que les objets dont la date de mise a jour est plus recente que la derniere reception
+                
                 ResultSet r = req.executeQuery();
                 while (r.next()) {
                     int id = r.getInt("id");
-                    PObject obj;
-                    if (id < 0) obj = players.get(-id-1);
+                    PObject obj; 
+                    
+                    if (id < 0) {
+                        try {
+                            obj = players.get(-id-1);
+                        }
+                        catch (IndexOutOfBoundsException e){
+                            obj = syncNewPlayer(id);                      
+                        }
+                    }
                     else        obj = map.objects.get(id);
-                    obj.setPosition(new Vec2(r.getInt("x")/1000, r.getInt("y")/1000));
-                    obj.velocity.x = r.getDouble("vx");
-                    obj.velocity.y = r.getDouble("vy");
-                    System.out.println("updated object "+id);
+                    
+                    Timestamp server_sync = r.getTimestamp("date_sync");
+                    if (server_sync.compareTo(obj.last_sync) > 0) {
+                        obj.setPosition(new Vec2(r.getInt("x")/1000, r.getInt("y")/1000));
+                        obj.velocity.x = r.getDouble("vx");
+                        obj.velocity.y = r.getDouble("vy");
+                        //System.out.println("updated object "+id);
+                    }
                 }
+                r.close();
                 
                 req = sync.srv.prepareStatement("SELECT now();");
                 r = req.executeQuery();
                 r.next();
                 db_last_sync = r.getTimestamp(1);
+                r.close();
             }
             catch (SQLException err) {
                 System.out.println("syncUpdate: "+err);
@@ -189,7 +228,28 @@ public class Game {
     }
     
     public Sync getSync() {return sync;}
-
+    
+    public PObject syncNewPlayer(int db_id){
+        PObject obj;
+        if (this.sync != null) {
+            try {
+                System.out.println("prep id = " + db_id);
+                PreparedStatement req = this.sync.srv.prepareStatement("SELECT * FROM players WHERE id = ?");
+                req.setInt(1, db_id);
+                ResultSet r = req.executeQuery();
+                r.next();
+                String name = r.getString("name");
+                int avatar = r.getInt("avatar");
+                obj = new Player(this, name, avatar);
+                System.out.println("added player " + name + " with skin #" + avatar);
+                r.close();
+                return obj;
+            } catch (SQLException err) {
+                System.out.println("syncNewPlayer: "+err);
+            }
+        }
+        return null;
+    }
   
             
 }
