@@ -187,18 +187,22 @@ public class Game {
                 ResultSet r = req.executeQuery();
                 while (r.next()) {
                     int id = r.getInt("id");
-                    PObject obj; boolean isControled = false;
+                    PObject obj; 
+                    //boolean isControled = false;
                     if (id < 0) {
                         obj = players.get(-id-1);
-                        isControled = players.get(-id-1).isControled();
+                        //isControled = players.get(-id-1).isControled();
                     }
                     else        obj = map.objects.get(id);
-                    if (!isControled){
+                    //if (!isControled){
+                    Timestamp server_sync = r.getTimestamp("date_sync");
+                    if (server_sync.compareTo(obj.last_sync) > 0) {
                         obj.setPosition(new Vec2(r.getInt("x")/1000, r.getInt("y")/1000));
                         obj.velocity.x = r.getDouble("vx");
                         obj.velocity.y = r.getDouble("vy");
                         System.out.println("updated object "+id);
                     }
+                    //}
                 }
                 
                 req = sync.srv.prepareStatement("SELECT now();");
