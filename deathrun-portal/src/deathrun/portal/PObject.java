@@ -24,6 +24,8 @@ abstract public class PObject {
     public Vec2 acceleration;
     Timestamp last_sync;
     
+    static boolean drawHitBox = false;
+    
     PObject(Game game) throws SQLException { this(game, game.map.objects.size()); }
     PObject(Game game, int db_id) throws SQLException 	{ 
         this.db_id = db_id; 
@@ -57,8 +59,7 @@ abstract public class PObject {
     
     //--------------- interface d'affichage -----------------
     /// methode d'affichage de l'objet
-    public void render(Graphics2D g, float scale){ render(g, scale, false);}
-    public void render(Graphics2D g, float scale, boolean drawHitBox)  // methode interface
+    public void render(Graphics2D g, float scale)  // methode interface
     {
         // affichage de la boite de collision (pour l'instant)
         if (drawHitBox){

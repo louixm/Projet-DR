@@ -40,6 +40,16 @@ public class Platform extends PObject {
             img[5] = ImageIO.read(new File("./images/Barrel_2_4.png"));
         }
     }
+    public Platform rotation(Platform p0, double angle){  //la rotation de this autours de p0 d'un angle "angle"; [p0,this] est vertical par rapport à leur centre
+        Vec2 centre0 = p0.position.add(new Vec2(p0.collision_box.getWidth()/2,p0.collision_box.getHeight()/2)) ;
+        Vec2 centre1 = this.position.add(new Vec2(this.collision_box.getWidth()/2,this.collision_box.getHeight()/2)) ;
+        double rayon = centre0.sub(centre1).norm();
+        double pasX = rayon*Math.sin(Math.PI*angle/180);
+        double pasY = rayon*Math.cos(Math.PI*angle/180);
+        centre1 = centre0.add(new Vec2(pasX,pasY));
+        this.setPosition(centre1.add(new Vec2(-this.collision_box.getWidth()/2,-this.collision_box.getHeight()/2)));
+        return this;
+    }
     
     public Platform(Game game, Vec2 position, double width, double height, int typePlateforme) throws IOException, SQLException {
         this(game, position, new Box(0, 0, width, height),typePlateforme);
@@ -61,7 +71,7 @@ public class Platform extends PObject {
     
     //--------------- interface d'affichage -----------------
     @Override
-    public void render(Graphics2D canvas, float scale, boolean drawHitBox) {
+    public void render(Graphics2D canvas, float scale) {
         /*
         canvas.drawImage(img[typePlateforme], 
                 (int) (position.x*scale), 
@@ -75,7 +85,7 @@ public class Platform extends PObject {
                 0, 0,
                 img[typePlateforme].getWidth(null), img[typePlateforme].getHeight(null),
                 null);
-        super.render(canvas, scale, drawHitBox);
+        super.render(canvas, scale);
         // TODO
     }
     

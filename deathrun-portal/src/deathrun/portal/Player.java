@@ -10,6 +10,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.io.File;
 import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -51,6 +53,19 @@ public class Player extends PObject {
                 Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        
+        if (game.sync != null) {
+            PreparedStatement req = game.sync.srv.prepareStatement("SELECT EXISTS(SELECT id FROM players WHERE id = ?)");
+            req.setInt(1, db_id);
+            ResultSet r = req.executeQuery();
+            r.next();
+            if (!r.getBoolean(1)) {
+                req = game.sync.srv.prepareStatement("INSERT INTO players VALUES (?, 0, 0, 0, 0)"); //TODO
+                req.setInt(1, db_id);
+                req.executeUpdate();
+                req.close();
+            }
+        }
     }
     
     @Override
@@ -69,7 +84,7 @@ public class Player extends PObject {
     
     //--------------- interface d'affichage -----------------
     @Override
-    public void render(Graphics2D g, float scale, boolean drawHitBox) {
+    public void render(Graphics2D g, float scale) {
         
         g.drawImage(avatars[avatar], 
             (int) (collision_box.p1.x*scale), 
@@ -80,7 +95,7 @@ public class Player extends PObject {
             avatars[avatar].getWidth(null), avatars[avatar].getHeight(null),
             null);
         
-        super.render(g, scale, drawHitBox);
+        super.render(g, scale);
         // TODO
     }
 //    
