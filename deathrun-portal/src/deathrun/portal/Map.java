@@ -48,7 +48,7 @@ public class Map {
             m.objects.add(new Platform(g, new Vec2(10*ratioX, 5*ratioY), 10*ratioX, hauteurPlatform*ratioY,1));
             m.objects.add(new Platform(g, new Vec2(12*ratioX, 2*ratioY), 7*ratioX, hauteurPlatform*ratioY,1));
         }
-        else if (mapNumber == 6){
+        else if (mapNumber == 4){
             int nbPlatform=10;   //doit être un diviseur de 360;
             int pas = 360/nbPlatform;  // en dégré
             double rayon = 3*b.getHeight()/8;
@@ -75,19 +75,13 @@ public class Map {
             m.objects.add(new Platform(g, new Vec2(b.getWidth()-0.5*l,b.getHeight()-6*h),0.5*l,6*h,4));
             m.objects.add(new Platform(g, new Vec2(b.getWidth()-l-0.5*l,b.getHeight()-4*h),l,4*h,5));
         }
-        else if (mapNumber == 2 || mapNumber == 3 || mapNumber == 4 || mapNumber == 5){
+        else if (mapNumber == 2 || mapNumber == 3){
             int nbPlatform = 1;
             if (mapNumber == 2){
                 nbPlatform=5;
             }
             if (mapNumber == 3){
-                nbPlatform=10;
-            } 
-            if (mapNumber == 4){
                 nbPlatform=8;
-            }
-            if (mapNumber == 5){
-                nbPlatform=11;
             }
             double l = b.getWidth()/(2*nbPlatform);
             double h = b.getHeight()/(4*nbPlatform);
