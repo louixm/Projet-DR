@@ -135,12 +135,12 @@ public class Gui extends JFrame implements KeyListener {
     public void render(Graphics2D g) {
         g.drawImage(this.background, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, null);
         for (PObject object : game.map.objects) {
-            if (! object.foreground())	object.render(g, scale, drawHitBox);
+            if (! object.foreground())	object.render(g, scale);
         }
         for (Player player : game.players)		
-            player.render(g, scale, drawHitBox);
+            player.render(g, scale);
         for (PObject object : game.map.objects) {
-            if (object.foreground())	object.render(g, scale, drawHitBox);
+            if (object.foreground())	object.render(g, scale);
         }
     }
 }
