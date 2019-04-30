@@ -149,24 +149,26 @@ public class Game {
     void init() {
         map = new Map(new Box(0, 0, 40, 20));
         
-        //Players initialization
-        try {                
-            PreparedStatement req = sync.srv.prepareStatement("SELECT * FROM players");
-            ResultSet r = req.executeQuery();
-            while (r.next()) {
+        if (this.sync != null) {
+            //Players initialization
+            try {                
+                PreparedStatement req = sync.srv.prepareStatement("SELECT * FROM players");
+                ResultSet r = req.executeQuery();
+                while (r.next()) {
 
-//                    Vec2 pos = new Vec2(r.getInt("x")/1000, r.getInt("y")/1000);
-//                    Vec2 vel = new Vec2(r.getDouble("vx"), r.getDouble("vy"));
-                String name = r.getString("name");
-                int avatar = r.getInt("avatar");
-                Player player = new Player(this, name, avatar);
-                //syncUpdate(true);
-                System.out.println("initialized player " + name + " with skin #" + avatar);   
-                //id, name, score, id_object, avatar
+    //                    Vec2 pos = new Vec2(r.getInt("x")/1000, r.getInt("y")/1000);
+    //                    Vec2 vel = new Vec2(r.getDouble("vx"), r.getDouble("vy"));
+                    String name = r.getString("name");
+                    int avatar = r.getInt("avatar");
+                    Player player = new Player(this, name, avatar);
+                    //syncUpdate(true);
+                    System.out.println("initialized player " + name + " with skin #" + avatar);   
+                    //id, name, score, id_object, avatar
+                }
             }
-        }
-        catch (SQLException err) {
-            System.out.println("syncUpdate: "+err);
+            catch (SQLException err) {
+                System.out.println("syncUpdate: "+err);
+            }
         }
     }
     
