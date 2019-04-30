@@ -136,7 +136,7 @@ public class Game {
             // position maintenant corrigée
             // si sync n'est pas instancié, fonctionnement hors ligne
             if (sync != null && player.isControled())   {
-                System.out.println("send sync for "+player.db_id);
+                //System.out.println("send sync for "+player.db_id);
                 player.syncSet(sync);
             }
         }
@@ -179,6 +179,8 @@ public class Game {
         long ac_time = System.nanoTime();
         if (force || ac_time > next_sync) {
             next_sync = ac_time + sync_interval;
+            
+            System.out.println("sync get");
             
             // si sync n'est pas instancié, fonctionnement hors ligne
             if (sync == null)   return;

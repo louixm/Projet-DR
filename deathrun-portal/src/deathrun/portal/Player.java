@@ -35,9 +35,24 @@ public class Player extends PObject {
     
     public static BufferedImage avatars[];
     
+    public static int availableId(Game game) {
+        int id = -1;
+        boolean id_found = true;
+        while (id_found) {
+            id_found = false;
+            for (int i=0; i<game.players.size(); i++) {
+                if (game.players.get(i).db_id == id)    {
+                    id_found = true;
+                    --id;
+                    break;
+                }
+            }
+        }
+        return id;
+    }
     
     public Player(Game game, String name, int avatar) throws SQLException {
-        super(game, -game.players.size()-1);  // creer en ajoutant a la fin
+        super(game, availableId(game));  // creer en ajoutant a la fin
         game.players.add(this);
         this.name = name; 
         this.avatar = avatar;
