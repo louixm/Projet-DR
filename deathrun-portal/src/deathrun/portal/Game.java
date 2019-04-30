@@ -155,7 +155,6 @@ public class Game {
                 PreparedStatement req = sync.srv.prepareStatement("SELECT * FROM players");
                 ResultSet r = req.executeQuery();
                 while (r.next()) {
-
     //                    Vec2 pos = new Vec2(r.getInt("x")/1000, r.getInt("y")/1000);
     //                    Vec2 vel = new Vec2(r.getDouble("vx"), r.getDouble("vy"));
                     String name = r.getString("name");
@@ -167,7 +166,7 @@ public class Game {
                 }
             }
             catch (SQLException err) {
-                System.out.println("syncUpdate: "+err);
+                System.out.println("init players: "+err);
             }
         }
     }
@@ -240,11 +239,11 @@ public class Game {
                 String name = r.getString("name");
                 int avatar = r.getInt("avatar");
                 obj = new Player(this, name, avatar);
-                System.out.println("initialized player " + name + " with skin #" + avatar);
+                System.out.println("added player " + name + " with skin #" + avatar);
                 r.close();
                 return obj;
-            } catch (SQLException ex) {
-                Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException err) {
+                System.out.println("syncNewPlayer: "+err);
             }
         }
         return null;
