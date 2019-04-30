@@ -43,7 +43,7 @@ public class ExitDoor extends PObject{
     
     //--------------- interface d'affichage -----------------
     @Override
-    public void render(Graphics2D canvas, float scale, boolean drawHitBox) {
+    public void render(Graphics2D canvas, float scale) {
         canvas.drawImage(img, 
                 (int) (box.p1.x*scale), 
                 (int) (box.p1.y*scale), 
