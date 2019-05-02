@@ -50,6 +50,16 @@ public class Game {
 	players = new ArrayList<>();
     }
     
+    public void disconnect() {
+        try {
+            sync.srv.close();
+        }
+        catch (SQLException err) {
+            System.out.println("Game.disconnect(): "+err);
+        }
+    }
+    
+    
     void physicStep() {
         // TODO:  voir si il faut tout passer en getters et setters
         
@@ -97,8 +107,8 @@ public class Game {
                     bplayer = player.getCollisionBox();
                     Box bobject = object.getCollisionBox();
                     
-                    if (pl_collisionable == 1 && obj_collisionable == 1) {
-                        if (bplayer.intersect(bobject)) {
+                    if (bplayer.intersect(bobject)) {
+                        if (pl_collisionable == 1 && obj_collisionable == 1) {
                             // corriger la position pour que player ne soit plus dans object
                             Vec2 correction = bobject.outline(bplayer).outer(bplayer.center()).sub(bplayer.center());
                             // supprimer l'acceleration dans la direction du contact 
@@ -126,10 +136,11 @@ public class Game {
                             //player.setPosition(newpos2);
                             player.setPosition(player.position.add(correction));
                         }
+                        
+                        player.onCollision(this, object);
+                        object.onCollision(this, player);
                     }
                     
-                    player.onCollision(this, object);
-                    object.onCollision(this, player);
                 }
             }
             
@@ -155,14 +166,10 @@ public class Game {
                 PreparedStatement req = sync.srv.prepareStatement("SELECT * FROM players");
                 ResultSet r = req.executeQuery();
                 while (r.next()) {
-    //                    Vec2 pos = new Vec2(r.getInt("x")/1000, r.getInt("y")/1000);
-    //                    Vec2 vel = new Vec2(r.getDouble("vx"), r.getDouble("vy"));
                     String name = r.getString("name");
                     int avatar = r.getInt("avatar");
                     Player player = new Player(this, name, avatar);
-                    //syncUpdate(true);
-                    System.out.println("initialized player " + name + " with skin #" + avatar);   
-                    //id, name, score, id_object, avatar
+                    System.out.println("initialized player " + name + " with skin #" + avatar);
                 }
             }
             catch (SQLException err) {
@@ -187,7 +194,7 @@ public class Game {
             // sinon essai de connexion
             try {                
                 // recupérer les infos du serveur plus récentes que la derniere reception
-                PreparedStatement req = sync.srv.prepareStatement("SELECT * FROM pobjects WHERE date_sync > ?;");
+                PreparedStatement req = sync.srv.prepareStatement("SELECT * FROM pobjects WHERE date_sync >= ?;"); // WHERE date_sync > ?;
                 req.setTimestamp(1, db_last_sync);
                 
                 ResultSet r = req.executeQuery();
@@ -206,20 +213,20 @@ public class Game {
                     else        obj = map.objects.get(id);
                     
                     Timestamp server_sync = r.getTimestamp("date_sync");
-                    if (server_sync.compareTo(obj.last_sync) > 0) {
+                    if (obj.last_sync == null || server_sync.compareTo(obj.last_sync) > 0) {
                         obj.setPosition(new Vec2(r.getInt("x")/1000, r.getInt("y")/1000));
                         obj.velocity.x = r.getDouble("vx");
                         obj.velocity.y = r.getDouble("vy");
-                        //System.out.println("updated object "+id);
+                        System.out.println("updated object "+id);
                     }
                 }
                 r.close();
                 
-                req = sync.srv.prepareStatement("SELECT now();");
-                r = req.executeQuery();
-                r.next();
-                db_last_sync = r.getTimestamp(1);
-                r.close();
+                PreparedStatement reqtime = sync.srv.prepareStatement("SELECT now();");
+                ResultSet rtime = reqtime.executeQuery();
+                rtime.next();
+                db_last_sync = rtime.getTimestamp(1);
+                rtime.close();
             }
             catch (SQLException err) {
                 System.out.println("syncUpdate: "+err);
@@ -229,7 +236,7 @@ public class Game {
     
     public Sync getSync() {return sync;}
     
-    public PObject syncNewPlayer(int db_id){
+    public PObject syncNewPlayer(int db_id) {
         PObject obj;
         if (this.sync != null) {
             try {
