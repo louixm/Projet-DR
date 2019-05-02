@@ -92,22 +92,8 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
         this.addWindowListener(new WindowAdapter() {
             @Override      
             public void windowClosing(WindowEvent e) {
-                Sync sync = game.getSync();
-                try {
-                    PreparedStatement req = sync.srv.prepareStatement("DELETE FROM pobjects WHERE id = ?");
-                    req.setInt(1, controled.db_id);
-                    req.executeUpdate();
-                    req = sync.srv.prepareStatement("DELETE FROM players WHERE id = ?");
-                    req.setInt(1, controled.db_id);
-                    req.executeUpdate();
-                    System.out.println("Deleted player with id " + controled.db_id);
-                    req.close();
-                    sync.srv.close();
-                }
-                catch (SQLException err) {
-                    System.out.println("sync on exit: "+err);
-                }
-//                System.exit(0);
+                controled.disconnect();
+                game.disconnect();
             }
         });
     }
