@@ -58,7 +58,6 @@ public class Player extends PObject {
         this.name = name; 
         this.avatar = avatar;
         collision_box = new Box(-0.5, 0, 0.5, 1.8);
-        
         if (avatars == null) {
             this.avatars = new BufferedImage[3];
             try {
@@ -77,6 +76,9 @@ public class Player extends PObject {
                 Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        
+        this.setPosition(game.map.enter.position.add(new Vec2(-0.25,0)));
+        
         
         if (game.sync != null) {
             PreparedStatement req = game.sync.srv.prepareStatement("SELECT EXISTS(SELECT id FROM players WHERE id = ?)");

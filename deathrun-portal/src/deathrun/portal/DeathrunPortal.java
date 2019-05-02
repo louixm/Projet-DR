@@ -24,7 +24,7 @@ public class DeathrunPortal {
         Game game = new Game();
         Player controled, otherone;
         //try {
-            game.init();	// connecte au serveur et construit tous les objets tels que dans la base de donnnées
+            game.init(4);// choix de la map 1, 2, 3, 4	// connecte au serveur et construit tous les objets tels que dans la base de donnnées
             //TODO: check dans la db players et ajouter au jeu tous ceux deja existants
             controled = new Player(game, "Jean Naimar", 0);
             controled.setControled(true);
@@ -37,7 +37,7 @@ public class DeathrunPortal {
             game.map.objects.add(new Saw(game, new Vec2(2, 2)));
         
             controled.acceleration.y = -1; // valeur différente de 0 pour forcer l'update de physicstep initiale
-//            otherone.acceleration.y = -1; // valeur différente de 0 pour forcer l'update de physicstep initiale
+            //TODO: faire plus prore que ca
         
         /*
         }

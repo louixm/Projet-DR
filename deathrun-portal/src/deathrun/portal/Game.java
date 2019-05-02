@@ -5,6 +5,7 @@
  */
 package deathrun.portal;
 
+import java.io.IOException;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -85,7 +86,7 @@ public class Game {
             
             // collisions avec les bords de l'ecran
             Box bplayer = player.getCollisionBox();
-            
+            //player.setPosition(new Vec2(10,10));
             if (bplayer.p1.x < map.size.p1.x) {
                 double newx = map.size.p1.x - bplayer.p1.x + player.position.x;
                 player.setPosition(new Vec2(newx, player.position.y));
@@ -157,8 +158,9 @@ public class Game {
     
     
     /// se connecte au serveur et construit toutes les instances d'objet correspondant aux objets de la map et aux joueurs
-    void init() {
+    void init(int i) throws IOException, SQLException {
         map = new Map(new Box(0, 0, 40, 20));
+        this.map = this.map.MapInitialization(this, i);
         
         if (this.sync != null) {
             //Players initialization

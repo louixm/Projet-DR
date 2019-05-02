@@ -20,7 +20,7 @@ public class ExitDoor extends PObject{
     
     public ExitDoor(Game game, Vec2 position) throws IOException, SQLException {
         super(game);
-        this.box = new Box(position.x-size/2, position.y-size/2, position.x+size/2, position.y+size/2);
+        this.box = new Box(position.x, position.y, position.x+size, position.y+size);
         this.position = position;
         
         if (img == null) {

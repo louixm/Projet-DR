@@ -15,7 +15,7 @@ import javafx.application.Platform;
  */
 public class SelectBloc extends javax.swing.JFrame {
 
-    public int blocAPoser; //Entier permettant de savoir quel bloc a été choisi par le joueur
+    public int blocAPoser = 0; //Entier permettant de savoir quel bloc a été choisi par le joueur
     // Dans la classe 
     
     /**
@@ -147,7 +147,8 @@ public class SelectBloc extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        this.blocAPoser = 1;       
+        this.blocAPoser = 1;
+        this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
