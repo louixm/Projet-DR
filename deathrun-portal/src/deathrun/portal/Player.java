@@ -10,6 +10,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.io.File;
 import java.io.IOException;
+import static java.lang.Math.abs;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -161,11 +162,11 @@ public class Player extends PObject {
     }
     
     @Override
-    public void onGameStep(Game game) {
-        applyMovementChanges();
+    public void onGameStep(Game game, float dt) {
+        applyMovementChanges(dt);
     }
     
-    public void applyMovementChanges(){
+    public void applyMovementChanges(float dt){
         if (this.left && (!this.right || !this.leftAndRightWithPriorityOnRight)){
             if (this.velocity.x > 0)        this.acceleration.x = -40;
             else if (this.velocity.x > -7)  this.acceleration.x = -20;
@@ -176,10 +177,12 @@ public class Player extends PObject {
             else if (this.velocity.x < 7)   this.acceleration.x = 20;
             else                            this.acceleration.x = 0;
         }       
-        else{
-            if (this.velocity.x > 1)            this.acceleration.x = -40;
-            else if (this.velocity.x < -1)      this.acceleration.x = 40;
+        else{            
+//            if (this.velocity.x > 1)            this.acceleration.x = -40;
+//            else if (this.velocity.x < -1)      this.acceleration.x = 40;
+            if (abs(this.velocity.x) > 1) this.acceleration.x = -40 * abs(this.velocity.x)/this.velocity.x;
             else {this.acceleration.x = 0;      this.velocity.x = 0;}
+            if ((this.velocity.x + this.acceleration.x*dt) * this.velocity.x < 0) {this.acceleration.x = 0;      this.velocity.x = 0;};
         }
         
         if (this.jump) {

@@ -126,7 +126,7 @@ abstract public class PObject {
     }
     
     /// appellé a chaque iteration de la boucle principale du jeu
-    public void onGameStep(Game g) {}
+    public void onGameStep(Game g, float dt) {}
     /// appellé en cas de collision detectée
     public void onCollision(Game g, PObject other) {}
 }
