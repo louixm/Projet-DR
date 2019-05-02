@@ -37,7 +37,7 @@ abstract public class PObject {
         this.velocity = new Vec2();
         this.acceleration = new Vec2();
         
-        this.last_sync = new Timestamp(0);
+        this.last_sync = null;      // initialisation du jeu: pas de derniere sync en date
         
         if (game.sync != null) {
             PreparedStatement req = game.sync.srv.prepareStatement("SELECT EXISTS(SELECT id FROM pobjects WHERE id = ?)");
@@ -98,7 +98,7 @@ abstract public class PObject {
         if (force || ac_time > next_sync) {
             next_sync = ac_time + sync_interval;
             
-            System.out.println("sync set");
+            System.out.println("sync set "+db_id);
             
             try {
                 PreparedStatement req = sync.srv.prepareStatement("UPDATE pobjects SET x=?, y=?, vx=?, vy=?, date_sync=NOW() WHERE id = ?");
@@ -108,10 +108,12 @@ abstract public class PObject {
                 req.setDouble(4, velocity.y);
                 // id de l'objet a modifier
                 req.setInt(5, db_id);
+                
                 // execution de la requete
                 req.executeUpdate();
                 req.close();
 
+                // recuperation de la date serveur pour garder la date de sync
                 req = sync.srv.prepareStatement("SELECT now();");
                 ResultSet r = req.executeQuery();
                 r.next();
