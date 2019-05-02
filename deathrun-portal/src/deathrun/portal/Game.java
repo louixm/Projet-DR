@@ -216,7 +216,7 @@ public class Game {
                     
                     Timestamp server_sync = r.getTimestamp("date_sync");
                     if (obj.last_sync == null || server_sync.compareTo(obj.last_sync) > 0) {
-                        obj.setPosition(new Vec2(r.getInt("x")/1000, r.getInt("y")/1000));
+                        obj.setPosition(new Vec2(r.getInt("x")/1000f, r.getInt("y")/1000f));
                         obj.velocity.x = r.getDouble("vx");
                         obj.velocity.y = r.getDouble("vy");
                         System.out.println("updated object "+id);

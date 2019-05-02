@@ -29,12 +29,12 @@ public class DeathrunPortal {
             controled = new Player(game, "Jean Naimar", 0);
             controled.setControled(true);
 
-            game.map = Map.MapInitialization(game, 4);  // choix de la map 1, 2, 3, 4
+//            game.map = Map.MapInitialization(game, 4);  // choix de la map 1, 2, 3, 4
             controled.setPosition(new Vec2(10, 2));
 
-            game.map.objects.add(new EnterDoor(game, new Vec2(2, 2)));
-            game.map.objects.add(new ExitDoor(game, new Vec2(20, 15)));
-            game.map.objects.add(new Saw(game, new Vec2(2, 2)));
+//            game.map.objects.add(new EnterDoor(game, new Vec2(2, 2)));
+//            game.map.objects.add(new ExitDoor(game, new Vec2(20, 15)));
+//            game.map.objects.add(new Saw(game, new Vec2(2, 2)));
         
             controled.acceleration.y = -1; // valeur différente de 0 pour forcer l'update de physicstep initiale
             //TODO: faire plus prore que ca
