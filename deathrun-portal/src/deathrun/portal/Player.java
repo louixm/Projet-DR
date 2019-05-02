@@ -32,6 +32,7 @@ public class Player extends PObject {
     private boolean controled = false;
 //    private BufferedImage robot, robotBase, robotDr, robotDrEx, robotSaut, robotBasegauche, robotgauche, robotgaucheex, robotsautgauche;     // rajouté par louis animation
     Box collision_box;
+    Game game;
     
     public static BufferedImage avatars[];
     
@@ -53,7 +54,7 @@ public class Player extends PObject {
     
     public Player(Game game, String name, int avatar) throws SQLException {
         super(game, availableId(game));  // creer en ajoutant a la fin
-        game.players.add(this);
+        this.game = game;
         this.name = name; 
         this.avatar = avatar;
         collision_box = new Box(-0.5, 0, 0.5, 1.8);
@@ -91,6 +92,29 @@ public class Player extends PObject {
                 req.close();
             }
         }
+        
+        // tout est pret, declaration du nouveau joueur
+        game.players.add(this);
+    }
+    
+    public void disconnect() {
+        try {
+            PreparedStatement req;
+            // effacement de la table des objets
+            req = game.sync.srv.prepareStatement("DELETE FROM pobjects WHERE id = ?");
+            req.setInt(1, db_id);
+            req.executeUpdate();
+            // effacement de la table de joueurs
+            req = game.sync.srv.prepareStatement("DELETE FROM players WHERE id = ?");
+            req.setInt(1, db_id);
+            req.executeUpdate();
+            
+            System.out.println("Deleted player with id " + db_id);
+            req.close();
+        }
+        catch (SQLException err) {
+            System.out.println("Player.disconnect(): "+err);
+        }
     }
     
     @Override
@@ -110,10 +134,6 @@ public class Player extends PObject {
     //--------------- interface d'affichage -----------------
     @Override
     public void render(Graphics2D g, float scale) {
-        
-        
-        
-        
         g.drawImage(avatars[avatar], 
             (int) (collision_box.p1.x*scale), 
             (int) (collision_box.p1.y*scale), 
@@ -124,22 +144,8 @@ public class Player extends PObject {
             null);
         
         super.render(g, scale);
-        // TODO
     }
-//    
-//    public void setLeft(boolean left) { 
-//        if (left)   this.velocity.x = -6;
-//        else        this.velocity.x = 0;
-//    }
-//    public void setRight(boolean right) { 
-//        if (right)  this.velocity.x = 6;
-//        else        this.velocity.x = 0;
-//    }
-//    public void setJump(boolean jump) { 
-//        if (jump && acceleration.y == 0)
-//            this.velocity.y = -4;
-//    }
-    
+
     public void setLeft(boolean left) { 
         this.left = left;
         if (this.right) this.leftAndRightWithPriorityOnRight = false;
@@ -159,42 +165,30 @@ public class Player extends PObject {
     
     public void applyMovementChanges(){
         if (this.left && (!this.right || !this.leftAndRightWithPriorityOnRight)){
-            if (this.velocity.x > 0) this.acceleration.x = -40;
-            else if (this.velocity.x > -7) this.acceleration.x = -20;
-            else this.acceleration.x = 0;
-//            if (this.velocity.x > -6) this.velocity.x += this.acceleration.x;
+            if (this.velocity.x > 0)        this.acceleration.x = -40;
+            else if (this.velocity.x > -7)  this.acceleration.x = -20;
+            else                            this.acceleration.x = 0;
         }
         else if (this.right && (!this.left || this.leftAndRightWithPriorityOnRight)){
-            if (this.velocity.x < 0) this.acceleration.x = 40;
-            else if (this.velocity.x < 7) this.acceleration.x = 20;
-            else this.acceleration.x = 0;
-//            if (this.velocity.x < 6) this.velocity.x += this.acceleration.x;
+            if (this.velocity.x < 0)        this.acceleration.x = 40;
+            else if (this.velocity.x < 7)   this.acceleration.x = 20;
+            else                            this.acceleration.x = 0;
         }       
         else{
-            if (this.velocity.x > 1) this.acceleration.x = -40;
-            else if (this.velocity.x < -1) this.acceleration.x = 40;
-            else {this.acceleration.x = 0; this.velocity.x = 0;}
-//            this.velocity.x = 0;
+            if (this.velocity.x > 1)            this.acceleration.x = -40;
+            else if (this.velocity.x < -1)      this.acceleration.x = 40;
+            else {this.acceleration.x = 0;      this.velocity.x = 0;}
         }
         
-//        if (!this.jump && acceleration.y == 0) this.hasJumped = false;
-//        if (!this.hasJumped && this.jump && acceleration.y == 0) {
         if (this.jump) {
-//            System.out.println("Prev pos: " + previousPosition.x + ", pos: " + position.x + ", == ?: " + (previousPosition.x == position.x));
-            if (acceleration.y == 0) {
-                this.velocity.y = -6;
-//            this.hasJumped = true;
-            }
-            else if (velocity.y > 0 && ((this.right && this.collisionDirection.contains("right")) || (this.left && this.collisionDirection.contains("left")))){ //au lieu de previouisPosition, ajouter un attribut qui dit de quelle direction vient la collsision, et l'update dans la boucle dans Game lors d'une collision
+            if (acceleration.y == 0)    this.velocity.y = -6;
+            else if (velocity.y > 0 && (
+                    (this.right && this.collisionDirection.contains("right")) 
+                 || (this.left && this.collisionDirection.contains("left"))))
+            {
                 this.velocity.y = -5;
-                if (this.right) {
-//                    this.leftAndRightWithPriorityOnRight = false;
-                    this.velocity.x = -12;                    
-                }      
-                else {
-//                    this.leftAndRightWithPriorityOnRight = true;
-                    this.velocity.x = 12;
-                }
+                if (this.right) this.velocity.x = -12;               
+                else            this.velocity.x = 12;
             }
         }
         previousPosition = position;
