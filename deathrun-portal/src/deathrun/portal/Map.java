@@ -82,7 +82,7 @@ public class Map {
                 m.objects.add(p1.rotation(p0, i*pas));
                 i++;
             }
-            m.objects.add(new Platform(g, new Vec2(0,(b.getHeight()-h)/2),l,h,6));
+            m.objects.add(new Platform(g, new Vec2(0,(b.getHeight()-h)/2),l,h,2));
             m.objects.add(new Platform(g, new Vec2(0,b.getHeight()-6*h),0.5*l,6*h,4));
             m.objects.add(new Platform(g, new Vec2(0.5*l,b.getHeight()-4*h),l,4*h,5));
             m.enter.setPosition(new Vec2(0, ((b.getHeight()-h)/2)-m.enter.size));
