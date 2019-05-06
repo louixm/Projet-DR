@@ -28,7 +28,6 @@ public class Player extends PObject {
     public int avatar;
     
     private boolean left, right, jump, leftAndRightWithPriorityOnRight; //, hasJumped;
-    private Vec2 previousPosition;
     private ArrayList<String> collisionDirection;
     private boolean controled = false;
 //    private BufferedImage robot, robotBase, robotDr, robotDrEx, robotSaut, robotBasegauche, robotgauche, robotgaucheex, robotsautgauche;     // rajouté par louis animation
@@ -180,9 +179,10 @@ public class Player extends PObject {
         else{            
 //            if (this.velocity.x > 1)            this.acceleration.x = -40;
 //            else if (this.velocity.x < -1)      this.acceleration.x = 40;
-            if (abs(this.velocity.x) > 1) this.acceleration.x = -40 * abs(this.velocity.x)/this.velocity.x;
-            else {this.acceleration.x = 0;      this.velocity.x = 0;}
-            if ((this.velocity.x + this.acceleration.x*dt) * this.velocity.x < 0) {this.acceleration.x = 0;      this.velocity.x = 0;};
+            if (abs(this.velocity.x) > 1)        this.acceleration.x = -40 * abs(this.velocity.x)/this.velocity.x;
+            else                                {this.acceleration.x = 0;      this.velocity.x = 0;}
+            if ((this.velocity.x + this.acceleration.x*dt) * this.velocity.x < 0) 
+                                                {this.acceleration.x = 0;      this.velocity.x = 0;};
         }
         
         if (this.jump) {
@@ -196,7 +196,6 @@ public class Player extends PObject {
                 else            this.velocity.x = 12;
             }
         }
-        previousPosition = position;
     }
     
     public void setCollisionDirection(ArrayList<String> array){ this.collisionDirection = array; }
