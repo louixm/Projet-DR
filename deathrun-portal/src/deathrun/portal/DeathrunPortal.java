@@ -29,7 +29,7 @@ public class DeathrunPortal {
             controled.setControled(true);
 
 //            game.map = Map.MapInitialization(game, 4);  // choix de la map 1, 2, 3, 4
-            controled.setPosition(new Vec2(10, 2));
+            controled.setPosition(game.map.enter.position.add(new Vec2((game.map.enter.box.getWidth() - controled.collision_box.getWidth())/2, game.map.enter.box.getHeight() ))); //- controled.collision_box.getHeight()
 
 //            game.map.objects.add(new EnterDoor(game, new Vec2(2, 2)));
 //            game.map.objects.add(new ExitDoor(game, new Vec2(20, 15)));
