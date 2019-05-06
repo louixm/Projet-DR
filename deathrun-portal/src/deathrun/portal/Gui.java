@@ -249,7 +249,11 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
 
     @Override
     public void mouseEntered(MouseEvent e) {
-         //
+        if(this.selectionBloc.blocAPoser != 0){
+            if(this.selectionBloc.blocAPoser == 1){ //Plateforme
+                
+            }
+        }
     }
 
     @Override
