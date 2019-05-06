@@ -73,4 +73,8 @@ public class Saw extends PObject {
         super.render(canvas, scale);
     }
     
+    @Override
+    public void onCollision(Game g, PObject other) {
+        System.out.println("player "+((Player)other).name+" is dead");
+    }
 }
