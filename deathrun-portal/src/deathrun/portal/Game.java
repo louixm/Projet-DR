@@ -60,12 +60,22 @@ public class Game {
     }
     
     
-    void physicStep() {
-        // TODO:  voir si il faut tout passer en getters et setters
-        
+    
+    
+    void step() {
         long ac_time = System.nanoTime();
         float dt = ((float)(ac_time - prev_time))/1e9f;
         
+        for (PObject p: map.objects)    p.onGameStep(this, dt);
+        for (PObject p: players)        p.onGameStep(this, dt);
+        syncUpdate();
+        physicStep(dt);
+        
+        prev_time = ac_time;
+    }
+    
+    
+    void physicStep(float dt) {
         // simulation de mecanique des objets (rectangles) avec Euler directe
         // suppose que les données sont synchronisées et que l'etat précédent est ok
         
@@ -149,8 +159,6 @@ public class Game {
                 player.syncSet(sync);
             }
         }
-        
-        prev_time = ac_time;
     }
     
     
