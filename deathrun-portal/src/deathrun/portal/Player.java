@@ -26,10 +26,11 @@ import javax.imageio.ImageIO;
 public class Player extends PObject {
     public String name;
     public int avatar;
+    public boolean controled = false;
+    public boolean dead = false;
     
-    private boolean left, right, jump, leftAndRightWithPriorityOnRight; //, hasJumped;
-    private ArrayList<String> collisionDirection;
-    private boolean controled = false;
+    boolean left, right, jump, leftAndRightWithPriorityOnRight; //, hasJumped;
+    ArrayList<String> collisionDirection;
 //    private BufferedImage robot, robotBase, robotDr, robotDrEx, robotSaut, robotBasegauche, robotgauche, robotgaucheex, robotsautgauche;     // rajouté par louis animation
     Box collision_box;
     Game game;
@@ -148,15 +149,18 @@ public class Player extends PObject {
         super.render(g, scale);
     }
 
-    public void setLeft(boolean left) { 
+    public void setLeft(boolean left) {
+        if (dead)   return;
         this.left = left;
         if (this.right) this.leftAndRightWithPriorityOnRight = false;
     }
     public void setRight(boolean right) { 
+        if (dead)   return;
         this.right = right;
         if (this.left) this.leftAndRightWithPriorityOnRight = true;
     }
     public void setJump(boolean jump) { 
+        if (dead)   return;
         this.jump = jump;  
     }
     
@@ -166,6 +170,8 @@ public class Player extends PObject {
     }
     
     public void applyMovementChanges(float dt){
+        if (dead)   return;
+        
         if (this.left && (!this.right || !this.leftAndRightWithPriorityOnRight)){
             if (this.velocity.x > 0)        this.acceleration.x = -40;
             else if (this.velocity.x > -7)  this.acceleration.x = -20;
@@ -176,9 +182,7 @@ public class Player extends PObject {
             else if (this.velocity.x < 7)   this.acceleration.x = 20;
             else                            this.acceleration.x = 0;
         }       
-        else{            
-//            if (this.velocity.x > 1)            this.acceleration.x = -40;
-//            else if (this.velocity.x < -1)      this.acceleration.x = 40;
+        else{
             if (abs(this.velocity.x) > 1)        this.acceleration.x = -40 * abs(this.velocity.x)/this.velocity.x;
             else                                {this.acceleration.x = 0;      this.velocity.x = 0;}
             if ((this.velocity.x + this.acceleration.x*dt) * this.velocity.x < 0) 
