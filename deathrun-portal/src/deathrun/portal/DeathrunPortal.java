@@ -20,7 +20,7 @@ public class DeathrunPortal {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws SQLException, IOException {
-        Game game = new Game(true);
+        Game game = new Game();
         Player controled, otherone;
         //try {
             game.init(4);// choix de la map 1, 2, 3, 4	// connecte au serveur et construit tous les objets tels que dans la base de donnnées
@@ -34,6 +34,7 @@ public class DeathrunPortal {
 //            game.map.objects.add(new EnterDoor(game, new Vec2(2, 2)));
 //            game.map.objects.add(new ExitDoor(game, new Vec2(20, 15)));
             game.map.objects.add(new Saw(game, game.map.size.center().sub(new Vec2(1, 1))));
+            game.map.objects.add(new Laser(game,new Vec2(4, 2),0));
         
             controled.acceleration.y = -1; // valeur différente de 0 pour forcer l'update de physicstep initiale
             //TODO: faire plus prore que ca

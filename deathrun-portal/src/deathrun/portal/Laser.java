@@ -22,7 +22,6 @@ import java.util.ArrayList;
  * @author pdemiche
  */
 public class Laser extends PObject {
-    private Game game ;
     Box collision_box;
     static Image img;
     float angle ;
@@ -45,7 +44,7 @@ public class Laser extends PObject {
         
         
         if (img == null) {         
-            img = ImageIO.read(new File("./images/Barrel (1).png")); //Laser
+            img = ImageIO.read(new File("./images/laser.png")); //Laser
         }
     
     }
@@ -73,8 +72,7 @@ public class Laser extends PObject {
     public Box getCollisionBox()       { return collision_box; }
     
     @Override
-    public void onGameStep(Game g, float dt) {
-        System.out.println("Player Killed");
+    public void onGameStep(Game game, float dt) {
         for (Player p: game.players){
             Vec2 p1 = p.getCollisionBox().p1 ; //point inférieur gauche
             Vec2 p2 = p.getCollisionBox().p2 ; //point supérieur droit
@@ -85,6 +83,7 @@ public class Laser extends PObject {
             double proj3 = p3.sub(collision_box.center()).vect(this.normal) ;
             double proj4 = p4.sub(collision_box.center()).vect(this.normal) ;
             System.out.println(proj1);
+            System.out.println(proj2);
             if (this.sign(proj1) != this.sign(proj2)){
                 System.out.println("Player Killed");
                 // Player Killed
