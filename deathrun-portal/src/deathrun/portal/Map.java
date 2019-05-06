@@ -17,6 +17,9 @@ public class Map {
     public ArrayList<PObject> objects;
     public Box size;
     
+    public ExitDoor exit;
+    public EnterDoor enter;
+    
     Map(Box size) { 
         this.size = size; 
         this.objects = new ArrayList<PObject>();
@@ -25,7 +28,11 @@ public class Map {
     
     public static Map MapInitialization(Game g, int mapNumber) throws IOException, SQLException{
         Box b = new Box(0,0,30,20);
-        Map m = new Map(b); 
+        Map m = new Map(b);
+        
+        m.enter = new EnterDoor(g,new Vec2(0,0));
+        m.exit = new ExitDoor(g,new Vec2(0,0));
+        
         double ratioY = b.getHeight()/20;      //Les ratios permettent juste de mettre les plateformes à la bonne échelle
         double ratioX = b.getWidth()/40;
         double hauteurDeSaut = 2;
@@ -35,12 +42,18 @@ public class Map {
             m.objects.add(new Platform(g, new Vec2(0*ratioX,5*ratioY), 3*ratioX, hauteurPlatform*ratioY,0));
             m.objects.add(new Platform(g, new Vec2(0*ratioX, 12*ratioY),   6*ratioX, hauteurPlatform*ratioY,1));
             m.objects.add(new Platform(g, new Vec2(0*ratioX, 18*ratioY), 25*ratioX, hauteurPlatform*ratioY,1));
+            
+            m.enter.setPosition(new Vec2(0, (18*ratioY)-m.enter.size));
+            m.objects.add(m.enter);
+            
         
             m.objects.add(new Platform(g, new Vec2(26.5*ratioX, 3*ratioY), 2*ratioX, 5*ratioY,4));
             m.objects.add(new Platform(g, new Vec2(25.5*ratioX, 10*ratioY), 4*ratioX, 4*ratioY,5));
         
             m.objects.add(new Platform(g, new Vec2(30*ratioX, 18*ratioY), 10*ratioX, hauteurPlatform*ratioY,1));
             m.objects.add(new Platform(g, new Vec2(33*ratioX, 10*ratioY), 7*ratioX, hauteurPlatform*ratioY,1));
+            m.exit.setPosition(new Vec2(40*ratioX-m.exit.size, 10*ratioY-m.exit.size));
+            m.objects.add(m.exit);
         
             m.objects.add(new Platform(g, new Vec2(12*ratioX, 14*ratioY), 3.5*ratioX, hauteurPlatform*ratioY,1));
         
@@ -49,6 +62,8 @@ public class Map {
             m.objects.add(new Platform(g, new Vec2(12*ratioX, 2*ratioY), 7*ratioX, hauteurPlatform*ratioY,1));
         }
         else if (mapNumber == 4){
+            
+            
             int nbPlatform=10;   //doit être un diviseur de 360;
             int pas = 360/nbPlatform;  // en dégré
             double rayon = 3*b.getHeight()/8;
@@ -70,10 +85,14 @@ public class Map {
             m.objects.add(new Platform(g, new Vec2(0,(b.getHeight()-h)/2),l,h,2));
             m.objects.add(new Platform(g, new Vec2(0,b.getHeight()-6*h),0.5*l,6*h,4));
             m.objects.add(new Platform(g, new Vec2(0.5*l,b.getHeight()-4*h),l,4*h,5));
+            m.enter.setPosition(new Vec2(0, ((b.getHeight()-h)/2)-m.enter.size));
+            m.objects.add(m.enter);
             
             m.objects.add(new Platform(g, new Vec2(b.getWidth()-l,((b.getHeight()-h)/2)),l,h,2));
             m.objects.add(new Platform(g, new Vec2(b.getWidth()-0.5*l,b.getHeight()-6*h),0.5*l,6*h,4));
             m.objects.add(new Platform(g, new Vec2(b.getWidth()-l-0.5*l,b.getHeight()-4*h),l,4*h,5));
+            m.exit.setPosition(new Vec2(b.getWidth()-m.exit.size, ((b.getHeight()-h)/2)-m.exit.size));
+            m.objects.add(m.exit);
         }
         else if (mapNumber == 2 || mapNumber == 3){
             int nbPlatform = 1;
@@ -118,10 +137,14 @@ public class Map {
                 }
             }
             m.objects.add(new Platform(g, new Vec2(0.5*l,((b.getHeight()+decalage-2*h)/2)),2.5*l,2*h,1));
+            m.enter.setPosition(new Vec2(l, ((b.getHeight()+decalage-2*h)/2)-m.enter.size));
+            m.objects.add(m.enter);
             //m.objects.add(new Platform(1, new Vec2(0,((b.getHeight()+3*decalage-0.375*h)/4)),l,1.5*h));
            // m.objects.add(new Platform(1, new Vec2(0,((3*b.getHeight()+decalage-0.375*h)/4)),l,1.5*h));
             
             m.objects.add(new Platform(g, new Vec2(b.getWidth()-(3*l),((b.getHeight()+decalage-h)/2)),2.5*l,2*h,1));
+            m.exit.setPosition(new Vec2(b.getWidth()-(0.5*m.exit.size)-1.75*l, ((b.getHeight()+decalage-h)/2)-m.exit.size));
+            m.objects.add(m.exit);
             //m.objects.add(new Platform(1, new Vec2(b.getWidth()-l,((b.getHeight()+3*decalage-0.375*h)/4)),l,1.5*h));
             //m.objects.add(new Platform(1, new Vec2(b.getWidth()-l,((3*b.getHeight()+decalage-0.375*h)/4)),l,1.5*h));
             

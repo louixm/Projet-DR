@@ -20,7 +20,7 @@ public class ExitDoor extends PObject{
     
     public ExitDoor(Game game, Vec2 position) throws IOException, SQLException {
         super(game);
-        this.box = new Box(position.x-size/2, position.y-size/2, position.x+size/2, position.y+size/2);
+        this.box = new Box(position.x, position.y, position.x+size, position.y+size);
         this.position = position;
         
         if (img == null) {
@@ -28,20 +28,18 @@ public class ExitDoor extends PObject{
         }
     }
     
-    @Override
-    public void setPosition(Vec2 pos) {
+    @Override public void setPosition(Vec2 pos) {
         super.setPosition(pos);
         box = box.translateToPosition(pos);
     }
      
     //--------------- interface de gestion des collisions -----------------
-    public int collisionable(PObject other)  { return 2; }
-    @Override
-    public Box getCollisionBox()       { return box; }
+    @Override public int collisionable(PObject other)  { return 2; }
+    @Override public Box getCollisionBox()       { return box; }
     
     //--------------- interface d'affichage -----------------
-    @Override
-    public void render(Graphics2D canvas, float scale) {
+    @Override public void render(Graphics2D canvas, float scale) {
+        super.render(canvas, scale);
         canvas.drawImage(img, 
                 (int) (box.p1.x*scale), 
                 (int) (box.p1.y*scale), 
@@ -50,8 +48,11 @@ public class ExitDoor extends PObject{
                 0, 0,
                 img.getWidth(null), img.getHeight(null),
                 null);
-//        render(canvas, scale);
-         //TODO
     }
     
+    @Override public void onCollision(Game g, PObject other) {
+        if (other instanceof Player) {
+            System.out.println("player "+((Player)other).name+" reached the door");
+        }
+    }
 }

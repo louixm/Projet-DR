@@ -22,7 +22,12 @@ abstract public class PObject {
     public Vec2 position;
     public Vec2 velocity;
     public Vec2 acceleration;
+    
+    long prev_time; // (ns) instant de dernier pas physique
+    long next_sync; // (ns) instant de prochaine synchronisation prévue de l'etat du jeu avec la BDD
     Timestamp last_sync;
+    
+    boolean local_changed;
     
     static boolean drawHitBox = false;
     
@@ -32,6 +37,8 @@ abstract public class PObject {
         this.position = new Vec2();
         this.velocity = new Vec2();
         this.acceleration = new Vec2();
+        
+        this.last_sync = null;      // initialisation du jeu: pas de derniere sync en date
         
         if (game.sync != null) {
             PreparedStatement req = game.sync.srv.prepareStatement("SELECT EXISTS(SELECT id FROM pobjects WHERE id = ?)");
@@ -80,36 +87,48 @@ abstract public class PObject {
     boolean foreground()    { return false; }
     
     
-    public void setPosition(Vec2 p)       { this.position = p; }
-    public void setVelocity(Vec2 v)       { this.velocity = v; }
-    public void setAcceleration(Vec2 a)   { this.acceleration = a; }
+    public void setPosition(Vec2 p)       { this.position = p; local_changed = true; }
+    public void setVelocity(Vec2 v)       { this.velocity = v; local_changed = true; }
+    public void setAcceleration(Vec2 a)   { this.acceleration = a; local_changed = true; }
     
     /// methode d'envoi des données locales a la base de donnée
-    public void syncSet(Sync sync)	{
-        try {
-            PreparedStatement req = sync.srv.prepareStatement("UPDATE pobjects SET x=?, y=?, vx=?, vy=?, date_sync=NOW() WHERE id = ?");
-            req.setInt(1, (int) (position.x*1000));
-            req.setInt(2, (int) (position.y*1000));
-            req.setDouble(3, velocity.x);
-            req.setDouble(4, velocity.y);
-            // id de l'objet a modifier
-            req.setInt(5, db_id);
-            // execution de la requete
-            req.executeUpdate();
-            req.close();
+    public void syncSet(Sync sync) { syncSet(sync, false); }
+    public void syncSet(Sync sync, boolean force)	{
+        // recuperer la date
+        long ac_time = System.nanoTime();
+        if (force || (ac_time > next_sync && local_changed)) {
+            next_sync = ac_time + sync.sync_interval;
+            local_changed = false;
             
-            req = sync.srv.prepareStatement("SELECT now();");
-            ResultSet r = req.executeQuery();
-            r.next();
-            last_sync = r.getTimestamp(1);
-        }
-        catch (SQLException err) {
-            System.out.println("sql exception:\n"+err);
+            //System.out.println("sync set "+db_id);
+            
+            try {
+                PreparedStatement req = sync.srv.prepareStatement("UPDATE pobjects SET x=?, y=?, vx=?, vy=?, date_sync=NOW() WHERE id = ?");
+                req.setInt(1, (int) (position.x*1000));
+                req.setInt(2, (int) (position.y*1000));
+                req.setDouble(3, velocity.x);
+                req.setDouble(4, velocity.y);
+                // id de l'objet a modifier
+                req.setInt(5, db_id);
+                
+                // execution de la requete
+                req.executeUpdate();
+                req.close();
+
+                // recuperation de la date serveur pour garder la date de sync
+                req = sync.srv.prepareStatement("SELECT now();");
+                ResultSet r = req.executeQuery();
+                r.next();
+                last_sync = r.getTimestamp(1);
+            }
+            catch (SQLException err) {
+                System.out.println("sql exception:\n"+err);
+            }
         }
     }
     
     /// appellé a chaque iteration de la boucle principale du jeu
-    public void onGameStep(Game g) {}
+    public void onGameStep(Game g, float dt) {}
     /// appellé en cas de collision detectée
     public void onCollision(Game g, PObject other) {}
 }
