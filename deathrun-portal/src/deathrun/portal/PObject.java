@@ -25,8 +25,10 @@ abstract public class PObject {
     
     long prev_time; // (ns) instant de dernier pas physique
     long next_sync; // (ns) instant de prochaine synchronisation prévue de l'etat du jeu avec la BDD
-    final long sync_interval = 100000000; // (ns) temps minimum entre chaque synchronisation avec la BDD
+    final long sync_interval = 50000000; // (ns) temps minimum entre chaque synchronisation avec la BDD
     Timestamp last_sync;
+    
+    boolean local_changed;
     
     static boolean drawHitBox = false;
     
@@ -86,19 +88,20 @@ abstract public class PObject {
     boolean foreground()    { return false; }
     
     
-    public void setPosition(Vec2 p)       { this.position = p; }
-    public void setVelocity(Vec2 v)       { this.velocity = v; }
-    public void setAcceleration(Vec2 a)   { this.acceleration = a; }
+    public void setPosition(Vec2 p)       { this.position = p; local_changed = true; }
+    public void setVelocity(Vec2 v)       { this.velocity = v; local_changed = true; }
+    public void setAcceleration(Vec2 a)   { this.acceleration = a; local_changed = true; }
     
     /// methode d'envoi des données locales a la base de donnée
     public void syncSet(Sync sync) { syncSet(sync, false); }
     public void syncSet(Sync sync, boolean force)	{
         // recuperer la date
         long ac_time = System.nanoTime();
-        if (force || ac_time > next_sync) {
+        if (force || (ac_time > next_sync && local_changed)) {
             next_sync = ac_time + sync_interval;
+            local_changed = false;
             
-            System.out.println("sync set "+db_id);
+            //System.out.println("sync set "+db_id);
             
             try {
                 PreparedStatement req = sync.srv.prepareStatement("UPDATE pobjects SET x=?, y=?, vx=?, vy=?, date_sync=NOW() WHERE id = ?");
