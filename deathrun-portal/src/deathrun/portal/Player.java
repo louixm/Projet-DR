@@ -60,11 +60,12 @@ public class Player extends PObject {
         this.avatar = avatar;
         collision_box = new Box(-0.5, 0, 0.5, 1.8);
         if (avatars == null) {
-            this.avatars = new BufferedImage[3];
+            this.avatars = new BufferedImage[4];
             try {
                 this.avatars[0] = ImageIO.read(new File("./images/sentrybot.png"));
                 this.avatars[1] = ImageIO.read(new File("./images/robotBleu.png"));
                 this.avatars[2] = ImageIO.read(new File("./images/robotOrange.png"));
+                this.avatars[3] = ImageIO.read(new File("./images/robotDead.png"));
 //                this.robotBase = ImageIO.read(new File("robotbase.png"));    // rajouté par louis animation
 //                this.robotDr = ImageIO.read(new File("robotdroite.png"));    // rajouté par louis animation
 //                this.robotDrEx = ImageIO.read(new File("robotdroitee.png"));    // rajouté par louis animation
@@ -162,6 +163,16 @@ public class Player extends PObject {
     public void setJump(boolean jump) { 
         if (dead)   return;
         this.jump = jump;  
+    }
+    
+    public void setDead(boolean dead) {
+        if (!this.dead) {
+            this.dead = dead;
+            if (dead) {
+                avatar = 3;
+                System.out.println("player "+name+" is dead");
+            }
+        }
     }
     
     @Override

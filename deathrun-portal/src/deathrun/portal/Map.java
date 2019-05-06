@@ -64,7 +64,7 @@ public class Map {
         else if (mapNumber == 4){
             
             
-            int nbPlatform=10;   //doit être un diviseur de 360;
+            int nbPlatform=6;   //doit être un diviseur de 360;
             int pas = 360/nbPlatform;  // en dégré
             double rayon = 3*b.getHeight()/8;
             

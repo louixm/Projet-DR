@@ -32,18 +32,21 @@ public class Game {
     public final double gravity = 9.81;
     
     
-    Game() {
-        
-        try {
-            sync = new Sync(DriverManager.getConnection(
-                    "jdbc:mysql://nemrod.ens2m.fr:3306/20182019_s2_vs2_tp1_deathrun?serverTimezone=UTC", 
-                    "deathrun2", 
-                    "5V8HVbDZMtkOHwaX"
-                ));
-            db_last_sync = new Timestamp(0);
-        }
-        catch (SQLException err) {
-            System.out.println("sql connection error, fail to init game:\n\t"+err);
+    Game() { this(false); }
+    Game(boolean sync_enable) {
+        if (sync_enable) {
+            try {
+                sync = new Sync(DriverManager.getConnection(
+                        "jdbc:mysql://nemrod.ens2m.fr:3306/20182019_s2_vs2_tp1_deathrun?serverTimezone=UTC", 
+                        "deathrun2", 
+                        "5V8HVbDZMtkOHwaX"
+                    ));
+                db_last_sync = new Timestamp(0);
+                System.out.println("connected to database");
+            }
+            catch (SQLException err) {
+                System.out.println("sql connection error, fail to init game:\n\t"+err);
+            }
         }
         
         prev_time = System.nanoTime();
@@ -60,12 +63,22 @@ public class Game {
     }
     
     
-    void physicStep() {
-        // TODO:  voir si il faut tout passer en getters et setters
-        
+    
+    
+    void step() {
         long ac_time = System.nanoTime();
         float dt = ((float)(ac_time - prev_time))/1e9f;
         
+        for (PObject p: map.objects)    p.onGameStep(this, dt);
+        for (PObject p: players)        p.onGameStep(this, dt);
+        if (sync != null) syncUpdate();
+        physicStep(dt);
+        
+        prev_time = ac_time;
+    }
+    
+    
+    void physicStep(float dt) {
         // simulation de mecanique des objets (rectangles) avec Euler directe
         // suppose que les données sont synchronisées et que l'etat précédent est ok
         
@@ -149,8 +162,6 @@ public class Game {
                 player.syncSet(sync);
             }
         }
-        
-        prev_time = ac_time;
     }
     
     

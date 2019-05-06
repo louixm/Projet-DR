@@ -46,12 +46,12 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
     private Graphics2D bufferContext;
     private Timer timer;
     
-    private SelectBloc selectBloc;
+    private SelectionBloc selectionBloc;
     
     public Game game;
     public Player controled;
     
-	
+    
     Gui(Game game, Player controled) {
         //initilalisation de la fenêtre graphique
         this.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -68,6 +68,8 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
         this.controled = controled;
         this.game = game;
         
+        this.selectionBloc = new SelectionBloc(new javax.swing.JFrame(), true);
+        
         try {
             this.background = ImageIO.read(new File("images/fond_1.png"));
         } catch (IOException ex) {
@@ -83,8 +85,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
         this.timer = new Timer(20, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                game.syncUpdate();
-                game.physicStep();
+                game.step();
                 render(bufferContext);
                 jLabel1.repaint();
             }
@@ -94,8 +95,10 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
         this.addWindowListener(new WindowAdapter() {
             @Override      
             public void windowClosing(WindowEvent e) {
-                controled.disconnect();
-                game.disconnect();
+                if (game.sync != null) {
+                    controled.disconnect();
+                    game.disconnect();
+                }
             }
         });
     }
@@ -120,7 +123,8 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
         if (evt.getKeyCode() == evt.VK_SPACE)   this.controled.setJump(false); //peut etre pas besoin si on remet jump à false direct après le saut
         if (evt.getKeyCode() == evt.VK_SEMICOLON)   {this.scale++; System.out.println("Scale = " + this.scale);}
         if (evt.getKeyCode() == evt.VK_COMMA)       {this.scale--; System.out.println("Scale = " + this.scale);}
-        if (evt.getKeyCode() == evt.VK_H)           PObject.drawHitBox = !this.drawHitBox;
+        if (evt.getKeyCode() == evt.VK_H)           PObject.drawHitBox = !PObject.drawHitBox;
+        if (evt.getKeyCode() == evt.VK_E)           ;//TODO: trigger l'item du joueur
     } 
 
     public void render(Graphics2D g) {
@@ -134,13 +138,22 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
             if (object.foreground())	object.render(g, scale);
         }
     }
-
+  
     @Override
     public void mouseClicked(MouseEvent e) { //Moment où le bouton de la souris a été pressé et relaché
-        if (e.getButton()==1) { //Si un clic gauche a été effectué
-            SelectBloc selection = new SelectBloc();
-            selection.setVisible(true);
-            if (selection.blocAPoser == 0){  //Test pour savoir quel bloc a été choisi dans la fenetre SelectBloc
+        if (e.getButton()==1 && this.selectionBloc.blocAPoser == 0) { //Si un clic gauche a été effectué et qu'on a pas encore choisi de bloc, alors la fenetre de selection de bloc s'ouvre
+            selectionBloc.setVisible(true);
+            selectionBloc.addWindowListener(new java.awt.event.WindowAdapter() { //Attente de la fermeture de la fenetre de selection de bloc
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+        }
+        else if(e.getButton()==1 && this.selectionBloc.blocAPoser != 0){ //Si un clic gauche a été effectué et qu'on a déjà choisi un bloc, alors le bloc est posé
+            
+            //Tests pour savoir quel bloc a été choisi dans la fenetre SelectBloc
+            if(this.selectionBloc.blocAPoser == 1) { //Plateforme
                 try { 
                 this.game.map.objects.add(new Platform(this.game, new Vec2(e.getX()/scale, e.getY()/scale), new Box (0,0,2,1.5), 0)); //Ajout du bloc aux coordonnées du clic
                 } catch (IOException ex) {
@@ -150,10 +163,77 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
                 }
                 System.out.println("Plateforme posée en (x = " + e.getX() + "; y = " + e.getY()+ ").");
             }
-            else{
-                System.out.println("Aucun bloc n'a été posé.");
+            else if(this.selectionBloc.blocAPoser == 2){ //Scie circulaire
+                try { 
+                this.game.map.objects.add(new Saw(this.game, new Vec2(e.getX()/scale, e.getY()/scale))); //Ajout du bloc aux coordonnées du clic
+                } catch (IOException ex) {
+                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                System.out.println("Scie posée en (x = " + e.getX() + "; y = " + e.getY()+ ").");
             }
-            selection.setVisible(false);
+            else if(this.selectionBloc.blocAPoser == 3){ //Laser
+                /*try { 
+                this.game.map.objects.add(new Laser(this.game, new Vec2(e.getX()/scale, e.getY()/scale),0)); //Ajout du bloc aux coordonnées du clic
+                } catch (IOException ex) {
+                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                }*/
+                System.out.println("Laser posé en (x = " + e.getX() + "; y = " + e.getY()+ ").");
+            }
+            else if(this.selectionBloc.blocAPoser == 4){ //Acide
+                /*try { 
+                this.game.map.objects.add(new Platform(this.game, new Vec2(e.getX()/scale, e.getY()/scale), new Box (0,0,2,1.5), 0)); //Ajout du bloc aux coordonnées du clic
+                } catch (IOException ex) {
+                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                }*/
+                System.out.println("Acide posé en (x = " + e.getX() + "; y = " + e.getY()+ ").");
+            }
+            else if(this.selectionBloc.blocAPoser == 5){ //Portail
+                try { 
+                this.game.map.objects.add(new Platform(this.game, new Vec2(e.getX()/scale, e.getY()/scale), new Box (0,0,2,1.5), 0)); //Ajout du bloc aux coordonnées du clic
+                } catch (IOException ex) {
+                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                System.out.println("Portail posé en (x = " + e.getX() + "; y = " + e.getY()+ ").");
+            }
+            else if(this.selectionBloc.blocAPoser == 6){ //
+                try { 
+                this.game.map.objects.add(new Platform(this.game, new Vec2(e.getX()/scale, e.getY()/scale), new Box (0,0,2,1.5), 0)); //Ajout du bloc aux coordonnées du clic
+                } catch (IOException ex) {
+                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                System.out.println("... posé en (x = " + e.getX() + "; y = " + e.getY()+ ").");
+            }
+            else if(this.selectionBloc.blocAPoser == 7){ //
+                try { 
+                this.game.map.objects.add(new Platform(this.game, new Vec2(e.getX()/scale, e.getY()/scale), new Box (0,0,2,1.5), 0)); //Ajout du bloc aux coordonnées du clic
+                } catch (IOException ex) {
+                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                System.out.println("... posé en (x = " + e.getX() + "; y = " + e.getY()+ ").");
+            }
+            else if(this.selectionBloc.blocAPoser == 8){ //
+                try { 
+                this.game.map.objects.add(new Platform(this.game, new Vec2(e.getX()/scale, e.getY()/scale), new Box (0,0,2,1.5), 0)); //Ajout du bloc aux coordonnées du clic
+                } catch (IOException ex) {
+                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                System.out.println("... posé en (x = " + e.getX() + "; y = " + e.getY()+ ").");
+            }
+            this.selectionBloc.blocAPoser = 0;
         }
     }
 
