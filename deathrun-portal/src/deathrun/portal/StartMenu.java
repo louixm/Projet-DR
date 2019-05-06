@@ -197,7 +197,7 @@ public class StartMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_Text_PseudoActionPerformed
 
     private void listeJoueursValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listeJoueursValueChanged
-        
+      
     }//GEN-LAST:event_listeJoueursValueChanged
 
     /**
