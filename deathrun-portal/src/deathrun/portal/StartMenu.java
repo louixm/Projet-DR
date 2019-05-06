@@ -214,7 +214,7 @@ public class StartMenu extends javax.swing.JFrame {
 
         while (r.next()) {
                     String name = r.getString("name");                    
-                    listeJoueurs.addElement(name);
+                    //listeJoueurs.addElement(name);
                     }
                 }
                 
