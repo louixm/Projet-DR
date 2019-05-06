@@ -14,12 +14,13 @@ import java.sql.SQLException;
  * @author jimy
  */
 public class Trap extends PObject {
-	boolean enabled;
-	Box collision_box;
+    //player
+    boolean enabled;
+    Box collision_box;
 
-	public Trap(Game game) throws SQLException {
-            super(game);
-	}
+    public Trap(Game game) throws SQLException {
+        super(game);
+    }
 	
     @Override
     public void setPosition(Vec2 pos) {
@@ -27,8 +28,9 @@ public class Trap extends PObject {
         collision_box = collision_box.translateToPosition(pos);
     }
 	
-	public boolean collisionable() { return enabled; }
-        @Override
+    public boolean collisionable() { return enabled; }
+    
+    @Override
     public Box getCollisionBox()       { return collision_box; }
     
     //--------------- interface d'affichage -----------------

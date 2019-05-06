@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
 
@@ -47,6 +48,8 @@ public class StartMenu extends javax.swing.JFrame {
             Logger.getLogger(StartMenu.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("pas d'image");
         }
+        
+        updateList();
     }
     
     public int avatar;
@@ -118,14 +121,13 @@ public class StartMenu extends javax.swing.JFrame {
         jScrollPane2.setViewportView(listeJoueurs);
 
         getContentPane().add(jScrollPane2);
-        jScrollPane2.setBounds(390, 90, 80, 140);
+        jScrollPane2.setBounds(370, 90, 110, 140);
 
         labelJoueursConnectes.setForeground(new java.awt.Color(255, 153, 51));
         labelJoueursConnectes.setText("Joueurs connectés");
         getContentPane().add(labelJoueursConnectes);
         labelJoueursConnectes.setBounds(380, 70, 150, 14);
 
-        imageBotOrange.setIcon(new javax.swing.ImageIcon("Z:\\Mes documents\\INFO\\Projet-DR\\deathrun-portal\\images\\sentrybot.png")); // NOI18N
         imageBotOrange.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 imageBotOrangeActionPerformed(evt);
@@ -134,8 +136,6 @@ public class StartMenu extends javax.swing.JFrame {
         getContentPane().add(imageBotOrange);
         imageBotOrange.setBounds(230, 130, 80, 70);
 
-        imageSentryBot.setIcon(new javax.swing.ImageIcon("Z:\\Mes documents\\INFO\\Projet-DR\\deathrun-portal\\images\\sentrybot.png")); // NOI18N
-        imageSentryBot.setDisabledIcon(null);
         imageSentryBot.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 imageSentryBotActionPerformed(evt);
@@ -144,7 +144,6 @@ public class StartMenu extends javax.swing.JFrame {
         getContentPane().add(imageSentryBot);
         imageSentryBot.setBounds(20, 130, 80, 70);
 
-        imageBotBleu.setIcon(new javax.swing.ImageIcon("Z:\\Mes documents\\INFO\\Projet-DR\\deathrun-portal\\images\\sentrybot.png")); // NOI18N
         imageBotBleu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 imageBotBleuActionPerformed(evt);
@@ -198,29 +197,7 @@ public class StartMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_Text_PseudoActionPerformed
 
     private void listeJoueursValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listeJoueursValueChanged
-                try {
-            sync = new Sync(DriverManager.getConnection(
-                    "jdbc:mysql://nemrod.ens2m.fr:3306/20182019_s2_vs2_tp1_deathrun?serverTimezone=UTC", 
-                    "deathrun2", 
-                    "5V8HVbDZMtkOHwaX"
-                ));
-        PreparedStatement req = sync.srv.prepareStatement("SELECT name FROM players");
-        ResultSet r = req.executeQuery();
         
-        //DefaultListModel listModel;
-        //listModel = new DefaultListModel();
-        //listModel.addElement(“new item”);
-
-
-        while (r.next()) {
-                    String name = r.getString("name");                    
-                    listeJoueurs.addElement(name);
-                    }
-                }
-                
-        catch (SQLException err) {
-            System.out.println("sql connection error, fail to init game:\n\t"+err);
-        }
     }//GEN-LAST:event_listeJoueursValueChanged
 
     /**
@@ -273,4 +250,26 @@ public class StartMenu extends javax.swing.JFrame {
     private javax.swing.JList<String> listeJoueurs;
     private javax.swing.JButton startButton;
     // End of variables declaration//GEN-END:variables
+
+    private void updateList() {
+        try {
+            sync = new Sync(DriverManager.getConnection(
+                    "jdbc:mysql://nemrod.ens2m.fr:3306/20182019_s2_vs2_tp1_deathrun?serverTimezone=UTC", 
+                    "deathrun2", 
+                    "5V8HVbDZMtkOHwaX"
+                ));
+            PreparedStatement req = sync.srv.prepareStatement("SELECT name FROM players");
+            ResultSet r = req.executeQuery();
+            DefaultListModel listModel = new DefaultListModel();
+            while (r.next()) {
+                        String name = r.getString("name");                    
+                        listModel.addElement(name); 
+            }
+            listeJoueurs.setModel(listModel);
+        }
+                
+        catch (SQLException err) {
+            System.out.println("sql connection error, fail to init game:\n\t"+err);
+        }
+    }
 }

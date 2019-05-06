@@ -85,8 +85,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
         this.timer = new Timer(20, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                game.syncUpdate();
-                game.physicStep();
+                game.step();
                 render(bufferContext);
                 jLabel1.repaint();
             }
@@ -96,8 +95,10 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
         this.addWindowListener(new WindowAdapter() {
             @Override      
             public void windowClosing(WindowEvent e) {
-                controled.disconnect();
-                game.disconnect();
+                if (game.sync != null) {
+                    controled.disconnect();
+                    game.disconnect();
+                }
             }
         });
     }
@@ -122,7 +123,8 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
         if (evt.getKeyCode() == evt.VK_SPACE)   this.controled.setJump(false); //peut etre pas besoin si on remet jump à false direct après le saut
         if (evt.getKeyCode() == evt.VK_SEMICOLON)   {this.scale++; System.out.println("Scale = " + this.scale);}
         if (evt.getKeyCode() == evt.VK_COMMA)       {this.scale--; System.out.println("Scale = " + this.scale);}
-        if (evt.getKeyCode() == evt.VK_H)           PObject.drawHitBox = !this.drawHitBox;
+        if (evt.getKeyCode() == evt.VK_H)           PObject.drawHitBox = !PObject.drawHitBox;
+        if (evt.getKeyCode() == evt.VK_E)           ;//TODO: trigger l'item du joueur
     } 
 
     public void render(Graphics2D g) {

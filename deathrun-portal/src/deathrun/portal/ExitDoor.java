@@ -52,7 +52,8 @@ public class ExitDoor extends PObject{
     
     @Override public void onCollision(Game g, PObject other) {
         if (other instanceof Player) {
-            System.out.println("player "+((Player)other).name+" reached the door");
+            Player player = (Player) other;
+            System.out.println("player "+player.name+" reached the door");
         }
     }
 }
