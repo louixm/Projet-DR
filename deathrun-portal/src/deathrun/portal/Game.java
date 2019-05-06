@@ -27,7 +27,6 @@ public class Game {
     
     long prev_time; // (ns) instant de dernier pas physique
     long next_sync; // (ns) instant de prochaine synchronisation prévue de l'etat du jeu avec la BDD
-    final long sync_interval = 50000000; // (ns) temps minimum entre chaque synchronisation avec la BDD
     Timestamp db_last_sync;
     
     public final double gravity = 9.81;
@@ -185,7 +184,7 @@ public class Game {
         // recuperer la date
         long ac_time = System.nanoTime();
         if (force || ac_time > next_sync) {
-            next_sync = ac_time + sync_interval;
+            next_sync = ac_time + sync.sync_interval;
             
             //System.out.println("sync get");
             

@@ -25,7 +25,6 @@ abstract public class PObject {
     
     long prev_time; // (ns) instant de dernier pas physique
     long next_sync; // (ns) instant de prochaine synchronisation prévue de l'etat du jeu avec la BDD
-    final long sync_interval = 50000000; // (ns) temps minimum entre chaque synchronisation avec la BDD
     Timestamp last_sync;
     
     boolean local_changed;
@@ -98,7 +97,7 @@ abstract public class PObject {
         // recuperer la date
         long ac_time = System.nanoTime();
         if (force || (ac_time > next_sync && local_changed)) {
-            next_sync = ac_time + sync_interval;
+            next_sync = ac_time + sync.sync_interval;
             local_changed = false;
             
             //System.out.println("sync set "+db_id);
