@@ -26,7 +26,7 @@ public class DeathrunPortal {
         //try {
             game.init(4);// choix de la map 1, 2, 3, 4	// connecte au serveur et construit tous les objets tels que dans la base de donnnées
             //TODO: check dans la db players et ajouter au jeu tous ceux deja existants
-            controled = new Player(game, "Jean Naimar", 1);
+            controled = new Player(game, "Jean Naymar", 1);
             controled.setControled(true);
 
 //            game.map = Map.MapInitialization(game, 4);  // choix de la map 1, 2, 3, 4
