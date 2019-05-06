@@ -88,10 +88,10 @@ public class Laser extends PObject {
             double scal4 = p4.sub(collision_box.center()).dot(this.vectir) ;
             
             if (this.sign(proj1) != this.sign(proj2) && scal1>0 && scal2>0){
-                System.out.println("Player Killed");
+                p.setDead(true);
                 // Player Killed
             }else if(this.sign(proj3) != this.sign(proj4) && scal3>0 && scal4>0){
-                System.out.println("Player Killed");
+                p.setDead(true);
                 // Player Killed
             }
         }
@@ -106,6 +106,7 @@ public class Laser extends PObject {
                 (int) (position.x*scale), 
                 (int) (position.y*scale), 
                 null);    */ 
+        canvas.setColor(Color.red);
         canvas.drawLine(
                 (int) (collision_box.center().x*scale),
                 (int) (collision_box.center().y*scale),
