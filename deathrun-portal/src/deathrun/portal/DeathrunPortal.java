@@ -16,7 +16,6 @@ import javax.swing.JFrame;
  * @author ydejongh
  */
 public class DeathrunPortal {
-
     /**
      * @param args the command line arguments
      */
