@@ -215,7 +215,7 @@ public class StartMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_imageBotBleuActionPerformed
 
     private void listeJoueursValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listeJoueursValueChanged
-        
+      
     }//GEN-LAST:event_listeJoueursValueChanged
 
     private void Text_PseudoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_Text_PseudoKeyReleased

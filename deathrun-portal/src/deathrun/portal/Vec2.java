@@ -23,7 +23,7 @@ public class Vec2 {
     public Vec2 mul(double scalar)	{ return new Vec2(scalar*this.x, scalar*this.y); }
     public double dot(Vec2 other)	{ return other.x*this.x + other.y*this.y; }
     public double norm()            { return sqrt(x*x + y*y); }
-    public double vect(Vec2 other)            {return this.x*other.y-this.y*other.x;}
+    public double cross(Vec2 other)            {return this.x*other.y-this.y*other.x;}
     public boolean isnull()         { return (x == 0 && y == 0); }
     
     public String toString() {

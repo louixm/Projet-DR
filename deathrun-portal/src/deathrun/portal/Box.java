@@ -38,6 +38,8 @@ public class Box {
 //        System.out.println(translated_p1 + ", " + translated_p2);
         return new Box(translated_p1, translated_p2);
     }
+    
+    //public Box rotate(float)
 
     /// retourne vrai si le point est strictement a l'interieur du rectangle
     public boolean contains(Vec2 position) {
