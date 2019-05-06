@@ -20,7 +20,7 @@ public class Sync {
     */
     
     public Connection srv;
-    long sync_interval = 50000000; // (ns) temps minimum entre chaque synchronisation avec la BDD
+    public long sync_interval = 50000000; // (ns) temps minimum entre chaque synchronisation avec la BDD
     
     public Sync(Connection srv) {
         this.srv = srv;
