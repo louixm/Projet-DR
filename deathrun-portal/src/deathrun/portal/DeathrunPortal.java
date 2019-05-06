@@ -20,7 +20,7 @@ public class DeathrunPortal {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws SQLException, IOException {
-        Game game = new Game();
+        Game game = new Game(true);
         Player controled, otherone;
         //try {
             game.init(4);// choix de la map 1, 2, 3, 4	// connecte au serveur et construit tous les objets tels que dans la base de donnnées
