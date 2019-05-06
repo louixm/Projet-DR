@@ -5,6 +5,7 @@
  */
 package deathrun.portal;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -78,7 +79,7 @@ public class Player extends PObject {
                 Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+        //double j = game.map.enter.position.y + game.map.enter.size - this.avatars.getHight();
         this.setPosition(game.map.enter.position.add(new Vec2(-0.25,0)));
         
         
@@ -147,9 +148,25 @@ public class Player extends PObject {
             avatars[avatar].getWidth(null), avatars[avatar].getHeight(null),
             null);
         
+        g.setColor(getPlayerColor());
+        g.drawString(name, (int) ((collision_box.p1.x)*scale), (int) ((collision_box.p1.y - 0.1)*scale));
         super.render(g, scale);
     }
 
+    private Color getPlayerColor(){
+        switch(this.db_id){
+            case(-1): return Color.BLUE;
+            case(-2): return Color.ORANGE;
+            case(-3): return Color.GREEN;
+            case(-4): return Color.PINK;
+            case(-5): return Color.CYAN;
+            case(-6): return Color.RED;
+            case(-7): return Color.YELLOW;
+            case(-8): return Color.MAGENTA; 
+            default: return Color.WHITE;
+        }
+    }
+    
     public void setLeft(boolean left) {
         if (dead)   return;
         this.left = left;
