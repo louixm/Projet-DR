@@ -78,10 +78,10 @@ public class Laser extends PObject {
             Vec2 p2 = p.getCollisionBox().p2 ; //point supérieur droit
             Vec2 p3 = new Vec2(p1.x, p2.y) ; // point supérieur gauche
             Vec2 p4 = new Vec2(p2.x , p1.y) ; // point supérieur gauche
-            double proj1 = p1.sub(collision_box.center()).vect(this.vectir) ;
-            double proj2 = p2.sub(collision_box.center()).vect(this.vectir) ;
-            double proj3 = p3.sub(collision_box.center()).vect(this.vectir) ;
-            double proj4 = p4.sub(collision_box.center()).vect(this.vectir) ;
+            double proj1 = p1.sub(collision_box.center()).cross(this.vectir) ;
+            double proj2 = p2.sub(collision_box.center()).cross(this.vectir) ;
+            double proj3 = p3.sub(collision_box.center()).cross(this.vectir) ;
+            double proj4 = p4.sub(collision_box.center()).cross(this.vectir) ;
             double scal1 = p1.sub(collision_box.center()).dot(this.vectir) ;
             double scal2 = p2.sub(collision_box.center()).dot(this.vectir) ;
             double scal3 = p3.sub(collision_box.center()).dot(this.vectir) ;
@@ -105,8 +105,14 @@ public class Laser extends PObject {
         canvas.drawImage(img[typePlateforme], 
                 (int) (position.x*scale), 
                 (int) (position.y*scale), 
-                null);    */
-        int scale1 = Math.round(scale); 
+                null);    */ 
+        canvas.drawLine(
+                (int) (collision_box.center().x*scale),
+                (int) (collision_box.center().y*scale),
+                (int) ((collision_box.center().x*scale+vectir.mul(1000).x)*scale),
+                (int) ((collision_box.center().y*scale+vectir.mul(1000).y)*scale)
+        );
+        
         canvas.drawImage(img, 
                 (int) (collision_box.p1.x*scale), 
                 (int) (collision_box.p1.y*scale), 
@@ -115,7 +121,6 @@ public class Laser extends PObject {
                 0, 0,
                 img.getWidth(null), img.getHeight(null),
                 null);
-        //canvas.drawLine((int) collision_box.center().x*scale1,(int) collision_box.center().y*scale1,(int) (collision_box.center().x*scale1+vectir.mul(1000).x*scale1),(int) (collision_box.center().y*scale1+vectir.mul(1000).y*scale1));
         //System.out.println(collision_box.center().y);
         super.render(canvas, scale);
         
