@@ -54,37 +54,23 @@ public class Saw extends PObject {
     //--------------- interface d'affichage -----------------
     @Override
     public void render(Graphics2D canvas, float scale) {
-        /*
-        canvas.drawImage(img[typePlateforme], 
-                (int) (position.x*scale), 
-                (int) (position.y*scale), 
-                null);    */
-        AffineTransform transform = new AffineTransform();
+        // incrementer le compteur de frame
         step ++;
+        // assembler la matrice de transformation (scale,rotation,translation)
         Vec2 c = collision_box.p1;
+        AffineTransform transform = new AffineTransform();
         transform.translate(c.x*scale, c.y*scale);
         transform.scale(
                 scale*collision_box.getWidth()/img.getWidth(null),
                 scale*collision_box.getHeight()/img.getHeight(null)
         );
         transform.rotate(Math.PI / 40 * step,img.getWidth(null)/2,img.getHeight(null)/2);
-
-        //transform.translate(c.x, c.y);
-        //transform.scale(e,scale);
+        // affichage de l'image tournée
         canvas.drawImage(img, 
             transform,
             null);
+        // affichage de PObject
         super.render(canvas, scale);
-//        canvas.drawImage(img, 
-//                (int) (collision_box.p1.x*scale), 
-//                (int) (collision_box.p1.y*scale), 
-//                (int) (collision_box.p2.x*scale), 
-//                (int) (collision_box.p2.y*scale), 
-//                0, 0,
-//                img.getWidth(null), img.getHeight(null),
-//                null);
-//        super.render(canvas, scale);
-//        // TODO
     }
     
 }
