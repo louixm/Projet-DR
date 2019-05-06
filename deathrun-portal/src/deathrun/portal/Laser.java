@@ -106,6 +106,7 @@ public class Laser extends PObject {
                 (int) (position.x*scale), 
                 (int) (position.y*scale), 
                 null);    */ 
+        canvas.setColor(Color.red);
         canvas.drawLine(
                 (int) (collision_box.center().x*scale),
                 (int) (collision_box.center().y*scale),
