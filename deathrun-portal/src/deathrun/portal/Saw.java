@@ -46,7 +46,7 @@ public class Saw extends PObject {
     
     //--------------- interface de gestion des collisions -----------------
     public int collisionable(PObject other)  { 
-        return (other instanceof Player)?1:0;
+        return (other instanceof Player)?2:0;
     }
     @Override
     public Box getCollisionBox()       { return collision_box; }
@@ -75,6 +75,6 @@ public class Saw extends PObject {
     
     @Override
     public void onCollision(Game g, PObject other) {
-        System.out.println("player "+((Player)other).name+" is dead");
+        ((Player)other).setDead(true);
     }
 }
