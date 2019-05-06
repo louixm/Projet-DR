@@ -171,7 +171,7 @@ public class StartMenu extends javax.swing.JFrame {
         Pseudo_label.setBounds(20, 70, 50, 14);
 
         Text_Pseudo.setFont(new java.awt.Font("Times New Roman", 0, 10)); // NOI18N
-        Text_Pseudo.setText("<noname>");
+        Text_Pseudo.setToolTipText("votre nom");
         Text_Pseudo.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 Text_PseudoKeyReleased(evt);
@@ -203,15 +203,15 @@ public class StartMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_startButtonActionPerformed
 
     private void imageBotOrangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_imageBotOrangeActionPerformed
-        avatar = 3;
+        avatar = 2;
     }//GEN-LAST:event_imageBotOrangeActionPerformed
 
     private void imageSentryBotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_imageSentryBotActionPerformed
-        avatar = 1;
+        avatar = 0;
     }//GEN-LAST:event_imageSentryBotActionPerformed
 
     private void imageBotBleuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_imageBotBleuActionPerformed
-        avatar = 2;
+        avatar = 1;
     }//GEN-LAST:event_imageBotBleuActionPerformed
 
     private void listeJoueursValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listeJoueursValueChanged
