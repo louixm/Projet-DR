@@ -1,6 +1,8 @@
 package deathrun.portal;
 
+import static deathrun.portal.Platform.img;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -21,6 +23,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.Timer;
@@ -239,7 +242,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
-         //
+        System.out.println("La souris est entrée dans la fenêtre. Position : (x = " + e.getX() + ", y = " + e.getY() + ").");
     }
 
     @Override
@@ -250,8 +253,34 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
     @Override
     public void mouseEntered(MouseEvent e) {
         if(this.selectionBloc.blocAPoser != 0){
-            if(this.selectionBloc.blocAPoser == 1){ //Plateforme
+            if(this.selectionBloc.blocAPoser == 1){ try {
+                //Plateforme
                 
+                /*JPanel plateformeJPanel = new JPanel();
+                
+                Icon plateforme = new ImageIcon("./images/patterns/Tile (15).png");
+                JLabel plateformeJLabel = new JLabel ();
+                plateformeJLabel.setIcon(plateforme);
+         
+                plateformeJPanel.add(plateformeJLabel);
+         
+                plateformeJPanel.setLayout(null);
+                plateformeJLabel.setLocation(e.getX(), e.getY());
+                
+                plateformeJPanel.paint(bufferContext);*/
+                
+                System.out.println("La souris est entrée dans la fenêtre. Position : (x = " + e.getX() + ", y = " + e.getY() + ").");
+                
+                Image plateforme = ImageIO.read(new File("./images/patterns/Tile (5).png"));
+                
+                bufferContext.drawImage(plateforme,
+                        e.getX(),
+                        e.getY(),
+                        null);
+                
+                } catch (IOException ex) {
+                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
     }
