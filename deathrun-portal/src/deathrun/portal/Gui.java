@@ -93,8 +93,10 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
         this.addWindowListener(new WindowAdapter() {
             @Override      
             public void windowClosing(WindowEvent e) {
-                controled.disconnect();
-                game.disconnect();
+                if (game.sync != null) {
+                    controled.disconnect();
+                    game.disconnect();
+                }
             }
         });
     }

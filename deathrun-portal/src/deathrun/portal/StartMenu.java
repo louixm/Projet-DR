@@ -128,7 +128,6 @@ public class StartMenu extends javax.swing.JFrame {
         getContentPane().add(labelJoueursConnectes);
         labelJoueursConnectes.setBounds(380, 70, 150, 14);
 
-        imageBotOrange.setIcon(new javax.swing.ImageIcon("Z:\\Mes documents\\INFO\\Projet-DR\\deathrun-portal\\images\\sentrybot.png")); // NOI18N
         imageBotOrange.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 imageBotOrangeActionPerformed(evt);
@@ -137,8 +136,6 @@ public class StartMenu extends javax.swing.JFrame {
         getContentPane().add(imageBotOrange);
         imageBotOrange.setBounds(230, 130, 80, 70);
 
-        imageSentryBot.setIcon(new javax.swing.ImageIcon("Z:\\Mes documents\\INFO\\Projet-DR\\deathrun-portal\\images\\sentrybot.png")); // NOI18N
-        imageSentryBot.setDisabledIcon(null);
         imageSentryBot.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 imageSentryBotActionPerformed(evt);
@@ -147,7 +144,6 @@ public class StartMenu extends javax.swing.JFrame {
         getContentPane().add(imageSentryBot);
         imageSentryBot.setBounds(20, 130, 80, 70);
 
-        imageBotBleu.setIcon(new javax.swing.ImageIcon("Z:\\Mes documents\\INFO\\Projet-DR\\deathrun-portal\\images\\sentrybot.png")); // NOI18N
         imageBotBleu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 imageBotBleuActionPerformed(evt);

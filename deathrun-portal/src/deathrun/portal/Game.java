@@ -42,6 +42,7 @@ public class Game {
                         "5V8HVbDZMtkOHwaX"
                     ));
                 db_last_sync = new Timestamp(0);
+                System.out.println("connected to database");
             }
             catch (SQLException err) {
                 System.out.println("sql connection error, fail to init game:\n\t"+err);
@@ -70,7 +71,7 @@ public class Game {
         
         for (PObject p: map.objects)    p.onGameStep(this, dt);
         for (PObject p: players)        p.onGameStep(this, dt);
-        syncUpdate();
+        if (sync != null) syncUpdate();
         physicStep(dt);
         
         prev_time = ac_time;
