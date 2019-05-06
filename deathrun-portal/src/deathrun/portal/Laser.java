@@ -73,7 +73,7 @@ public class Laser extends PObject {
     public Box getCollisionBox()       { return collision_box; }
     
     @Override
-    public void onGameStep(Game g) {
+    public void onGameStep(Game g, float dt) {
         System.out.println("Player Killed");
         for (Player p: game.players){
             Vec2 p1 = p.getCollisionBox().p1 ; //point inférieur gauche
