@@ -27,7 +27,7 @@ public class Game {
     
     long prev_time; // (ns) instant de dernier pas physique
     long next_sync; // (ns) instant de prochaine synchronisation prévue de l'etat du jeu avec la BDD
-    final long sync_interval = 100000000; // (ns) temps minimum entre chaque synchronisation avec la BDD
+    final long sync_interval = 50000000; // (ns) temps minimum entre chaque synchronisation avec la BDD
     Timestamp db_last_sync;
     
     public final double gravity = 9.81;
@@ -79,7 +79,7 @@ public class Game {
             }
         
             // pas de mise a jour de position si pas de vitesse
-            if (player.velocity.isnull())       continue;
+            //if (!player.velocity.isnull())       continue;
             //System.out.println("new position: "+player.position);
             Vec2 newpos = player.position.add(player.velocity.mul(dt));
             player.setPosition(newpos);
@@ -134,7 +134,6 @@ public class Game {
                                 if (player.velocity.x < 0)            player.velocity.x = 0;
                             }
 
-                            //player.setPosition(newpos2);
                             player.setPosition(player.position.add(correction));
                         }
                         
@@ -148,7 +147,6 @@ public class Game {
             // position maintenant corrigée
             // si sync n'est pas instancié, fonctionnement hors ligne
             if (sync != null && player.isControled())   {
-                //System.out.println("send sync for "+player.db_id);
                 player.syncSet(sync);
             }
         }
@@ -189,7 +187,7 @@ public class Game {
         if (force || ac_time > next_sync) {
             next_sync = ac_time + sync_interval;
             
-            System.out.println("sync get");
+            //System.out.println("sync get");
             
             // si sync n'est pas instancié, fonctionnement hors ligne
             if (sync == null)   return;
@@ -219,7 +217,7 @@ public class Game {
                         obj.setPosition(new Vec2(r.getInt("x")/1000f, r.getInt("y")/1000f));
                         obj.velocity.x = r.getDouble("vx");
                         obj.velocity.y = r.getDouble("vy");
-                        System.out.println("updated object "+id);
+                        //System.out.println("updated object "+id);
                     }
                 }
                 r.close();
