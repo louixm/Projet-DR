@@ -153,7 +153,7 @@ public class Player extends PObject {
         super.render(g, scale);
     }
 
-    private Color getPlayerColor(){
+    public Color getPlayerColor(){
         switch(this.db_id){
             case(-1): return Color.BLUE;
             case(-2): return Color.ORANGE;
