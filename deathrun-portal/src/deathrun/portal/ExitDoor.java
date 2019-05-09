@@ -22,9 +22,9 @@ public class ExitDoor extends PObject{
     
     public ExitDoor(Game game, Vec2 position) throws IOException, SQLException {
         super(game);
-        this.box = new Box(position.x-size/2, position.y-size/2, position.x+size/2, position.y+size/2);
-        this.collision_box = new Box(position.x-csize/2, position.y-csize/2, position.x+csize/2, position.y+csize/2);
         this.position = position;
+        this.box = new Box(position.x, position.y, position.x+size, position.y+size);
+        this.collision_box = new Box(position.x+(size-csize)/2, position.y+(size-csize)/2, position.x+(size+csize)/2, position.y+(size+csize)/2);
         
         if (img == null) {
             img = ImageIO.read(new File("./images/porteSortie.png"));
@@ -34,7 +34,7 @@ public class ExitDoor extends PObject{
     @Override public void setPosition(Vec2 pos) {
         super.setPosition(pos);
         box = box.translateToPosition(pos);
-        collision_box = collision_box.translateToPosition(pos);
+        collision_box = collision_box.translateToPosition(pos.add(new Vec2((size-csize)/2, (size-csize)/2)));
     }
      
     //--------------- interface de gestion des collisions -----------------
@@ -43,7 +43,6 @@ public class ExitDoor extends PObject{
     
     //--------------- interface d'affichage -----------------
     @Override public void render(Graphics2D canvas, float scale) {
-        super.render(canvas, scale);
         canvas.drawImage(img, 
                 (int) (box.p1.x*scale), 
                 (int) (box.p1.y*scale), 
@@ -52,6 +51,7 @@ public class ExitDoor extends PObject{
                 0, 0,
                 img.getWidth(null), img.getHeight(null),
                 null);
+        super.render(canvas, scale);
     }
     
     @Override public void onCollision(Game g, PObject other) {
