@@ -21,8 +21,8 @@ import java.util.ArrayList;
  *
  * @author pdemiche
  */
-public class Laser extends PObject {
-    Box collision_box;
+public class Laser extends Trap {
+    //Box collision_box;
     static Image img;
     float angle ;
     int typePlateforme;
@@ -37,9 +37,7 @@ public class Laser extends PObject {
         this.angle = angle;
 
         this.vectir = new Vec2(Math.cos(angle),Math.sin(angle));
-        //this.vectir = new Vec2(1,0);
         this.normal = new Vec2(Math.sin(angle),Math.cos(angle));
-        //this.normal = new Vec2(0,1);
         setPosition(position);
         
         
@@ -49,27 +47,28 @@ public class Laser extends PObject {
     
     }
     
-    
+    /*
     @Override
     public void setPosition(Vec2 pos) {
         super.setPosition(pos);
         collision_box = collision_box.translateToPosition(pos);
     }
     
-    public int sign(double nombre){
-        if(nombre < 0){
-            return -1;
-        }else{
-            return +1;
-        }
-    }
-    
+    */
     //--------------- interface de gestion des collisions -----------------
+    @Override
     public int collisionable(PObject other)  { 
         return (other instanceof Player)?1:0;
     }
+    /*
     @Override
     public Box getCollisionBox()       { return collision_box; }
+    */
+    
+    public static int sign(double nombre){
+        if(nombre < 0)  return -1;
+        else            return +1;
+    }
     
     @Override
     public void onGameStep(Game game, float dt) {
@@ -87,10 +86,10 @@ public class Laser extends PObject {
             double scal3 = p3.sub(collision_box.center()).dot(this.vectir) ;
             double scal4 = p4.sub(collision_box.center()).dot(this.vectir) ;
             
-            if (this.sign(proj1) != this.sign(proj2) && scal1>0 && scal2>0){
+            if (sign(proj1) != sign(proj2) && scal1>0 && scal2>0){
                 p.setDead(true);
                 // Player Killed
-            }else if(this.sign(proj3) != this.sign(proj4) && scal3>0 && scal4>0){
+            }else if(sign(proj3) != sign(proj4) && scal3>0 && scal4>0){
                 p.setDead(true);
                 // Player Killed
             }
@@ -101,11 +100,6 @@ public class Laser extends PObject {
     //--------------- interface d'affichage -----------------
     @Override
     public void render(Graphics2D canvas, float scale) {
-        /*
-        canvas.drawImage(img[typePlateforme], 
-                (int) (position.x*scale), 
-                (int) (position.y*scale), 
-                null);    */ 
         canvas.setColor(Color.red);
         canvas.drawLine(
                 (int) (collision_box.center().x*scale),
