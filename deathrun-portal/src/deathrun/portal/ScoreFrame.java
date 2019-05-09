@@ -81,18 +81,19 @@ public class ScoreFrame extends javax.swing.JFrame {
         if (game != null) {
             for (Player player : game.players){
                 javax.swing.JLabel playerName = new javax.swing.JLabel();
+                playerName.setFont(new java.awt.Font("Trebuchet MS", 1, 16));
                 playerName.setForeground(player.getPlayerColor());
                 playerName.setText(player.name);
                 getContentPane().add(playerName);
-                playerName.setBounds(20, 50*(1+progressBars.size()), 100, 14);
+                playerName.setBounds(20, 50*(1+progressBars.size()), 120, 14);
         
                 javax.swing.JProgressBar progressBar = new javax.swing.JProgressBar();
                 progressBar.setForeground(player.getPlayerColor());
         //        UIManager.put("progressBar.foreground", Color.YELLOW);
-                progressBar.setValue(50); //score
+                progressBar.setValue(100); //score
                 progressBar.setBorderPainted(false);
                 getContentPane().add(progressBar);
-                progressBar.setBounds(120, 50*(1+progressBars.size()), 340, 20);
+                progressBar.setBounds(140, 50*(1+progressBars.size()), 330, 20);
 
                 progressBars.add(progressBar);
             }
