@@ -38,6 +38,7 @@ public class Platform extends PObject {
             img[3] = ImageIO.read(new File("./images/patterns/Tile (17).png")); //plateforme 1/2x3
             img[4] = ImageIO.read(new File("./images/Barrel_1_3.png"));
             img[5] = ImageIO.read(new File("./images/Barrel_2_4.png"));
+            //img[6] = ImageIO.read(new File("./images/p.png"));
         }
     }
     public Platform rotation(Platform p0, double angle){  //la rotation de this autours de p0 d'un angle "angle"; [p0,this] est vertical par rapport à leur centre

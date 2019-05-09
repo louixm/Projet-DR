@@ -16,18 +16,20 @@ import javax.imageio.ImageIO;
 public class EnterDoor extends PObject{
     Box box;
     static Image img;
-    final double size = 3;
+    final double size =3;
+    
+    
     
     public EnterDoor(Game game, Vec2 position) throws IOException, SQLException {
         super(game);
-        this.box = new Box(position.x-size/2, position.y-size/2, position.x+size/2, position.y+size/2);
+        this.box = new Box(position.x, position.y, position.x+size, position.y+size);
         this.position = position;
         
         if (img == null) {
             img = ImageIO.read(new File("./images/DoorUnlocked.png"));
         }
     }
-    
+
     @Override
     public void setPosition(Vec2 pos) {
         super.setPosition(pos);

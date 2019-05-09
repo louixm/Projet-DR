@@ -3,38 +3,34 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package deathrun.portal;
 
 import java.awt.Image;
-import javafx.application.Platform;
 
 /**
  *
  * @author mveyratd
  */
-public class SelectBloc extends javax.swing.JFrame {
+public class SelectionBloc extends javax.swing.JDialog {
 
-    public int blocAPoser; //Entier permettant de savoir quel bloc a été choisi par le joueur
-    // Dans la classe 
+    public int blocAPoser = 0; //Entier permettant de savoir quel bloc a été choisi par le joueur
     
     /**
-     * Creates new form SelectBloc
+     * Creates new form SelectionBloc
      */
-    
-    public SelectBloc() {
+    public SelectionBloc(java.awt.Frame parent, boolean modal) {
+        super(parent, modal);
         initComponents();
         
         // Affichage des images des blocs sur les boutons après redimensionnement
         jButton1.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/patterns/Tile (15).png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
-        jButton2.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/patterns/Spike.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
-        jButton3.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/patterns/Acid (1).png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
-        jButton4.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/patterns/Fence (2).png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
-        jButton5.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/patterns/Tile (17).png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
-        jButton6.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/patterns/Tile (5).png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
-        jButton7.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/Saw.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
-        jButton8.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/portail.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
-        
+        jButton2.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/Saw.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
+        jButton3.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/laser.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
+        jButton4.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/patterns/Acid (1).png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
+        jButton5.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/portail.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
+        jButton6.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/Barrel (1).png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
+        jButton7.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/Barrel (1).png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
+        jButton8.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/Barrel (1).png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
     }
 
     /**
@@ -47,6 +43,7 @@ public class SelectBloc extends javax.swing.JFrame {
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
+        jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
@@ -55,12 +52,14 @@ public class SelectBloc extends javax.swing.JFrame {
         jButton6 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
-        label1 = new java.awt.Label();
-        label2 = new java.awt.Label();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(600, 400));
         getContentPane().setLayout(null);
+
+        jLabel1.setText("Mode édition : choisissez votre bloc ...");
+        getContentPane().add(jLabel1);
+        jLabel1.setBounds(170, 30, 220, 20);
 
         buttonGroup1.add(jButton1);
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -69,7 +68,7 @@ public class SelectBloc extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton1);
-        jButton1.setBounds(50, 90, 80, 80);
+        jButton1.setBounds(40, 80, 80, 80);
 
         buttonGroup1.add(jButton2);
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -78,7 +77,7 @@ public class SelectBloc extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton2);
-        jButton2.setBounds(180, 90, 80, 80);
+        jButton2.setBounds(160, 80, 80, 80);
 
         buttonGroup1.add(jButton3);
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -87,7 +86,7 @@ public class SelectBloc extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton3);
-        jButton3.setBounds(49, 222, 80, 80);
+        jButton3.setBounds(280, 80, 80, 80);
 
         buttonGroup1.add(jButton4);
         jButton4.addActionListener(new java.awt.event.ActionListener() {
@@ -96,7 +95,7 @@ public class SelectBloc extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton4);
-        jButton4.setBounds(460, 90, 80, 80);
+        jButton4.setBounds(40, 190, 80, 80);
 
         buttonGroup1.add(jButton5);
         jButton5.addActionListener(new java.awt.event.ActionListener() {
@@ -105,7 +104,7 @@ public class SelectBloc extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton5);
-        jButton5.setBounds(460, 220, 80, 80);
+        jButton5.setBounds(160, 190, 80, 80);
 
         buttonGroup1.add(jButton6);
         jButton6.addActionListener(new java.awt.event.ActionListener() {
@@ -114,7 +113,7 @@ public class SelectBloc extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton6);
-        jButton6.setBounds(183, 222, 80, 80);
+        jButton6.setBounds(400, 80, 80, 80);
 
         buttonGroup1.add(jButton7);
         jButton7.addActionListener(new java.awt.event.ActionListener() {
@@ -123,7 +122,7 @@ public class SelectBloc extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton7);
-        jButton7.setBounds(320, 90, 80, 80);
+        jButton7.setBounds(400, 190, 80, 80);
 
         buttonGroup1.add(jButton8);
         jButton8.addActionListener(new java.awt.event.ActionListener() {
@@ -132,53 +131,58 @@ public class SelectBloc extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton8);
-        jButton8.setBounds(320, 220, 80, 80);
-
-        label1.setText("Mode édition");
-        getContentPane().add(label1);
-        label1.setBounds(250, 10, 100, 40);
-
-        label2.setText("Choisissez votre bloc ...");
-        getContentPane().add(label2);
-        label2.setBounds(220, 50, 140, 20);
+        jButton8.setBounds(280, 190, 80, 80);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        this.blocAPoser = 1;       
+        this.blocAPoser = 1;
+        this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        // TODO add your handling code here:
+        this.blocAPoser = 8;
+        this.dispose();
+    }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         this.blocAPoser = 2;
+        this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
         this.blocAPoser = 3;
+        this.dispose();
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:
+        this.blocAPoser = 6;
+        this.dispose();
+    }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
+        this.blocAPoser = 4;
+        this.dispose();
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
+        this.blocAPoser = 5;
+        this.dispose();
     }//GEN-LAST:event_jButton5ActionPerformed
-
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         // TODO add your handling code here:
+        this.blocAPoser = 7;
+        this.dispose();
     }//GEN-LAST:event_jButton7ActionPerformed
-
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton8ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -197,20 +201,27 @@ public class SelectBloc extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(SelectBloc.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SelectionBloc.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(SelectBloc.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SelectionBloc.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(SelectBloc.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SelectionBloc.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(SelectBloc.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(SelectionBloc.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
-        /* Create and display the form */
+        /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new SelectBloc().setVisible(true);
+                SelectionBloc dialog = new SelectionBloc(new javax.swing.JFrame(), true);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
             }
         });
     }
@@ -225,7 +236,6 @@ public class SelectBloc extends javax.swing.JFrame {
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
-    private java.awt.Label label1;
-    private java.awt.Label label2;
+    private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }
