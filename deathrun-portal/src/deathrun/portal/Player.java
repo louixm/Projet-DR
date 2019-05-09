@@ -200,7 +200,7 @@ public class Player extends PObject {
     }
     
     public void applyMovementChanges(float dt){
-        if (dead)   return;
+        if (dead || hasReachedExitDoor)   return;
         
         if (this.left && (!this.right || !this.leftAndRightWithPriorityOnRight)){
             if (this.velocity.x > 0)        this.acceleration.x = -40;
