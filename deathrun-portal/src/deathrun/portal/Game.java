@@ -31,6 +31,8 @@ public class Game {
     
     public final double gravity = 9.81;
     
+    public boolean roundEnded = false;
+    
     
     Game() { this(false); }
     Game(boolean sync_enable) {
@@ -268,5 +270,14 @@ public class Game {
         return null;
     }
   
+    public void tryEndRound(){
+        if (roundEnded) return;
+        for (Player player : this.players){
+            if (!(player.dead || player.hasReachedExitDoor)) return;
+        }
+        roundEnded = true;
+        ScoreFrame scoreFrame = new ScoreFrame(this);
+        scoreFrame.show();
+    }
             
 }

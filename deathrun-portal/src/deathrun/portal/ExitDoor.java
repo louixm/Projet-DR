@@ -58,6 +58,8 @@ public class ExitDoor extends PObject{
         if (other instanceof Player) {
             Player player = (Player) other;
             System.out.println("player "+player.name+" reached the door");
+            player.hasReachedExitDoor = true;
+            g.tryEndRound();
         }
     }
 }
