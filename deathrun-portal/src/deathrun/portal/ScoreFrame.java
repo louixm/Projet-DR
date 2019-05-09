@@ -26,7 +26,6 @@ public class ScoreFrame extends javax.swing.JFrame {
 
     public ScoreFrame(Game game) {
         
-        
         initComponents();
         initProgressBars(game);
         //TODO: initialise background manually after the progress bars.
@@ -85,7 +84,7 @@ public class ScoreFrame extends javax.swing.JFrame {
                 playerName.setForeground(player.getPlayerColor());
                 playerName.setText(player.name);
                 getContentPane().add(playerName);
-                playerName.setBounds(30, 50*(1+progressBars.size()), 60, 14);
+                playerName.setBounds(20, 50*(1+progressBars.size()), 100, 14);
         
                 javax.swing.JProgressBar progressBar = new javax.swing.JProgressBar();
                 progressBar.setForeground(player.getPlayerColor());
