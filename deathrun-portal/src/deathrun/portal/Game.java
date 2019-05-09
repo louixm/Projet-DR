@@ -159,6 +159,8 @@ public class Game {
             }
             
             // position maintenant corrigée
+            
+            if (player.position.y > map.size.getHeight()*1.5) player.setDead(true);
             // si sync n'est pas instancié, fonctionnement hors ligne
             if (sync != null && player.isControled())   {
                 player.syncSet(sync);
