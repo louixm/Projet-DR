@@ -15,13 +15,16 @@ import javax.imageio.ImageIO;
  */
 public class ExitDoor extends PObject{
     Box box;
+    Box collision_box;
     static Image img;
-    final double size = 3;
+    final double size = 3;  // diametre de la porte
+    final double csize = 1; // largeur hauteur de la boite de collisions
     
     public ExitDoor(Game game, Vec2 position) throws IOException, SQLException {
         super(game);
-        this.box = new Box(position.x, position.y, position.x+size, position.y+size);
         this.position = position;
+        this.box = new Box(position.x, position.y, position.x+size, position.y+size);
+        this.collision_box = new Box(position.x+(size-csize)/2, position.y+(size-csize)/2, position.x+(size+csize)/2, position.y+(size+csize)/2);
         
         if (img == null) {
             img = ImageIO.read(new File("./images/porteSortie.png"));
@@ -31,15 +34,15 @@ public class ExitDoor extends PObject{
     @Override public void setPosition(Vec2 pos) {
         super.setPosition(pos);
         box = box.translateToPosition(pos);
+        collision_box = collision_box.translateToPosition(pos.add(new Vec2((size-csize)/2, (size-csize)/2)));
     }
      
     //--------------- interface de gestion des collisions -----------------
     @Override public int collisionable(PObject other)  { return 2; }
-    @Override public Box getCollisionBox()       { return box; }
+    @Override public Box getCollisionBox()       { return collision_box; }
     
     //--------------- interface d'affichage -----------------
     @Override public void render(Graphics2D canvas, float scale) {
-        super.render(canvas, scale);
         canvas.drawImage(img, 
                 (int) (box.p1.x*scale), 
                 (int) (box.p1.y*scale), 
@@ -48,12 +51,15 @@ public class ExitDoor extends PObject{
                 0, 0,
                 img.getWidth(null), img.getHeight(null),
                 null);
+        super.render(canvas, scale);
     }
     
     @Override public void onCollision(Game g, PObject other) {
         if (other instanceof Player) {
             Player player = (Player) other;
             System.out.println("player "+player.name+" reached the door");
+            player.hasReachedExitDoor = true;
+            g.tryEndRound();
         }
     }
 }

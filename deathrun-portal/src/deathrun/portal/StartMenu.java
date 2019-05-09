@@ -203,15 +203,15 @@ public class StartMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_startButtonActionPerformed
 
     private void imageBotOrangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_imageBotOrangeActionPerformed
-        avatar = 2;
+        avatar = 1;
     }//GEN-LAST:event_imageBotOrangeActionPerformed
 
     private void imageSentryBotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_imageSentryBotActionPerformed
-        avatar = 0;
+        avatar = 2;
     }//GEN-LAST:event_imageSentryBotActionPerformed
 
     private void imageBotBleuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_imageBotBleuActionPerformed
-        avatar = 1;
+        avatar = 0;
     }//GEN-LAST:event_imageBotBleuActionPerformed
 
     private void listeJoueursValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listeJoueursValueChanged

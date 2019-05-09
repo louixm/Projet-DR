@@ -43,7 +43,7 @@ public class Map {
             m.objects.add(new Platform(g, new Vec2(0*ratioX, 12*ratioY),   6*ratioX, hauteurPlatform*ratioY,1));
             m.objects.add(new Platform(g, new Vec2(0*ratioX, 18*ratioY), 25*ratioX, hauteurPlatform*ratioY,1));
             
-            m.enter.setPosition(new Vec2(0, (18*ratioY)-m.enter.size));
+            m.enter.setPosition(new Vec2(0, (18*ratioY)-m.enter.size/2));
             m.objects.add(m.enter);
             
         
@@ -52,7 +52,7 @@ public class Map {
         
             m.objects.add(new Platform(g, new Vec2(30*ratioX, 18*ratioY), 10*ratioX, hauteurPlatform*ratioY,1));
             m.objects.add(new Platform(g, new Vec2(33*ratioX, 10*ratioY), 7*ratioX, hauteurPlatform*ratioY,1));
-            m.exit.setPosition(new Vec2(40*ratioX-m.exit.size, 10*ratioY-m.exit.size));
+            m.exit.setPosition(new Vec2(40*ratioX-m.exit.size/2, 10*ratioY-m.exit.size/2));
             m.objects.add(m.exit);
         
             m.objects.add(new Platform(g, new Vec2(12*ratioX, 14*ratioY), 3.5*ratioX, hauteurPlatform*ratioY,1));

@@ -28,7 +28,7 @@ public class Player extends PObject {
     public String name;
     public int avatar;
     public boolean controled = false;
-    public boolean dead = false;
+    public boolean dead = false, hasReachedExitDoor = false;
     
     boolean left, right, jump, leftAndRightWithPriorityOnRight; //, hasJumped;
     ArrayList<String> collisionDirection;
@@ -58,6 +58,7 @@ public class Player extends PObject {
         }
         return id;
     }
+    
     
     public Player(Game game, String name, int avatar) throws SQLException {
         super(game, availableId(game));  // creer en ajoutant a la fin
@@ -264,6 +265,7 @@ public class Player extends PObject {
             if (dead) {
                 avatar = 3;
                 System.out.println("player "+name+" is dead");
+                game.tryEndRound();
             }
         }
     }

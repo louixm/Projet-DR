@@ -125,6 +125,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
         if (evt.getKeyCode() == evt.VK_COMMA)       {this.scale--; System.out.println("Scale = " + this.scale);}
         if (evt.getKeyCode() == evt.VK_H)           PObject.drawHitBox = !PObject.drawHitBox;
         if (evt.getKeyCode() == evt.VK_E)           ;//TODO: trigger l'item du joueur
+        if (evt.getKeyCode() == evt.VK_P)           purge();
     } 
 
     public void render(Graphics2D g) {
@@ -255,5 +256,23 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
     @Override
     public void mouseExited(MouseEvent e) {
          //
+    }
+    
+    public void purge(){
+        try {
+            PreparedStatement req;
+            // effacement de la table des objets
+            req = game.sync.srv.prepareStatement("DELETE FROM pobjects WHERE id < 0");
+            req.executeUpdate();
+            // effacement de la table de joueurs
+            req = game.sync.srv.prepareStatement("DELETE FROM players");
+            req.executeUpdate();
+            
+            System.out.println("Purged players from db");
+            req.close();
+        }
+        catch (SQLException err) {
+            System.out.println("purge(): "+err);
+        }
     }
 }
