@@ -40,12 +40,15 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
     public int scale = 36;	// pixel/m
     public boolean drawHitBox = false;
     public final int WINDOW_WIDTH = 1080, WINDOW_HEIGHT = 720;
+    private final int window_header_size = 28;  // taille de la barre de titre de la fenetre (TODO: trouver ca dynamiquement ou trouver comment recuperer les bonnes coordonnées de la souris)
     
     private JLabel jLabel1;
     private BufferedImage buffer, background;
     private Graphics2D bufferContext;
     private Timer timer;
+    private JFrame window;
     
+    boolean editMode = false;
     private SelectionBloc selectionBloc;
     
     public Game game;
@@ -142,99 +145,71 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
   
     @Override
     public void mouseClicked(MouseEvent e) { //Moment où le bouton de la souris a été pressé et relaché
-        if (e.getButton()==1 && this.selectionBloc.blocAPoser == 0) { //Si un clic gauche a été effectué et qu'on a pas encore choisi de bloc, alors la fenetre de selection de bloc s'ouvre
-            selectionBloc.setVisible(true);
-            selectionBloc.addWindowListener(new java.awt.event.WindowAdapter() { //Attente de la fermeture de la fenetre de selection de bloc
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
+        Vec2 pos_clicked = new Vec2(e.getX()/(float)scale, (e.getY()-window_header_size)/(float)scale);
+        
+        // prise de controle des pieges
+        if (e.getButton() == 1) {   // clic gauche
+            for (PObject object : game.map.objects) {
+                if (object instanceof Trap && ((Trap)object).collision_box.contains(pos_clicked))
+                    ((Trap)object).takeControl(controled);
+            }
         }
-        else if(e.getButton()==1 && this.selectionBloc.blocAPoser != 0){ //Si un clic gauche a été effectué et qu'on a déjà choisi un bloc, alors le bloc est posé
-            
-            //Tests pour savoir quel bloc a été choisi dans la fenetre SelectBloc
-            if(this.selectionBloc.blocAPoser == 1) { //Plateforme
-                try { 
-                this.game.map.objects.add(new Platform(this.game, new Vec2(e.getX()/scale, e.getY()/scale), new Box (0,0,2,1.5), 0)); //Ajout du bloc aux coordonnées du clic
-                } catch (IOException ex) {
-                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (SQLException ex) {
-                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+        
+        if (editMode) {
+            try {
+                if (e.getButton()==1 && this.selectionBloc.blocAPoser == 0) { //Si un clic gauche a été effectué et qu'on a pas encore choisi de bloc, alors la fenetre de selection de bloc s'ouvre
+                    selectionBloc.setVisible(true);
+                    selectionBloc.addWindowListener(new java.awt.event.WindowAdapter() { //Attente de la fermeture de la fenetre de selection de bloc
+                            @Override
+                            public void windowClosing(java.awt.event.WindowEvent e) {
+                                System.exit(0);
+                            }
+                        });
                 }
-                System.out.println("Plateforme posée en (x = " + e.getX() + "; y = " + e.getY()+ ").");
-            }
-            else if(this.selectionBloc.blocAPoser == 2){ //Scie circulaire
-                try { 
-                this.game.map.objects.add(new Saw(this.game, new Vec2(e.getX()/scale, e.getY()/scale))); //Ajout du bloc aux coordonnées du clic
-                } catch (IOException ex) {
-                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (SQLException ex) {
-                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                else if(e.getButton()==1 && this.selectionBloc.blocAPoser != 0){ //Si un clic gauche a été effectué et qu'on a déjà choisi un bloc, alors le bloc est posé
+
+                    //Tests pour savoir quel bloc a été choisi dans la fenetre SelectBloc
+                    switch (this.selectionBloc.blocAPoser) {
+                    case 1: //Plateforme
+                        this.game.map.objects.add(new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0)); //Ajout du bloc aux coordonnées du clic
+                        System.out.println("Plateforme posée en (x = " + e.getX() + "; y = " + e.getY()+ ").");
+                        break;
+                    case 2: //Scie circulaire
+                        this.game.map.objects.add(new Saw(this.game, pos_clicked)); //Ajout du bloc aux coordonnées du clic
+                        System.out.println("Scie posée en (x = " + e.getX() + "; y = " + e.getY()+ ").");
+                        break;
+                    case 3: //Laser
+                        //this.game.map.objects.add(new Laser(this.game, pos_clicked,0)); //Ajout du bloc aux coordonnées du clic
+                        System.out.println("Laser posé en (x = " + e.getX() + "; y = " + e.getY()+ ").");
+                        break;
+                    case 4: //Acide
+                        //this.game.map.objects.add(new Platform(this.game, new Vec2(e.getX()/scale, e.getY()/scale), new Box (0,0,2,1.5), 0)); //Ajout du bloc aux coordonnées du clic
+                        System.out.println("Acide posé en (x = " + e.getX() + "; y = " + e.getY()+ ").");
+                        break;
+                    case 5: //Portail
+                        this.game.map.objects.add(new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0)); //Ajout du bloc aux coordonnées du clic
+                        System.out.println("Portail posé en (x = " + e.getX() + "; y = " + e.getY()+ ").");
+                        break;
+                    case 6: //
+                        this.game.map.objects.add(new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0)); //Ajout du bloc aux coordonnées du clic
+                        System.out.println("... posé en (x = " + e.getX() + "; y = " + e.getY()+ ").");
+                        break;
+                    case 7: //
+                        this.game.map.objects.add(new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0)); //Ajout du bloc aux coordonnées du clic
+                        System.out.println("... posé en (x = " + e.getX() + "; y = " + e.getY()+ ").");
+                        break;
+                    case 8: //
+                        this.game.map.objects.add(new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0)); //Ajout du bloc aux coordonnées du clic
+                        System.out.println("... posé en (x = " + e.getX() + "; y = " + e.getY()+ ").");
+                        break;
+                    }
+                    this.selectionBloc.blocAPoser = 0;
                 }
-                System.out.println("Scie posée en (x = " + e.getX() + "; y = " + e.getY()+ ").");
+            } catch (IOException ex) {
+                Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
             }
-            else if(this.selectionBloc.blocAPoser == 3){ //Laser
-                /*try { 
-                this.game.map.objects.add(new Laser(this.game, new Vec2(e.getX()/scale, e.getY()/scale),0)); //Ajout du bloc aux coordonnées du clic
-                } catch (IOException ex) {
-                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (SQLException ex) {
-                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
-                }*/
-                System.out.println("Laser posé en (x = " + e.getX() + "; y = " + e.getY()+ ").");
-            }
-            else if(this.selectionBloc.blocAPoser == 4){ //Acide
-                /*try { 
-                this.game.map.objects.add(new Platform(this.game, new Vec2(e.getX()/scale, e.getY()/scale), new Box (0,0,2,1.5), 0)); //Ajout du bloc aux coordonnées du clic
-                } catch (IOException ex) {
-                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (SQLException ex) {
-                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
-                }*/
-                System.out.println("Acide posé en (x = " + e.getX() + "; y = " + e.getY()+ ").");
-            }
-            else if(this.selectionBloc.blocAPoser == 5){ //Portail
-                try { 
-                this.game.map.objects.add(new Platform(this.game, new Vec2(e.getX()/scale, e.getY()/scale), new Box (0,0,2,1.5), 0)); //Ajout du bloc aux coordonnées du clic
-                } catch (IOException ex) {
-                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (SQLException ex) {
-                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                System.out.println("Portail posé en (x = " + e.getX() + "; y = " + e.getY()+ ").");
-            }
-            else if(this.selectionBloc.blocAPoser == 6){ //
-                try { 
-                this.game.map.objects.add(new Platform(this.game, new Vec2(e.getX()/scale, e.getY()/scale), new Box (0,0,2,1.5), 0)); //Ajout du bloc aux coordonnées du clic
-                } catch (IOException ex) {
-                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (SQLException ex) {
-                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                System.out.println("... posé en (x = " + e.getX() + "; y = " + e.getY()+ ").");
-            }
-            else if(this.selectionBloc.blocAPoser == 7){ //
-                try { 
-                this.game.map.objects.add(new Platform(this.game, new Vec2(e.getX()/scale, e.getY()/scale), new Box (0,0,2,1.5), 0)); //Ajout du bloc aux coordonnées du clic
-                } catch (IOException ex) {
-                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (SQLException ex) {
-                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                System.out.println("... posé en (x = " + e.getX() + "; y = " + e.getY()+ ").");
-            }
-            else if(this.selectionBloc.blocAPoser == 8){ //
-                try { 
-                this.game.map.objects.add(new Platform(this.game, new Vec2(e.getX()/scale, e.getY()/scale), new Box (0,0,2,1.5), 0)); //Ajout du bloc aux coordonnées du clic
-                } catch (IOException ex) {
-                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (SQLException ex) {
-                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                System.out.println("... posé en (x = " + e.getX() + "; y = " + e.getY()+ ").");
-            }
-            this.selectionBloc.blocAPoser = 0;
         }
     }
 
