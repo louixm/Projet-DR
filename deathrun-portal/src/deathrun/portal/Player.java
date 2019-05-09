@@ -30,10 +30,9 @@ public class Player extends PObject {
     private Vec2 previousPosition;
     private ArrayList<String> collisionDirection;
     private boolean controled = false;
-//    private BufferedImage robot, robotBase, robotDr, robotDrEx, robotSaut, robotBasegauche, robotgauche, robotgaucheex, robotsautgauche;     // rajouté par louis animation
     Box collision_box;
     
-    public static BufferedImage avatars[];
+    public static BufferedImage avatars[][];
     
     
     public Player(Game game, String name, int avatar) throws SQLException {
@@ -44,19 +43,33 @@ public class Player extends PObject {
         collision_box = new Box(-0.5, 0, 0.5, 1.8);
         
         if (avatars == null) {
-            this.avatars = new BufferedImage[3];
+            this.avatars = new BufferedImage[3][];
             try {
-                this.avatars[0] = ImageIO.read(new File("./images/sentrybot.png"));
-                this.avatars[1] = ImageIO.read(new File("./images/robotBleu.png"));
+                this.avatars[0] = new BufferedImage[] { 
+                    ImageIO.read(new File("./images/patterns/robotbase.png")),
+                    ImageIO.read(new File("./images/patterns/robotdroite.png")),
+                    ImageIO.read(new File("./images/patterns/robotdroitee.png")),
+                    ImageIO.read(new File("./images/patterns/robotsaut.png")),
+                    ImageIO.read(new File("./images/patterns/robotbasegauche.png")),
+                    ImageIO.read(new File("./images/patterns/robotgauche.png")),
+                    ImageIO.read(new File("./images/patterns/robotdgaucheex.png")),
+                    ImageIO.read(new File("./images/patterns/robotsautgauche.png")),
+                    
+                };
+                this.avatars[1] = new BufferedImage[]{
+                    ImageIO.read(new File("./images/patterns/tourellebase.png")),
+                    ImageIO.read(new File("./images/patterns/tourellebase.png")),
+                    ImageIO.read(new File("./images/patterns/tourellebase.png")),
+                    ImageIO.read(new File("./images/patterns/tourellebase.png")),
+                    ImageIO.read(new File("./images/patterns/tourellebase.png")),
+                    ImageIO.read(new File("./images/patterns/tourellebase.png")),
+                    ImageIO.read(new File("./images/patterns/tourellebase.png")),
+                    ImageIO.read(new File("./images/patterns/tourellebase.png")),
+                    ImageIO.read(new File("./images/patterns/tourellebase.png")),
+                    ImageIO.read(new File("./images/patterns/tourellebase.png")),
+            
+                 };
                 this.avatars[2] = ImageIO.read(new File("./images/robotOrange.png"));
-//                this.robotBase = ImageIO.read(new File("robotbase.png"));    // rajouté par louis animation
-//                this.robotDr = ImageIO.read(new File("robotdroite.png"));    // rajouté par louis animation
-//                this.robotDrEx = ImageIO.read(new File("robotdroitee.png"));    // rajouté par louis animation
-//                this.robotSaut = ImageIO.read(new File("robotsaut.png"));    // rajouté par louis animation
-//                this.robotBasegauche = ImageIO.read(new File("robotbasegauche.png"));    // rajouté par louis animation
-//                this.robotgauche = ImageIO.read(new File("robotgauche.png"));    // rajouté par louis animation
-//                this.robotgaucheex = ImageIO.read(new File("robotdgaucheex.png"));    // rajouté par louis animation
-//                this.robotsautgauche = ImageIO.read(new File("robotsautgauche.png"));    // rajouté par louis animation
             } catch (IOException ex) {
                 Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -97,20 +110,21 @@ public class Player extends PObject {
     public void render(Graphics2D g, float scale) {
         
         
+        BufferedImage images[] = avatars[avatar];
         
-        
-        g.drawImage(avatars[avatar], 
+        g.drawImage(images[0], 
             (int) (collision_box.p1.x*scale), 
             (int) (collision_box.p1.y*scale), 
             (int) (collision_box.p2.x*scale), 
             (int) (collision_box.p2.y*scale), 
             0, 0,
-            avatars[avatar].getWidth(null), avatars[avatar].getHeight(null),
+            images[0].getWidth(null), images[0].getHeight(null),
             null);
         
         super.render(g, scale);
         // TODO
     }
+    
 //    
 //    public void setLeft(boolean left) { 
 //        if (left)   this.velocity.x = -6;
