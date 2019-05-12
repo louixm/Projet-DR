@@ -259,18 +259,20 @@ public class Player extends PObject {
     public boolean isControled(){ return this.controled; }
     
     public void syncMovement(int move){
-        try {
-            PreparedStatement req = game.sync.srv.prepareStatement("UPDATE players SET movement=? WHERE id = ?");
-            req.setInt(1, move); 
-            // id de l'objet a modifier
-            req.setInt(2, db_id);
+        if (game.sync != null){
+            try {
+                PreparedStatement req = game.sync.srv.prepareStatement("UPDATE players SET movement=? WHERE id = ?");
+                req.setInt(1, move); 
+                // id de l'objet a modifier
+                req.setInt(2, db_id);
 
-            // execution de la requete
-            req.executeUpdate();
-            req.close();
-        }
-        catch (SQLException err) {
-            System.out.println("sql exception:\n"+err);
+                // execution de la requete
+                req.executeUpdate();
+                req.close();
+            }
+            catch (SQLException err) {
+                System.out.println("sql exception:\n"+err);
+            }
         }
     }
     

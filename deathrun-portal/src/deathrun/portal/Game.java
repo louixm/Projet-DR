@@ -243,7 +243,13 @@ public class Game {
                     int state = rplayers.getInt("state");
                     int movement = rplayers.getInt("movement");
                     
-                    Player p = players.get(-id-1);
+                    Player p;
+                    try {
+                            p = players.get(-id-1);
+                        }
+                        catch (IndexOutOfBoundsException e){
+                            p = (Player) syncNewPlayer(id);                      
+                        }
                     if (!p.isControled()){
                         switch(state){
                             case(1): {p.dead = true; p.hasReachedExitDoor = false; p.disconnected = false;}

@@ -63,7 +63,7 @@ public class ScoreFrame extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton2);
-        jButton2.setBounds(207, 270, 60, 23);
+        jButton2.setBounds(207, 270, 60, 25);
 
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
         getContentPane().add(jSeparator1);
@@ -85,7 +85,7 @@ public class ScoreFrame extends javax.swing.JFrame {
                 playerName.setForeground(player.getPlayerColor());
                 playerName.setText(player.name);
                 getContentPane().add(playerName);
-                playerName.setBounds(20, 50*(1+progressBars.size()), 120, 14);
+                playerName.setBounds(15, 50*(1+progressBars.size()), 120, 18);
         
                 javax.swing.JProgressBar progressBar = new javax.swing.JProgressBar();
                 progressBar.setForeground(player.getPlayerColor());
