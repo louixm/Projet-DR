@@ -54,7 +54,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
     
     boolean editMode = false;
     private SelectionBloc selectionBloc;
-    public Vec2 positionSouris;
+    public Vec2 positionSouris = new Vec2(0/(float)scale, (0-window_header_size)/(float)scale);
     
     public Game game;
     public Player controled;
@@ -135,14 +135,15 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
 
     @Override
     public void keyReleased(KeyEvent evt) {
+        System.out.println(evt.getKeyCode());
         if (evt.getKeyCode() == evt.VK_D)       this.controled.setRight(false);
         if (evt.getKeyCode() == evt.VK_Q)       this.controled.setLeft(false);
         if (evt.getKeyCode() == evt.VK_SPACE)   this.controled.setJump(false); //peut etre pas besoin si on remet jump à false direct après le saut
         if (evt.getKeyCode() == evt.VK_SEMICOLON)   {this.scale++; System.out.println("Scale = " + this.scale);}
         if (evt.getKeyCode() == evt.VK_COMMA)       {this.scale--; System.out.println("Scale = " + this.scale);}
         if (evt.getKeyCode() == evt.VK_H)           PObject.drawHitBox = !PObject.drawHitBox;
-        if (evt.getKeyCode() == evt.VK_E)           this.editMode = true;//TODO: trigger l'item du joueur
-        if (evt.getKeyCode() == evt.VK_P)           game.purge();
+        if (evt.getKeyCode() == evt.VK_E)           this.editMode = true;
+        if (evt.getKeyCode() == evt.VK_P)           game.purge(); //TODO: trigger l'item du joueur
         if (evt.getKeyCode() == evt.VK_F1 && this.controled.traps.size() >= 1)          switch_trap(0);
         if (evt.getKeyCode() == evt.VK_F2 && this.controled.traps.size() >= 2)          switch_trap(1);
         if (evt.getKeyCode() == evt.VK_F3 && this.controled.traps.size() >= 3)          switch_trap(2);
@@ -202,7 +203,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
 
     @Override
     public void mousePressed(MouseEvent e) {
-        System.out.println("La souris est entrée dans la fenêtre. Position : (x = " + e.getX() + ", y = " + e.getY() + ").");
+        //
     }
 
     @Override
