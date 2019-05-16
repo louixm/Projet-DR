@@ -91,7 +91,7 @@ public class Player extends PObject {
             ResultSet r = req.executeQuery();
             r.next();
             if (!r.getBoolean(1)) {
-                req = game.sync.srv.prepareStatement("INSERT INTO players VALUES (?, ?, 0, 0, ?, 0, 0)"); //TODO
+                req = game.sync.srv.prepareStatement("INSERT INTO players VALUES (?, ?, 0, 0, ?, 0, 0, 0)"); //TODO
                 req.setInt(1, db_id);
                 req.setString(2, name);
                 req.setInt(3, avatar);
