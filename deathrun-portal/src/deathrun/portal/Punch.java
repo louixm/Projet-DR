@@ -26,6 +26,7 @@ public class Punch extends PObject {
     static Image img;
     int typePlateforme;
     int step;
+    Player player; 
     
     public Punch(Game game, Vec2 position) throws IOException, SQLException {
         super(game);
@@ -33,7 +34,7 @@ public class Punch extends PObject {
         setPosition(position);
         
         if (img == null) {
-            img = ImageIO.read(new File("./images/punch_0.png")); //poinçon denté
+            img = ImageIO.read(new File("./images/punch_1.png")); //poinçon denté
         }
     }
     
@@ -50,60 +51,46 @@ public class Punch extends PObject {
     @Override
     public Box getCollisionBox()       { return collision_box; }
     
-    //--------------- interface d'affichage -----------------
-    /*public void newImage() throws IOException{
-        int i=1;
-        boolean plus = true;
-        while (true){
-            if (plus){
-                while (i<6){
-                    img = ImageIO.read(new File("./images/punch_"+i+".png"));
-                    i++;
-                }
-                plus = false;
-            } else{
-                while(i>-1){
-                    img = ImageIO.read(new File("./images/punch_"+i+".png"));
-                    i--;
-                }
-                plus = true; 
-            }
-            
-        }
-    }*/
+    
     @Override
     public void render(Graphics2D canvas, float scale) {
-        
+        // incrementer le compteur de frame
+        step ++;
         //int i = (int) Math.cos(step*2*Math.PI/6); //step=6*k
-        int sixMulticator = 0;
-        if (step%6 == 0){
+        int fiveMulticator = (int)step/5;
+        /*if (step%6 == 0){
             sixMulticator = step/6; 
-        }
+        }*/
         int numImage;
-        if (sixMulticator % 2 == 0){
-            numImage = step-(6*sixMulticator);
+        if (fiveMulticator % 2 == 0){
+            numImage = step-(5*fiveMulticator)+1;
         }else{
-            numImage = 5-(step-(6*sixMulticator));
+            numImage = 5-(step-(5*fiveMulticator));
         }
         try {
             img = ImageIO.read(new File("./images/punch_"+numImage+".png"));
         } catch (IOException ex) {
             Logger.getLogger(Punch.class.getName()).log(Level.SEVERE, null, ex);
         }
-        // incrementer le compteur de frame
-        step ++;
-        // assembler la matrice de transformation (scale,rotation,translation)
-        Vec2 c = collision_box.p1;
-        AffineTransform transform = new AffineTransform();
-        transform.translate(c.x*scale, c.y*scale);
-        transform.scale(
-                scale*collision_box.getWidth()/img.getWidth(null),
-                scale*collision_box.getHeight()/img.getHeight(null)
-        );
-        // affichage de l'image tournée
-        canvas.drawImage(img, 
-            transform,
-            null);
+        /*if (numImage==1){
+            canvas.drawImage(img, 
+                    (int) (collision_box.p1.x*scale), 
+                    (int) (collision_box.p1.y*scale), 
+                    (int) (collision_box.p2.x*scale), 
+                    (int) ((collision_box.p2.y)*scale), 
+                    0, 0,
+                    img.getWidth(null), img.getHeight(null),
+                    null);
+        }else{*/
+            canvas.drawImage(img, 
+                    (int) (collision_box.p1.x*scale), 
+                    (int) (collision_box.p1.y*scale), 
+                    (int) (collision_box.p2.x*scale), 
+                    (int) ((collision_box.p2.y+(numImage*0.25))*scale), 
+                    0, 0,
+                    img.getWidth(null), img.getHeight(null),
+                    null);
+        //}
         // affichage de PObject
         super.render(canvas, scale);
     }
