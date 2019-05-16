@@ -21,8 +21,8 @@ import java.util.ArrayList;
  *
  * @author pdemiche
  */
-public class Laser extends PObject {
-    Box collision_box;
+public class Laser extends Trap {
+    //Box collision_box;
     static Image img;
     float angle ;
     int typePlateforme;
@@ -37,9 +37,7 @@ public class Laser extends PObject {
         this.angle = angle;
 
         this.vectir = new Vec2(Math.cos(angle),Math.sin(angle));
-        //this.vectir = new Vec2(1,0);
         this.normal = new Vec2(Math.sin(angle),Math.cos(angle));
-        //this.normal = new Vec2(0,1);
         setPosition(position);
         
         
@@ -49,27 +47,28 @@ public class Laser extends PObject {
     
     }
     
-    
+    /*
     @Override
     public void setPosition(Vec2 pos) {
         super.setPosition(pos);
         collision_box = collision_box.translateToPosition(pos);
     }
     
-    public int sign(double nombre){
-        if(nombre < 0){
-            return -1;
-        }else{
-            return +1;
-        }
-    }
-    
+    */
     //--------------- interface de gestion des collisions -----------------
+    @Override
     public int collisionable(PObject other)  { 
         return (other instanceof Player)?1:0;
     }
+    /*
     @Override
     public Box getCollisionBox()       { return collision_box; }
+    */
+    
+    public static int sign(double nombre){
+        if(nombre < 0)  return -1;
+        else            return +1;
+    }
     
     @Override
     public void onGameStep(Game game, float dt) {
@@ -78,20 +77,20 @@ public class Laser extends PObject {
             Vec2 p2 = p.getCollisionBox().p2 ; //point supérieur droit
             Vec2 p3 = new Vec2(p1.x, p2.y) ; // point supérieur gauche
             Vec2 p4 = new Vec2(p2.x , p1.y) ; // point supérieur gauche
-            double proj1 = p1.sub(collision_box.center()).vect(this.vectir) ;
-            double proj2 = p2.sub(collision_box.center()).vect(this.vectir) ;
-            double proj3 = p3.sub(collision_box.center()).vect(this.vectir) ;
-            double proj4 = p4.sub(collision_box.center()).vect(this.vectir) ;
+            double proj1 = p1.sub(collision_box.center()).cross(this.vectir) ;
+            double proj2 = p2.sub(collision_box.center()).cross(this.vectir) ;
+            double proj3 = p3.sub(collision_box.center()).cross(this.vectir) ;
+            double proj4 = p4.sub(collision_box.center()).cross(this.vectir) ;
             double scal1 = p1.sub(collision_box.center()).dot(this.vectir) ;
             double scal2 = p2.sub(collision_box.center()).dot(this.vectir) ;
             double scal3 = p3.sub(collision_box.center()).dot(this.vectir) ;
             double scal4 = p4.sub(collision_box.center()).dot(this.vectir) ;
             
-            if (this.sign(proj1) != this.sign(proj2) && scal1>0 && scal2>0){
-                System.out.println("Player Killed");
+            if (sign(proj1) != sign(proj2) && scal1>0 && scal2>0){
+                p.setDead(true);
                 // Player Killed
-            }else if(this.sign(proj3) != this.sign(proj4) && scal3>0 && scal4>0){
-                System.out.println("Player Killed");
+            }else if(sign(proj3) != sign(proj4) && scal3>0 && scal4>0){
+                p.setDead(true);
                 // Player Killed
             }
         }
@@ -101,12 +100,14 @@ public class Laser extends PObject {
     //--------------- interface d'affichage -----------------
     @Override
     public void render(Graphics2D canvas, float scale) {
-        /*
-        canvas.drawImage(img[typePlateforme], 
-                (int) (position.x*scale), 
-                (int) (position.y*scale), 
-                null);    */
-        int scale1 = Math.round(scale); 
+        canvas.setColor(Color.red);
+        canvas.drawLine(
+                (int) (collision_box.center().x*scale),
+                (int) (collision_box.center().y*scale),
+                (int) ((collision_box.center().x*scale+vectir.mul(1000).x)*scale),
+                (int) ((collision_box.center().y*scale+vectir.mul(1000).y)*scale)
+        );
+        
         canvas.drawImage(img, 
                 (int) (collision_box.p1.x*scale), 
                 (int) (collision_box.p1.y*scale), 
@@ -115,7 +116,6 @@ public class Laser extends PObject {
                 0, 0,
                 img.getWidth(null), img.getHeight(null),
                 null);
-        //canvas.drawLine((int) collision_box.center().x*scale1,(int) collision_box.center().y*scale1,(int) (collision_box.center().x*scale1+vectir.mul(1000).x*scale1),(int) (collision_box.center().y*scale1+vectir.mul(1000).y*scale1));
         //System.out.println(collision_box.center().y);
         super.render(canvas, scale);
         

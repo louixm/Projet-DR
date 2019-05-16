@@ -7,6 +7,8 @@ package deathrun.portal;
 
 import java.awt.Component;
 import java.awt.Image;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.sql.DriverManager;
@@ -49,12 +51,22 @@ public class StartMenu extends javax.swing.JFrame {
             System.out.println("pas d'image");
         }
         
+        alive = true;
+        this.addWindowListener(new WindowAdapter() {
+            @Override      
+            public void windowClosing(WindowEvent e) {
+                alive = false;
+            }
+        });
+        
         updateList();
     }
     
-    public int avatar;
-    public boolean start;
+    public int avatar = 0;
     public String pseudo;
+    public boolean start;
+    public boolean alive;
+    
     public ArrayList<String> liste;
     public  Sync sync;
     /**
@@ -79,6 +91,7 @@ public class StartMenu extends javax.swing.JFrame {
         Pseudo_label = new javax.swing.JLabel();
         Text_Pseudo = new javax.swing.JTextField();
         background = new javax.swing.JLabel();
+        statusLabel = new javax.swing.JLabel();
 
         jTextField1.setText("jTextField1");
 
@@ -158,9 +171,10 @@ public class StartMenu extends javax.swing.JFrame {
         Pseudo_label.setBounds(20, 70, 50, 14);
 
         Text_Pseudo.setFont(new java.awt.Font("Times New Roman", 0, 10)); // NOI18N
-        Text_Pseudo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Text_PseudoActionPerformed(evt);
+        Text_Pseudo.setToolTipText("votre nom");
+        Text_Pseudo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                Text_PseudoKeyReleased(evt);
             }
         });
         getContentPane().add(Text_Pseudo);
@@ -173,32 +187,40 @@ public class StartMenu extends javax.swing.JFrame {
         getContentPane().add(background);
         background.setBounds(0, 0, 500, 300);
 
+        statusLabel.setText("status");
+        getContentPane().add(statusLabel);
+        statusLabel.setBounds(50, 250, 260, 14);
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
-        start=true;
+        if (pseudo != null) {
+            start = true;
+            alive = false;
+            dispose();
+        }
     }//GEN-LAST:event_startButtonActionPerformed
 
     private void imageBotOrangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_imageBotOrangeActionPerformed
-        avatar = 3;
+        avatar = 1;
     }//GEN-LAST:event_imageBotOrangeActionPerformed
 
     private void imageSentryBotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_imageSentryBotActionPerformed
-        avatar = 1;
+        avatar = 2;
     }//GEN-LAST:event_imageSentryBotActionPerformed
 
     private void imageBotBleuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_imageBotBleuActionPerformed
-        avatar = 2;
+        avatar = 0;
     }//GEN-LAST:event_imageBotBleuActionPerformed
 
-    private void Text_PseudoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Text_PseudoActionPerformed
-        pseudo = Text_Pseudo.getText();
-    }//GEN-LAST:event_Text_PseudoActionPerformed
-
     private void listeJoueursValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listeJoueursValueChanged
-        
+      
     }//GEN-LAST:event_listeJoueursValueChanged
+
+    private void Text_PseudoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_Text_PseudoKeyReleased
+        pseudo = Text_Pseudo.getText();
+    }//GEN-LAST:event_Text_PseudoKeyReleased
 
     /**
      * @param args the command line arguments
@@ -249,6 +271,7 @@ public class StartMenu extends javax.swing.JFrame {
     private javax.swing.JLabel labelJoueursConnectes;
     private javax.swing.JList<String> listeJoueurs;
     private javax.swing.JButton startButton;
+    private javax.swing.JLabel statusLabel;
     // End of variables declaration//GEN-END:variables
 
     private void updateList() {

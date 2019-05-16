@@ -37,7 +37,7 @@ public class EnterDoor extends PObject{
     }
      
     //--------------- interface de gestion des collisions -----------------
-    public int collisionable(PObject other)  { return 2; }
+    public int collisionable(PObject other)  { return 0; }
     @Override
     public Box getCollisionBox()       { return box; }
     

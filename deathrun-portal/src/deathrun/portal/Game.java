@@ -31,6 +31,8 @@ public class Game {
     
     public final double gravity = 9.81;
     
+    public boolean roundEnded = false;
+    
     
     Game() { this(false); }
     Game(boolean sync_enable) {
@@ -157,6 +159,8 @@ public class Game {
             }
             
             // position maintenant corrigée
+            
+            if (player.position.y > map.size.getHeight()*1.5) player.setDead(true);
             // si sync n'est pas instancié, fonctionnement hors ligne
             if (sync != null && player.isControled())   {
                 player.syncSet(sync);
@@ -232,6 +236,37 @@ public class Game {
                 }
                 r.close();
                 
+                PreparedStatement reqplayers = sync.srv.prepareStatement("SELECT * FROM players"); // WHERE date_sync > ?;
+                ResultSet rplayers = reqplayers.executeQuery();
+                while (rplayers.next()){
+                    int id = rplayers.getInt("id");
+                    int state = rplayers.getInt("state");
+                    int movement = rplayers.getInt("movement");
+                    
+                    Player p;
+                    try {
+                            p = players.get(-id-1);
+                        }
+                        catch (IndexOutOfBoundsException e){
+                            p = (Player) syncNewPlayer(id);                      
+                        }
+                    if (!p.isControled()){
+                        switch(state){
+                            case(1): {p.dead = true; p.hasReachedExitDoor = false; p.disconnected = false;}
+                            case(2): {p.dead = false; p.hasReachedExitDoor = true; p.disconnected = false;}
+                            case(3): {p.dead = false; p.hasReachedExitDoor = false; p.disconnected = true;}
+                            default: {p.dead = false; p.hasReachedExitDoor = false; p.disconnected = false;}
+                        }
+                        switch(movement){
+                            case(1): {p.setLeft(true); p.setRight(false); p.setJump(false);}
+                            case(2): {p.setLeft(false); p.setRight(true); p.setJump(false);}
+                            case(3): {p.setLeft(false); p.setRight(false); p.setJump(true);}
+                            default: {p.setLeft(false); p.setRight(false); p.setJump(false);}
+                        }
+                    }
+                }
+                rplayers.close();
+                
                 PreparedStatement reqtime = sync.srv.prepareStatement("SELECT now();");
                 ResultSet rtime = reqtime.executeQuery();
                 rtime.next();
@@ -268,5 +303,14 @@ public class Game {
         return null;
     }
   
+    public void tryEndRound(){
+        if (roundEnded) return;
+        for (Player player : this.players){
+            if (!(player.dead || player.hasReachedExitDoor)) return;
+        }
+        roundEnded = true;
+        ScoreFrame scoreFrame = new ScoreFrame(this);
+        scoreFrame.show();
+    }
             
 }
