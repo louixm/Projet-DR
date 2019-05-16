@@ -85,6 +85,7 @@ public class Game {
         // suppose que les données sont synchronisées et que l'etat précédent est ok
         
         for (Player player: players) { 
+            if (player.disconnected) continue;
             if (player.isControled()) player.applyMovementChanges(dt);
             
             // pas de mise a jour de vitesse si pas d'acceleration
@@ -182,7 +183,9 @@ public class Game {
                 while (r.next()) {
                     String name = r.getString("name");
                     int avatar = r.getInt("avatar");
+                    int state = r.getInt("state");
                     Player player = new Player(this, name, avatar);
+                    player.setState(state);
                     System.out.println("initialized player " + name + " with skin #" + avatar);
                 }
             }
@@ -206,14 +209,15 @@ public class Game {
             // si sync n'est pas instancié, fonctionnement hors ligne
             if (sync == null)   return;
             // sinon essai de connexion
-            try {                
+            try {
+                // synchronisation des objets physiques
                 // recupérer les infos du serveur plus récentes que la derniere reception
-                PreparedStatement req = sync.srv.prepareStatement("SELECT * FROM pobjects WHERE date_sync >= ?;"); // WHERE date_sync > ?;
-                req.setTimestamp(1, db_last_sync);
+                PreparedStatement reqobjects = sync.srv.prepareStatement("SELECT id,x,y,vx,vy,date_sync FROM pobjects WHERE date_sync >= ?;"); // WHERE date_sync > ?;
+                reqobjects.setTimestamp(1, db_last_sync);
                 
-                ResultSet r = req.executeQuery();
-                while (r.next()) {
-                    int id = r.getInt("id");
+                ResultSet robjects = reqobjects.executeQuery();
+                while (robjects.next()) {
+                    int id = robjects.getInt("id");
                     PObject obj; 
                     
                     if (id < 0) {
@@ -226,17 +230,18 @@ public class Game {
                     }
                     else        obj = map.objects.get(id);
                     
-                    Timestamp server_sync = r.getTimestamp("date_sync");
+                    Timestamp server_sync = robjects.getTimestamp("date_sync");
                     if (obj.last_sync == null || server_sync.compareTo(obj.last_sync) > 0) {
-                        obj.setPosition(new Vec2(r.getInt("x")/1000f, r.getInt("y")/1000f));
-                        obj.velocity.x = r.getDouble("vx");
-                        obj.velocity.y = r.getDouble("vy");
+                        obj.setPosition(new Vec2(robjects.getInt("x")/1000f, robjects.getInt("y")/1000f));
+                        obj.velocity.x = robjects.getDouble("vx");
+                        obj.velocity.y = robjects.getDouble("vy");
                         //System.out.println("updated object "+id);
                     }
                 }
-                r.close();
+                robjects.close();
                 
-                PreparedStatement reqplayers = sync.srv.prepareStatement("SELECT * FROM players"); // WHERE date_sync > ?;
+                // synchronisation de la table des joueurs
+                PreparedStatement reqplayers = sync.srv.prepareStatement("SELECT id,state,movement FROM players"); // WHERE date_sync > ?;
                 ResultSet rplayers = reqplayers.executeQuery();
                 while (rplayers.next()){
                     int id = rplayers.getInt("id");
@@ -251,21 +256,30 @@ public class Game {
                             p = (Player) syncNewPlayer(id);                      
                         }
                     if (!p.isControled()){
-                        switch(state){
-                            case(1): {p.dead = true; p.hasReachedExitDoor = false; p.disconnected = false;}
-                            case(2): {p.dead = false; p.hasReachedExitDoor = true; p.disconnected = false;}
-                            case(3): {p.dead = false; p.hasReachedExitDoor = false; p.disconnected = true;}
-                            default: {p.dead = false; p.hasReachedExitDoor = false; p.disconnected = false;}
-                        }
-                        switch(movement){
-                            case(1): {p.setLeft(true); p.setRight(false); p.setJump(false);}
-                            case(2): {p.setLeft(false); p.setRight(true); p.setJump(false);}
-                            case(3): {p.setLeft(false); p.setRight(false); p.setJump(true);}
-                            default: {p.setLeft(false); p.setRight(false); p.setJump(false);}
-                        }
+                        p.setState(state);
+                        p.setMovement(movement);
                     }
                 }
                 rplayers.close();
+                
+                // synchronisation de la table des pieges
+                PreparedStatement reqtraps = sync.srv.prepareStatement("SELECT id,owner FROM traps WHERE date_sync >= ? ");
+                reqtraps.setTimestamp(1, db_last_sync);
+                ResultSet rtraps = reqtraps.executeQuery();
+                while (rtraps.next()) {
+                    int trapid = rtraps.getInt("id");
+                    int ownerid = rtraps.getInt("owner");
+                    int ownerindex = -ownerid-1;
+                    Trap trap = (Trap) map.objects.get(trapid);
+                    Player owner;
+                    if (ownerindex > 0 && ownerindex < players.size())
+                        owner = players.get(ownerindex);
+                    else
+                        owner = null;
+                    // assignation
+                    trap.setControl(owner, false);
+                }
+                
                 
                 PreparedStatement reqtime = sync.srv.prepareStatement("SELECT now();");
                 ResultSet rtime = reqtime.executeQuery();
@@ -292,7 +306,10 @@ public class Game {
                 r.next();
                 String name = r.getString("name");
                 int avatar = r.getInt("avatar");
-                obj = new Player(this, name, avatar);
+                int state = r.getInt("state");
+                Player p = new Player(this, name, avatar);
+                p.setState(state);
+                obj = (PObject) p;
                 System.out.println("added player " + name + " with skin #" + avatar);
                 r.close();
                 return obj;
@@ -306,11 +323,28 @@ public class Game {
     public void tryEndRound(){
         if (roundEnded) return;
         for (Player player : this.players){
-            if (!(player.dead || player.hasReachedExitDoor)) return;
+            if (!(player.dead || player.hasReachedExitDoor) || player.disconnected) return;
         }
         roundEnded = true;
         ScoreFrame scoreFrame = new ScoreFrame(this);
         scoreFrame.show();
     }
-            
+          
+    public void purge(){
+        try {
+            PreparedStatement req;
+                // effacement de la table des objets
+                req = this.sync.srv.prepareStatement("DELETE FROM pobjects WHERE id < 0");
+                req.executeUpdate();
+                // effacement de la table de joueurs
+                req = this.sync.srv.prepareStatement("DELETE FROM players");
+                req.executeUpdate();
+
+                System.out.println("Purged players from db");
+            req.close();
+        }
+        catch (SQLException err) {
+            System.out.println("purge(): "+err);
+        }
+    }
 }

@@ -25,22 +25,29 @@ import javax.imageio.ImageIO;
  * @author ydejongh
  */
 public class Player extends PObject {
-    public String name;
-    public int avatar;
-    public boolean controled = false;
+    public String name; // pseudo du joueur
+    public int avatar;  // numéro d'avatar choisi
+    public boolean controled = false;   // vrai si le joueur est le joueur actuellement controlé par ce client
+    ArrayList<Trap> traps;  // pieges actuellement controlés par le joueur
+    
+    // status du joueur dans la partie
     public boolean dead = false, hasReachedExitDoor = false, disconnected = false;
     
+    // variables internes de déplacement
     boolean left, right, jump, leftAndRightWithPriorityOnRight; //, hasJumped;
     ArrayList<String> collisionDirection;
-//    private BufferedImage robot, robotBase, robotDr, robotDrEx, robotSaut, robotBasegauche, robotgauche, robotgaucheex, robotsautgauche;     // rajouté par louis animation
+
+    // variable interne de collisions
     Box collision_box;
-    Game game;
+        
+    Game game;  // pour la synchronisation a la table des joueurs
+    public static BufferedImage avatars[][];  // avatars disponibles pour chaque joueur
     
     int compteurdanimation = 1;    //compteur pour les animations de personnage
     long time_next_image;
     long image_duration = 300000000;
     int lignedevue = 1;
-    public static BufferedImage avatars[][];
+    
     BufferedImage current_image;
     
     public static int availableId(Game game) {
@@ -68,6 +75,7 @@ public class Player extends PObject {
         this.avatar = avatar;
         
         collision_box = new Box(-0.5, 0, 0.5, 1.8);
+        traps = new ArrayList<Trap>();
         if (avatars == null) {
             this.avatars = new BufferedImage[4][];
             try {
@@ -142,6 +150,7 @@ public class Player extends PObject {
             ResultSet r = req.executeQuery();
             r.next();
             if (!r.getBoolean(1)) {
+                req.close();
                 req = game.sync.srv.prepareStatement("INSERT INTO players VALUES (?, ?, 0, 0, ?, 0, 0, 0)"); //TODO
                 req.setInt(1, db_id);
                 req.setString(2, name);
@@ -157,19 +166,33 @@ public class Player extends PObject {
     }
     
     public void disconnect() {
+        disconnected = true;
         try {
-            PreparedStatement req;
             // effacement de la table des objets
-            req = game.sync.srv.prepareStatement("DELETE FROM pobjects WHERE id = ?");
-            req.setInt(1, db_id);
-            req.executeUpdate();
-            // effacement de la table de joueurs
-            req = game.sync.srv.prepareStatement("DELETE FROM players WHERE id = ?");
-            req.setInt(1, db_id);
-            req.executeUpdate();
+            boolean allDisconnected = true;
+            for (Player p: game.players){
+                if (!p.disconnected)  {allDisconnected = false; break;}
+            }
+            if (allDisconnected) game.purge();
+            else {
+                PreparedStatement req;
+                req = game.sync.srv.prepareStatement("UPDATE players SET state=? WHERE id = ?");
+                req.setInt(1, 3);
+                req.setInt(2, db_id);
+                req.executeUpdate();
+                req.close();
+                System.out.println("Player " + name + " disconnected.");
+            }
+//            req = game.sync.srv.prepareStatement("DELETE FROM pobjects WHERE id = ?");
+//            req.setInt(1, db_id);
+//            req.executeUpdate();
+//            // effacement de la table de joueurs
+//            req = game.sync.srv.prepareStatement("DELETE FROM players WHERE id = ?");
+//            req.setInt(1, db_id);
+//            req.executeUpdate();
+//            
+//            System.out.println("Deleted player with id " + db_id);
             
-            System.out.println("Deleted player with id " + db_id);
-            req.close();
         }
         catch (SQLException err) {
             System.out.println("Player.disconnect(): "+err);
@@ -270,6 +293,7 @@ public class Player extends PObject {
         
         g.setColor(getPlayerColor());
         g.drawString(name, (int) ((collision_box.p1.x)*scale), (int) ((collision_box.p1.y - 0.1)*scale));
+        if (disconnected) {g.setColor(Color.DARK_GRAY); g.drawString("Disconnected", (int) ((collision_box.p1.x)*scale), (int) ((collision_box.p1.y - 0.4)*scale));}
         super.render(g, scale);
     }
 
@@ -390,6 +414,24 @@ public class Player extends PObject {
             catch (SQLException err) {
                 System.out.println("sql exception:\n"+err);
             }
+        }
+    }
+    
+    public void setState(int state){
+        switch(state){
+            default: {this.dead = false; this.hasReachedExitDoor = false; this.disconnected = false; break;}
+            case 1: {this.dead = true; this.hasReachedExitDoor = false; this.disconnected = false; break;}
+            case 2: {this.dead = false; this.hasReachedExitDoor = true; this.disconnected = false; break;}
+            case 3: {this.dead = false; this.hasReachedExitDoor = false; this.disconnected = true; break;}
+        }
+    }
+    
+    public void setMovement(int movement){
+        switch(movement){
+            default: {this.setLeft(false); this.setRight(false); this.setJump(false); break;}
+            case 1: {this.setLeft(true); this.setRight(false); this.setJump(false); break;}
+            case 2: {this.setLeft(false); this.setRight(true); this.setJump(false); break;}
+            case 3: {this.setLeft(false); this.setRight(false); this.setJump(true); break;}    
         }
     }
     

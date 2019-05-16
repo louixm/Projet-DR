@@ -128,7 +128,10 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
         if (evt.getKeyCode() == evt.VK_COMMA)       {this.scale--; System.out.println("Scale = " + this.scale);}
         if (evt.getKeyCode() == evt.VK_H)           PObject.drawHitBox = !PObject.drawHitBox;
         if (evt.getKeyCode() == evt.VK_E)           ;//TODO: trigger l'item du joueur
-        if (evt.getKeyCode() == evt.VK_P)           purge();
+        if (evt.getKeyCode() == evt.VK_P)           game.purge();
+        if (evt.getKeyCode() == evt.VK_F1 && this.controled.traps.size() >= 1)          this.controled.traps.get(0).enable(true, true);
+        if (evt.getKeyCode() == evt.VK_F2 && this.controled.traps.size() >= 2)          this.controled.traps.get(1).enable(true, true);
+        if (evt.getKeyCode() == evt.VK_F3 && this.controled.traps.size() >= 3)          this.controled.traps.get(3).enable(true, true);
     } 
 
     public void render(Graphics2D g) {
@@ -151,7 +154,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
         if (e.getButton() == 1) {   // clic gauche
             for (PObject object : game.map.objects) {
                 if (object instanceof Trap && ((Trap)object).collision_box.contains(pos_clicked))
-                    ((Trap)object).takeControl(controled, this);
+                    ((Trap)object).takeControl(controled);
             }
         }
         
@@ -233,21 +236,5 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
          //
     }
     
-    public void purge(){
-        try {
-            PreparedStatement req;
-            // effacement de la table des objets
-            req = game.sync.srv.prepareStatement("DELETE FROM pobjects WHERE id < 0");
-            req.executeUpdate();
-            // effacement de la table de joueurs
-            req = game.sync.srv.prepareStatement("DELETE FROM players");
-            req.executeUpdate();
-            
-            System.out.println("Purged players from db");
-            req.close();
-        }
-        catch (SQLException err) {
-            System.out.println("purge(): "+err);
-        }
-    }
+    
 }
