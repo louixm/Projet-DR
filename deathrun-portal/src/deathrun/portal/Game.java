@@ -254,11 +254,9 @@ public class Game {
                             p = (Player) syncNewPlayer(id);                      
                         }
                     if (!p.isControled()){
-                        System.out.println(state);
                         p.setState(state);
                         p.setMovement(movement);
                     }
-                    System.out.println(p.name + " is disconnected : " + p.disconnected + " (state = " + state + ")");
                 }
                 rplayers.close();
                 
