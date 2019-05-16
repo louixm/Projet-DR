@@ -151,7 +151,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
         if (e.getButton() == 1) {   // clic gauche
             for (PObject object : game.map.objects) {
                 if (object instanceof Trap && ((Trap)object).collision_box.contains(pos_clicked))
-                    ((Trap)object).takeControl(controled);
+                    ((Trap)object).takeControl(controled, this);
             }
         }
         

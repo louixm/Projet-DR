@@ -19,6 +19,7 @@ public class Trap extends PObject {
     Box collision_box;
     
     Player takingcontrol = null;
+    Gui controler = null;
     long taken_time = 0;
     final long take_time = 2000;
 
@@ -26,8 +27,9 @@ public class Trap extends PObject {
         super(game);
     }
     
-    void takeControl(Player user) {
-        takingcontrol = user;
+    void takeControl(Player user, Gui controler) {
+        this.takingcontrol = user;
+        this.controler = controler;
         taken_time = System.currentTimeMillis() + take_time;
     }
     
@@ -59,12 +61,11 @@ public class Trap extends PObject {
             if (remains <= 0) {
                 taken_time = 0;
                 // noter le joueur comme pilote du piege dans la base de donnée
-                //...
-                if (takingcontrol.controled) {
-                    // ajouter le piege aux controles de l'utilisateur local
-                    //...
-                    System.out.println("local player can now control the trap !");
-                }
+                
+                
+                // ajouter le piege aux controles de l'utilisateur local
+                controler.controled = takingcontrol;
+                System.out.println("local player can now control the trap !");
             }
         }
     }
