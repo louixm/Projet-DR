@@ -206,14 +206,15 @@ public class Game {
             // si sync n'est pas instancié, fonctionnement hors ligne
             if (sync == null)   return;
             // sinon essai de connexion
-            try {                
+            try {
+                // synchronisation des objets physiques
                 // recupérer les infos du serveur plus récentes que la derniere reception
-                PreparedStatement req = sync.srv.prepareStatement("SELECT * FROM pobjects WHERE date_sync >= ?;"); // WHERE date_sync > ?;
-                req.setTimestamp(1, db_last_sync);
+                PreparedStatement reqobjects = sync.srv.prepareStatement("SELECT id,x,y,vx,vy,date_sync FROM pobjects WHERE date_sync >= ?;"); // WHERE date_sync > ?;
+                reqobjects.setTimestamp(1, db_last_sync);
                 
-                ResultSet r = req.executeQuery();
-                while (r.next()) {
-                    int id = r.getInt("id");
+                ResultSet robjects = reqobjects.executeQuery();
+                while (robjects.next()) {
+                    int id = robjects.getInt("id");
                     PObject obj; 
                     
                     if (id < 0) {
@@ -226,17 +227,18 @@ public class Game {
                     }
                     else        obj = map.objects.get(id);
                     
-                    Timestamp server_sync = r.getTimestamp("date_sync");
+                    Timestamp server_sync = robjects.getTimestamp("date_sync");
                     if (obj.last_sync == null || server_sync.compareTo(obj.last_sync) > 0) {
-                        obj.setPosition(new Vec2(r.getInt("x")/1000f, r.getInt("y")/1000f));
-                        obj.velocity.x = r.getDouble("vx");
-                        obj.velocity.y = r.getDouble("vy");
+                        obj.setPosition(new Vec2(robjects.getInt("x")/1000f, robjects.getInt("y")/1000f));
+                        obj.velocity.x = robjects.getDouble("vx");
+                        obj.velocity.y = robjects.getDouble("vy");
                         //System.out.println("updated object "+id);
                     }
                 }
-                r.close();
+                robjects.close();
                 
-                PreparedStatement reqplayers = sync.srv.prepareStatement("SELECT * FROM players"); // WHERE date_sync > ?;
+                // synchronisation de la table des joueurs
+                PreparedStatement reqplayers = sync.srv.prepareStatement("SELECT id,state,movement FROM players"); // WHERE date_sync > ?;
                 ResultSet rplayers = reqplayers.executeQuery();
                 while (rplayers.next()){
                     int id = rplayers.getInt("id");
@@ -266,6 +268,25 @@ public class Game {
                     }
                 }
                 rplayers.close();
+                
+                // synchronisation de la table des pieges
+                PreparedStatement reqtraps = sync.srv.prepareStatement("SELECT id,owner FROM traps WHERE date_sync >= ? ");
+                reqtraps.setTimestamp(1, db_last_sync);
+                ResultSet rtraps = reqtraps.executeQuery();
+                while (rtraps.next()) {
+                    int trapid = rtraps.getInt("id");
+                    int ownerid = rtraps.getInt("owner");
+                    int ownerindex = -ownerid-1;
+                    Trap trap = (Trap) map.objects.get(trapid);
+                    Player owner;
+                    if (ownerindex > 0 && ownerindex < players.size())
+                        owner = players.get(ownerindex);
+                    else
+                        owner = null;
+                    // assignation
+                    trap.setControl(owner, false);
+                }
+                
                 
                 PreparedStatement reqtime = sync.srv.prepareStatement("SELECT now();");
                 ResultSet rtime = reqtime.executeQuery();

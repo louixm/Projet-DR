@@ -129,6 +129,9 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
         if (evt.getKeyCode() == evt.VK_H)           PObject.drawHitBox = !PObject.drawHitBox;
         if (evt.getKeyCode() == evt.VK_E)           ;//TODO: trigger l'item du joueur
         if (evt.getKeyCode() == evt.VK_P)           purge();
+        if (evt.getKeyCode() == evt.VK_F1 && this.controled.traps.size() >= 1)          this.controled.traps.get(0).enable(true, true);
+        if (evt.getKeyCode() == evt.VK_F2 && this.controled.traps.size() >= 2)          this.controled.traps.get(1).enable(true, true);
+        if (evt.getKeyCode() == evt.VK_F3 && this.controled.traps.size() >= 3)          this.controled.traps.get(3).enable(true, true);
     } 
 
     public void render(Graphics2D g) {
@@ -151,7 +154,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
         if (e.getButton() == 1) {   // clic gauche
             for (PObject object : game.map.objects) {
                 if (object instanceof Trap && ((Trap)object).collision_box.contains(pos_clicked))
-                    ((Trap)object).takeControl(controled, this);
+                    ((Trap)object).takeControl(controled);
             }
         }
         
