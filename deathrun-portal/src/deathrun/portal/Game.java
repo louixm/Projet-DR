@@ -85,6 +85,7 @@ public class Game {
         // suppose que les données sont synchronisées et que l'etat précédent est ok
         
         for (Player player: players) { 
+            if (player.disconnected) continue;
             if (player.isControled()) player.applyMovementChanges(dt);
             
             // pas de mise a jour de vitesse si pas d'acceleration
@@ -182,7 +183,9 @@ public class Game {
                 while (r.next()) {
                     String name = r.getString("name");
                     int avatar = r.getInt("avatar");
+                    int state = r.getInt("state");
                     Player player = new Player(this, name, avatar);
+                    player.setState(state);
                     System.out.println("initialized player " + name + " with skin #" + avatar);
                 }
             }
@@ -253,18 +256,8 @@ public class Game {
                             p = (Player) syncNewPlayer(id);                      
                         }
                     if (!p.isControled()){
-                        switch(state){
-                            case(1): {p.dead = true; p.hasReachedExitDoor = false; p.disconnected = false;}
-                            case(2): {p.dead = false; p.hasReachedExitDoor = true; p.disconnected = false;}
-                            case(3): {p.dead = false; p.hasReachedExitDoor = false; p.disconnected = true;}
-                            default: {p.dead = false; p.hasReachedExitDoor = false; p.disconnected = false;}
-                        }
-                        switch(movement){
-                            case(1): {p.setLeft(true); p.setRight(false); p.setJump(false);}
-                            case(2): {p.setLeft(false); p.setRight(true); p.setJump(false);}
-                            case(3): {p.setLeft(false); p.setRight(false); p.setJump(true);}
-                            default: {p.setLeft(false); p.setRight(false); p.setJump(false);}
-                        }
+                        p.setState(state);
+                        p.setMovement(movement);
                     }
                 }
                 rplayers.close();
@@ -313,7 +306,10 @@ public class Game {
                 r.next();
                 String name = r.getString("name");
                 int avatar = r.getInt("avatar");
-                obj = new Player(this, name, avatar);
+                int state = r.getInt("state");
+                Player p = new Player(this, name, avatar);
+                p.setState(state);
+                obj = (PObject) p;
                 System.out.println("added player " + name + " with skin #" + avatar);
                 r.close();
                 return obj;
@@ -327,11 +323,28 @@ public class Game {
     public void tryEndRound(){
         if (roundEnded) return;
         for (Player player : this.players){
-            if (!(player.dead || player.hasReachedExitDoor)) return;
+            if (!(player.dead || player.hasReachedExitDoor) || player.disconnected) return;
         }
         roundEnded = true;
         ScoreFrame scoreFrame = new ScoreFrame(this);
         scoreFrame.show();
     }
-            
+          
+    public void purge(){
+        try {
+            PreparedStatement req;
+                // effacement de la table des objets
+                req = this.sync.srv.prepareStatement("DELETE FROM pobjects WHERE id < 0");
+                req.executeUpdate();
+                // effacement de la table de joueurs
+                req = this.sync.srv.prepareStatement("DELETE FROM players");
+                req.executeUpdate();
+
+                System.out.println("Purged players from db");
+            req.close();
+        }
+        catch (SQLException err) {
+            System.out.println("purge(): "+err);
+        }
+    }
 }
