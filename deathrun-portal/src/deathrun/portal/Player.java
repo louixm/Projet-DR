@@ -38,7 +38,7 @@ public class Player extends PObject {
     
     int compteurdanimation = 1;    //compteur pour les animations de personnage
     long time_next_image;
-    long image_duration = 500000000;
+    long image_duration = 100000000;
     int lignedevue = 1;
     public static BufferedImage avatars[][];
     BufferedImage current_image;
@@ -92,6 +92,17 @@ public class Player extends PObject {
                     ImageIO.read(new File("./images/tourellesautgauche.png")),
             
                  };
+                this.avatars[2] = new BufferedImage[]{
+                    ImageIO.read(new File("./images/tourellebase.png")),
+                    ImageIO.read(new File("./images/tourelledroite2.png")),
+                    ImageIO.read(new File("./images/tourelledroite3.png")),
+                    ImageIO.read(new File("./images/tourellesautdroite.png")),
+                    ImageIO.read(new File("./images/tourellebasegauche.png")),
+                    ImageIO.read(new File("./images/tourellegauche2.png")),
+                    ImageIO.read(new File("./images/tourellegauche3.png")),
+                    ImageIO.read(new File("./images/tourellesautgauche.png")),
+            
+                 };
                 //this.avatars[2] = ImageIO.read(new File("./images/robotOrange.png"));
                 //this.avatars[3] = ImageIO.read(new File("./images/robotDead.png"));
 //                this.robotBase = ImageIO.read(new File("robotbase.png"));    // rajouté par louis animation
@@ -108,7 +119,9 @@ public class Player extends PObject {
         }
         // horloge pour l'affichage des animations
         time_next_image = System.nanoTime() + image_duration;
-        current_image = avatars[avatar][0];
+        System.out.println("avatar = "+avatar);
+        System.out.println("avatars[avatar] = "+avatars[avatar]);
+        current_image = this.avatars[avatar][0];
         
         //double j = game.map.enter.position.y + game.map.enter.size - this.avatars.getHight();
         this.setPosition(game.map.enter.position.add(new Vec2(-0.25,0)));
@@ -173,44 +186,47 @@ public class Player extends PObject {
         
         long ac_time = System.nanoTime();
         if (ac_time > time_next_image)  {
-            if (jump){
-                if (lignedevue == 1){
-                    current_image = avatars[avatar][4];
-                }
-                if (lignedevue == 2) {
-                    current_image = avatars[avatar][8];
-                }
-            }
             if (left) { 
                 lignedevue =2;
-                compteurdanimation = compteurdanimation + 1;
+                
                 if (compteurdanimation == 1){
-                    current_image = avatars[avatar][5];
+                    current_image = avatars[avatar][4];
+                    compteurdanimation = compteurdanimation + 1;
                 }
                 if (compteurdanimation == 2){
-                    current_image = avatars[avatar][6];
+                    current_image = avatars[avatar][5];
+                    compteurdanimation = compteurdanimation + 1;
                 }
                 if (compteurdanimation == 3){
-                    current_image = avatars[avatar][7];
+                    current_image = avatars[avatar][6];
                     compteurdanimation = 1;
                 }
             
             }
             if (right) { 
                 lignedevue =1;
-                compteurdanimation = compteurdanimation + 1;
                 if (compteurdanimation == 1){
-                    current_image = avatars[avatar][1];
+                    current_image = avatars[avatar][0];
+                    compteurdanimation++;
                 }
                 if (compteurdanimation == 2){
-                    current_image = avatars[avatar][2];
+                    current_image = avatars[avatar][1];
+                    compteurdanimation++;
                 }
                 if (compteurdanimation == 3){
-                    current_image = avatars[avatar][3];
+                    current_image = avatars[avatar][2];
                     compteurdanimation = 1;
                 }
                 
             
+            }
+            if (jump){
+                if (lignedevue == 1){
+                    current_image = avatars[avatar][3];
+                }
+                if (lignedevue == 2) {
+                    current_image = avatars[avatar][7];
+                }
             }
             time_next_image = ac_time + image_duration;
         }
