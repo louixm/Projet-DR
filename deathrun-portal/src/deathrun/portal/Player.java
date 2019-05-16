@@ -81,7 +81,7 @@ public class Player extends PObject {
                 Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        //double j = game.map.enter.position.y + game.map.enter.size - this.avatars.getHight();
+        //double j = game.mathis.enter.position.y + game.mathis.enter.size - this.avatars.getHight();
         this.setPosition(game.map.enter.position.add(new Vec2(-0.25,0)));
         
         
@@ -106,19 +106,33 @@ public class Player extends PObject {
     }
     
     public void disconnect() {
+        disconnected = true;
         try {
-            PreparedStatement req;
             // effacement de la table des objets
-            req = game.sync.srv.prepareStatement("DELETE FROM pobjects WHERE id = ?");
-            req.setInt(1, db_id);
-            req.executeUpdate();
-            // effacement de la table de joueurs
-            req = game.sync.srv.prepareStatement("DELETE FROM players WHERE id = ?");
-            req.setInt(1, db_id);
-            req.executeUpdate();
+            boolean allDisconnected = true;
+            for (Player p: game.players){
+                if (!p.disconnected)  {allDisconnected = false; break;}
+            }
+            if (allDisconnected) game.purge();
+            else {
+                PreparedStatement req;
+                req = game.sync.srv.prepareStatement("UPDATE players SET state=? WHERE id = ?");
+                req.setInt(1, 3);
+                req.setInt(2, db_id);
+                req.executeUpdate();
+                req.close();
+                System.out.println("Player " + name + " disconnected.");
+            }
+//            req = game.sync.srv.prepareStatement("DELETE FROM pobjects WHERE id = ?");
+//            req.setInt(1, db_id);
+//            req.executeUpdate();
+//            // effacement de la table de joueurs
+//            req = game.sync.srv.prepareStatement("DELETE FROM players WHERE id = ?");
+//            req.setInt(1, db_id);
+//            req.executeUpdate();
+//            
+//            System.out.println("Deleted player with id " + db_id);
             
-            System.out.println("Deleted player with id " + db_id);
-            req.close();
         }
         catch (SQLException err) {
             System.out.println("Player.disconnect(): "+err);
@@ -153,6 +167,7 @@ public class Player extends PObject {
         
         g.setColor(getPlayerColor());
         g.drawString(name, (int) ((collision_box.p1.x)*scale), (int) ((collision_box.p1.y - 0.1)*scale));
+        if (disconnected) {g.setColor(Color.DARK_GRAY); g.drawString("Disconnected", (int) ((collision_box.p1.x)*scale), (int) ((collision_box.p1.y - 0.4)*scale));}
         super.render(g, scale);
     }
 
@@ -273,6 +288,24 @@ public class Player extends PObject {
             catch (SQLException err) {
                 System.out.println("sql exception:\n"+err);
             }
+        }
+    }
+    
+    public void setState(int state){
+        switch(state){
+            default: {this.dead = false; this.hasReachedExitDoor = false; this.disconnected = false; break;}
+            case 1: {this.dead = true; this.hasReachedExitDoor = false; this.disconnected = false; break;}
+            case 2: {this.dead = false; this.hasReachedExitDoor = true; this.disconnected = false; break;}
+            case 3: {this.dead = false; this.hasReachedExitDoor = false; this.disconnected = true; break;}
+        }
+    }
+    
+    public void setMovement(int movement){
+        switch(movement){
+            default: {this.setLeft(false); this.setRight(false); this.setJump(false); break;}
+            case 1: {this.setLeft(true); this.setRight(false); this.setJump(false); break;}
+            case 2: {this.setLeft(false); this.setRight(true); this.setJump(false); break;}
+            case 3: {this.setLeft(false); this.setRight(false); this.setJump(true); break;}    
         }
     }
     
