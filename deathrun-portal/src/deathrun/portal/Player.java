@@ -38,7 +38,7 @@ public class Player extends PObject {
     
     int compteurdanimation = 1;    //compteur pour les animations de personnage
     long time_next_image;
-    long image_duration = 100000000;
+    long image_duration = 300000000;
     int lignedevue = 1;
     public static BufferedImage avatars[][];
     BufferedImage current_image;
@@ -80,6 +80,7 @@ public class Player extends PObject {
                     ImageIO.read(new File("./images/robotgauche.png")),
                     ImageIO.read(new File("./images/robotdgaucheex.png")),
                     ImageIO.read(new File("./images/robotsautgauche.png")),
+                    ImageIO.read(new File("./images/robotDead.png")),
                     
                 };
                 this.avatars[1] = new BufferedImage[]{
@@ -91,6 +92,7 @@ public class Player extends PObject {
                     ImageIO.read(new File("./images/tourellegauche2.png")),
                     ImageIO.read(new File("./images/tourellegauche3.png")),
                     ImageIO.read(new File("./images/tourellesautgauche.png")),
+                    ImageIO.read(new File("./images/robotDead.png")),
             
                  };
                 this.avatars[2] = new BufferedImage[]{
@@ -102,18 +104,24 @@ public class Player extends PObject {
                     ImageIO.read(new File("./images/tourellegauche2.png")),
                     ImageIO.read(new File("./images/tourellegauche3.png")),
                     ImageIO.read(new File("./images/tourellesautgauche.png")),
-            
+                    ImageIO.read(new File("./images/robotDead.png")),
                  };
+                this.avatars[3] = new BufferedImage[]{
+                    ImageIO.read(new File("./images/robotDead.png")),
+                    ImageIO.read(new File("./images/robotDead.png")),
+                    ImageIO.read(new File("./images/robotDead.png")),
+                };
+                //this.avatars[3] = new BufferedImageImageIO.read(new File("./images/robotDead.png"));
+                
                 //this.avatars[2] = ImageIO.read(new File("./images/robotOrange.png"));
-                //this.avatars[3] = ImageIO.read(new File("./images/robotDead.png"));
-//                this.robotBase = ImageIO.read(new File("robotbase.png"));    // rajouté par louis animation
-//                this.robotDr = ImageIO.read(new File("robotdroite.png"));    // rajouté par louis animation
-//                this.robotDrEx = ImageIO.read(new File("robotdroitee.png"));    // rajouté par louis animation
-//                this.robotSaut = ImageIO.read(new File("robotsaut.png"));    // rajouté par louis animation
-//                this.robotBasegauche = ImageIO.read(new File("robotbasegauche.png"));    // rajouté par louis animation
-//                this.robotgauche = ImageIO.read(new File("robotgauche.png"));    // rajouté par louis animation
-//                this.robotgaucheex = ImageIO.read(new File("robotdgaucheex.png"));    // rajouté par louis animation
-//                this.robotsautgauche = ImageIO.read(new File("robotsautgauche.png"));    // rajouté par louis animation
+                //this.robotBase = ImageIO.read(new File("robotbase.png"));    // rajouté par louis animation
+                //this.robotDr = ImageIO.read(new File("robotdroite.png"));    // rajouté par louis animation
+                //this.robotDrEx = ImageIO.read(new File("robotdroitee.png"));    // rajouté par louis animation
+                //this.robotSaut = ImageIO.read(new File("robotsaut.png"));    // rajouté par louis animation
+                //this.robotBasegauche = ImageIO.read(new File("robotbasegauche.png"));    // rajouté par louis animation
+                //this.robotgauche = ImageIO.read(new File("robotgauche.png"));    // rajouté par louis animation
+                //this.robotgaucheex = ImageIO.read(new File("robotdgaucheex.png"));    // rajouté par louis animation
+                //this.robotsautgauche = ImageIO.read(new File("robotsautgauche.png"));    // rajouté par louis animation
             } catch (IOException ex) {
                 Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -188,47 +196,64 @@ public class Player extends PObject {
         
         long ac_time = System.nanoTime();
         if (ac_time > time_next_image)  {
-            if (left) { 
-                lignedevue =2;
+            if (avatar!=3){
+                if (left) { 
+                    lignedevue =2;
                 
-                if (compteurdanimation == 1){
-                    current_image = avatars[avatar][4];
-                    compteurdanimation = compteurdanimation + 1;
+                    if (compteurdanimation == 1){
+                        current_image = avatars[avatar][4];
+                        compteurdanimation = compteurdanimation + 1;
+                    }
+                    else if (compteurdanimation == 2){
+                        current_image = avatars[avatar][5];
+                        compteurdanimation = compteurdanimation + 1;
+                    }
+                    else if (compteurdanimation == 3){
+                        current_image = avatars[avatar][6];
+                        compteurdanimation = 1;
+                    }
+            
                 }
-                if (compteurdanimation == 2){
-                    current_image = avatars[avatar][5];
-                    compteurdanimation = compteurdanimation + 1;
+                if (right) { 
+                    lignedevue =1;
+                    if (compteurdanimation == 1){
+                        current_image = avatars[avatar][0];
+                        compteurdanimation++;
+                    }
+                    else if (compteurdanimation == 2){
+                        current_image = avatars[avatar][1];
+                        compteurdanimation++;
+                    }
+                    else if (compteurdanimation == 3){
+                        current_image = avatars[avatar][2];
+                        compteurdanimation = 1;
+                    }
+                
+            
                 }
-                if (compteurdanimation == 3){
-                    current_image = avatars[avatar][6];
-                    compteurdanimation = 1;
+                if (jump){
+                    if (lignedevue == 1){
+                        current_image = avatars[avatar][3];
+                    }
+                    if (lignedevue == 2) {
+                        current_image = avatars[avatar][7];
+                    }
+                }
+            }
+            if (avatar==3){
+                    if (compteurdanimation == 1){
+                        current_image = avatars[3][0];
+                        compteurdanimation++;
+                    }
+                    else if (compteurdanimation == 2){
+                        current_image = avatars[3][1];
+                        compteurdanimation++;
+                    }
+                    else if (compteurdanimation == 3){
+                        current_image = avatars[3][2];
+                        compteurdanimation = 1;
                 }
             
-            }
-            if (right) { 
-                lignedevue =1;
-                if (compteurdanimation == 1){
-                    current_image = avatars[avatar][0];
-                    compteurdanimation++;
-                }
-                if (compteurdanimation == 2){
-                    current_image = avatars[avatar][1];
-                    compteurdanimation++;
-                }
-                if (compteurdanimation == 3){
-                    current_image = avatars[avatar][2];
-                    compteurdanimation = 1;
-                }
-                
-            
-            }
-            if (jump){
-                if (lignedevue == 1){
-                    current_image = avatars[avatar][3];
-                }
-                if (lignedevue == 2) {
-                    current_image = avatars[avatar][7];
-                }
             }
             time_next_image = ac_time + image_duration;
         }
