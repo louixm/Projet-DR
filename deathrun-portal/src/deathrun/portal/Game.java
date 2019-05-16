@@ -263,14 +263,15 @@ public class Game {
                 rplayers.close();
                 
                 // synchronisation de la table des pieges
-                PreparedStatement reqtraps = sync.srv.prepareStatement("SELECT id,owner FROM traps WHERE date_sync >= ? ");
+                PreparedStatement reqtraps = sync.srv.prepareStatement("SELECT id,owner,enabled FROM traps WHERE date_sync >= ? ");
                 reqtraps.setTimestamp(1, db_last_sync);
                 ResultSet rtraps = reqtraps.executeQuery();
                 while (rtraps.next()) {
                     int trapid = rtraps.getInt("id");
                     int ownerid = rtraps.getInt("owner");
-                    int ownerindex = -ownerid-1;
+                    boolean enabled = rtraps.getBoolean("enabled");
                     Trap trap = (Trap) map.objects.get(trapid);
+                    int ownerindex = -ownerid-1;
                     Player owner;
                     if (ownerindex > 0 && ownerindex < players.size())
                         owner = players.get(ownerindex);
@@ -278,6 +279,7 @@ public class Game {
                         owner = null;
                     // assignation
                     trap.setControl(owner, false);
+                    trap.enable(enabled, false);
                 }
                 
                 

@@ -103,12 +103,14 @@ public class Laser extends Trap {
     @Override
     public void render(Graphics2D canvas, float scale) {
         canvas.setColor(Color.red);
-        canvas.drawLine(
-                (int) (collision_box.center().x*scale),
-                (int) (collision_box.center().y*scale),
-                (int) ((collision_box.center().x*scale+vectir.mul(1000).x)*scale),
-                (int) ((collision_box.center().y*scale+vectir.mul(1000).y)*scale)
-        );
+        if (enabled) {
+            canvas.drawLine(
+                    (int) (collision_box.center().x*scale),
+                    (int) (collision_box.center().y*scale),
+                    (int) ((collision_box.center().x*scale+vectir.mul(1000).x)*scale),
+                    (int) ((collision_box.center().y*scale+vectir.mul(1000).y)*scale)
+            );
+        }
         
         canvas.drawImage(img, 
                 (int) (collision_box.p1.x*scale), 

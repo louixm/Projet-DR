@@ -129,10 +129,17 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
         if (evt.getKeyCode() == evt.VK_H)           PObject.drawHitBox = !PObject.drawHitBox;
         if (evt.getKeyCode() == evt.VK_E)           ;//TODO: trigger l'item du joueur
         if (evt.getKeyCode() == evt.VK_P)           game.purge();
-        if (evt.getKeyCode() == evt.VK_F1 && this.controled.traps.size() >= 1)          this.controled.traps.get(0).enable(true, true);
-        if (evt.getKeyCode() == evt.VK_F2 && this.controled.traps.size() >= 2)          this.controled.traps.get(1).enable(true, true);
-        if (evt.getKeyCode() == evt.VK_F3 && this.controled.traps.size() >= 3)          this.controled.traps.get(3).enable(true, true);
+        if (evt.getKeyCode() == evt.VK_F1 && this.controled.traps.size() >= 1)          switch_trap(0);
+        if (evt.getKeyCode() == evt.VK_F2 && this.controled.traps.size() >= 2)          switch_trap(1);
+        if (evt.getKeyCode() == evt.VK_F3 && this.controled.traps.size() >= 3)          switch_trap(2);
     } 
+    
+    public void switch_trap(int i) {
+        if (i < controled.traps.size()) {
+            Trap trap = controled.traps.get(i);
+            trap.enable(!trap.enabled, true);
+        }
+    }
 
     public void render(Graphics2D g) {
         g.drawImage(this.background, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, null);
