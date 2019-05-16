@@ -25,18 +25,24 @@ import javax.imageio.ImageIO;
  * @author ydejongh
  */
 public class Player extends PObject {
-    public String name;
-    public int avatar;
-    public boolean controled = false;
+    public String name; // pseudo du joueur
+    public int avatar;  // numéro d'avatar choisi
+    public boolean controled = false;   // vrai si le joueur est le joueur actuellement controlé par ce client
+    ArrayList<Trap> traps;  // pieges actuellement controlés par le joueur
+    
+    // status du joueur dans la partie
     public boolean dead = false, hasReachedExitDoor = false, disconnected = false;
     
+    // variables internes de déplacement
     boolean left, right, jump, leftAndRightWithPriorityOnRight; //, hasJumped;
     ArrayList<String> collisionDirection;
-//    private BufferedImage robot, robotBase, robotDr, robotDrEx, robotSaut, robotBasegauche, robotgauche, robotgaucheex, robotsautgauche;     // rajouté par louis animation
+
+    // variable interne de collisions
     Box collision_box;
-    Game game;
+        
+    Game game;  // pour la synchronisation a la table des joueurs
+    public static BufferedImage avatars[];  // avatars disponibles pour chaque joueur
     
-    public static BufferedImage avatars[];
     
     public static int availableId(Game game) {
         int id = -1;
@@ -62,6 +68,7 @@ public class Player extends PObject {
         this.name = name; 
         this.avatar = avatar;
         collision_box = new Box(-0.5, 0, 0.5, 1.8);
+        traps = new ArrayList<Trap>();
         if (avatars == null) {
             this.avatars = new BufferedImage[4];
             try {
@@ -91,6 +98,7 @@ public class Player extends PObject {
             ResultSet r = req.executeQuery();
             r.next();
             if (!r.getBoolean(1)) {
+                req.close();
                 req = game.sync.srv.prepareStatement("INSERT INTO players VALUES (?, ?, 0, 0, ?, 0, 0, 0)"); //TODO
                 req.setInt(1, db_id);
                 req.setString(2, name);
