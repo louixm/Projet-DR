@@ -28,7 +28,7 @@ public class Player extends PObject {
     public String name;
     public int avatar;
     public boolean controled = false;
-    public boolean dead = false, hasReachedExitDoor = false;
+    public boolean dead = false, hasReachedExitDoor = false, disconnected = false;
     
     boolean left, right, jump, leftAndRightWithPriorityOnRight; //, hasJumped;
     ArrayList<String> collisionDirection;
@@ -56,6 +56,7 @@ public class Player extends PObject {
                 }
             }
         }
+        System.out.println("id = " + id);
         return id;
     }
     
@@ -133,12 +134,13 @@ public class Player extends PObject {
             ResultSet r = req.executeQuery();
             r.next();
             if (!r.getBoolean(1)) {
-                req = game.sync.srv.prepareStatement("INSERT INTO players VALUES (?, ?, 0, 0, ?)"); //TODO
+                req = game.sync.srv.prepareStatement("INSERT INTO players VALUES (?, ?, 0, 0, ?, 0, 0, 0)"); //TODO
                 req.setInt(1, db_id);
                 req.setString(2, name);
                 req.setInt(3, avatar);
                 req.executeUpdate();
                 req.close();
+                System.out.println("ok");
             }
         }
         
@@ -281,6 +283,19 @@ public class Player extends PObject {
             if (dead) {
                 avatar = 3;
                 System.out.println("player "+name+" is dead");
+                try {
+                    PreparedStatement req = game.sync.srv.prepareStatement("UPDATE players SET state=? WHERE id = ?");
+                    req.setInt(1, 1); //state = 0 (en vie), 1 (dead), 2 (exit door)
+                    // id de l'objet a modifier
+                    req.setInt(2, db_id);
+
+                    // execution de la requete
+                    req.executeUpdate();
+                    req.close();
+                }
+                catch (SQLException err) {
+                    System.out.println("sql exception:\n"+err);
+                }
                 game.tryEndRound();
             }
         }
@@ -292,23 +307,26 @@ public class Player extends PObject {
     }
     
     public void applyMovementChanges(float dt){
-        if (dead)   return;
+        if (dead || hasReachedExitDoor)   return;
         
         if (this.left && (!this.right || !this.leftAndRightWithPriorityOnRight)){
             if (this.velocity.x > 0)        this.acceleration.x = -40;
             else if (this.velocity.x > -7)  this.acceleration.x = -20;
             else                            this.acceleration.x = 0;
+            syncMovement(1);
         }
         else if (this.right && (!this.left || this.leftAndRightWithPriorityOnRight)){
             if (this.velocity.x < 0)        this.acceleration.x = 40;
             else if (this.velocity.x < 7)   this.acceleration.x = 20;
             else                            this.acceleration.x = 0;
+            syncMovement(2);
         }       
         else{
             if (abs(this.velocity.x) > 1)        this.acceleration.x = -40 * abs(this.velocity.x)/this.velocity.x;
             else                                {this.acceleration.x = 0;      this.velocity.x = 0;}
             if ((this.velocity.x + this.acceleration.x*dt) * this.velocity.x < 0) 
                                                 {this.acceleration.x = 0;      this.velocity.x = 0;};
+            syncMovement(0);
         }
         
         if (this.jump) {
@@ -321,6 +339,7 @@ public class Player extends PObject {
                 if (this.right) this.velocity.x = -12;               
                 else            this.velocity.x = 12;
             }
+            syncMovement(3);
         }
     }
     
@@ -330,5 +349,23 @@ public class Player extends PObject {
     
     public void setControled(boolean controled){ this.controled = controled; }
     public boolean isControled(){ return this.controled; }
+    
+    public void syncMovement(int move){
+        if (game.sync != null){
+            try {
+                PreparedStatement req = game.sync.srv.prepareStatement("UPDATE players SET movement=? WHERE id = ?");
+                req.setInt(1, move); 
+                // id de l'objet a modifier
+                req.setInt(2, db_id);
+
+                // execution de la requete
+                req.executeUpdate();
+                req.close();
+            }
+            catch (SQLException err) {
+                System.out.println("sql exception:\n"+err);
+            }
+        }
+    }
     
 }

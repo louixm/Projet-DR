@@ -72,7 +72,7 @@ abstract public class PObject {
         if (drawHitBox){
             Box collision_box = getCollisionBox();
             if (collision_box != null){
-                g.setColor(new Color(255, 0, 0));
+                g.setColor(new Color(255, 255, 0));
                 g.drawRect( //drawRect(x, y, width, height)
                     (int) (collision_box.p1.x*scale),       (int) (collision_box.p1.y*scale),
                     (int) (collision_box.getWidth()*scale), (int) (collision_box.getHeight()*scale)
