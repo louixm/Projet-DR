@@ -6,6 +6,11 @@
 package deathrun.portal;
 
 import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -21,7 +26,18 @@ public class SelectMap extends javax.swing.JFrame {
         map1.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/sentrybot.png").getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT)));
         map2.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/sentrybot.png").getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT)));
         map3.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/sentrybot.png").getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT)));
+    
+      
+        try {
+            background.setIcon(new javax.swing.ImageIcon(ImageIO.read(new File("./images/fond_4.png"))));
+        } catch (IOException ex) {
+            Logger.getLogger(StartMenu.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("pas d'image");
+        }
     }
+    public int vote; 
+    public boolean ready=false;
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -37,12 +53,23 @@ public class SelectMap extends javax.swing.JFrame {
         map2 = new javax.swing.JButton();
         map1 = new javax.swing.JButton();
         pret = new javax.swing.JButton();
+        background = new javax.swing.JLabel();
 
         Map3.setText("Map1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(500, 300));
+        setResizable(false);
+        getContentPane().setLayout(null);
 
         map3.setText("Map3");
+        map3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                map3ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(map3);
+        map3.setBounds(292, 103, 94, 97);
 
         map2.setText("Map2");
         map2.addActionListener(new java.awt.event.ActionListener() {
@@ -50,46 +77,50 @@ public class SelectMap extends javax.swing.JFrame {
                 map2ActionPerformed(evt);
             }
         });
+        getContentPane().add(map2);
+        map2.setBounds(168, 103, 94, 97);
 
         map1.setText("Map1");
+        map1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                map1ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(map1);
+        map1.setBounds(38, 103, 94, 97);
 
         pret.setText("Pret");
+        pret.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pretActionPerformed(evt);
+            }
+        });
+        getContentPane().add(pret);
+        pret.setBounds(333, 255, 53, 23);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(29, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(pret)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(map1, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(36, 36, 36)
-                        .addComponent(map2, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(30, 30, 30)
-                        .addComponent(map3, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(23, 23, 23))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(103, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(map3, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(map2, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(map1, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(55, 55, 55)
-                .addComponent(pret)
-                .addGap(22, 22, 22))
-        );
+        background.setMaximumSize(new java.awt.Dimension(500, 300));
+        background.setMinimumSize(new java.awt.Dimension(500, 300));
+        getContentPane().add(background);
+        background.setBounds(0, 0, 410, 300);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void map2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_map2ActionPerformed
-        // TODO add your handling code here:
+        vote=2;
     }//GEN-LAST:event_map2ActionPerformed
+
+    private void map1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_map1ActionPerformed
+        vote=1;
+    }//GEN-LAST:event_map1ActionPerformed
+
+    private void map3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_map3ActionPerformed
+        vote=3;
+    }//GEN-LAST:event_map3ActionPerformed
+
+    private void pretActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pretActionPerformed
+        ready=true;
+    }//GEN-LAST:event_pretActionPerformed
 
     /**
      * @param args the command line arguments
@@ -128,6 +159,7 @@ public class SelectMap extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Map3;
+    private javax.swing.JLabel background;
     private javax.swing.JButton map1;
     private javax.swing.JButton map2;
     private javax.swing.JButton map3;
