@@ -295,8 +295,9 @@ public class Player extends PObject {
         
         g.setColor(getPlayerColor());
 //        g.drawString(name, (int) ((collision_box.p1.x)*scale), (int) ((collision_box.p1.y - 0.1)*scale));
-          drawCenteredString(g, name, collision_box, new Font("TimesRoman", Font.PLAIN, 12), scale);
-        if (disconnected) {g.setColor(Color.DARK_GRAY); g.drawString("Disconnected", (int) ((collision_box.p1.x)*scale), (int) ((collision_box.p1.y - 0.4)*scale));}
+          drawCenteredString(g, name, collision_box, 3, new Font("Trebuchet MS", Font.PLAIN, 12), scale);
+        if (disconnected) {g.setColor(Color.DARK_GRAY); drawCenteredString(g, "Disconnected", collision_box, 15, new Font("Trebuchet MS", Font.PLAIN, 10), scale);}
+//        if (disconnected) {g.setColor(Color.DARK_GRAY); g.drawString("Disconnected", (int) ((collision_box.p1.x)*scale), (int) ((collision_box.p1.y - 0.4)*scale));}
         super.render(g, scale);
     }
 
@@ -438,13 +439,14 @@ public class Player extends PObject {
         }
     }
     
-    public void drawCenteredString(Graphics g, String text, Box box, Font font, float scale) {
+    public void drawCenteredString(Graphics g, String text, Box box, int up, Font font, float scale) {
         // Get the FontMetrics
         FontMetrics metrics = g.getFontMetrics(font);
         // Determine the X coordinate for the text
         int x = (int) (box.p1.x*scale) + ((int) (box.getWidth()*scale) - metrics.stringWidth(text)) / 2;
         // Determine the Y coordinate for the text (note we add the ascent, as in java 2d 0 is top of the screen)
-        int y = (int) (box.p1.y*scale) + (((int) (box.getHeight()*scale) - metrics.getHeight()) / 2) + metrics.getAscent();
+        int y;
+        y = (int) (box.p1.y*scale) - up; //+ (((int) (box.getHeight()*scale) - metrics.getHeight()) / 2) + metrics.getAscent();
         // Set the font
         g.setFont(font);
         // Draw the String
