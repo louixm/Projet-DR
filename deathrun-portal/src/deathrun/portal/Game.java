@@ -349,4 +349,19 @@ public class Game {
             System.out.println("purge(): "+err);
         }
     }
+    
+    public void purgeTraps(){
+        try {
+            PreparedStatement req;
+                // effacement de la table des traps
+                req = this.sync.srv.prepareStatement("DELETE FROM traps");
+                req.executeUpdate();
+
+                System.out.println("Purged traps from db");
+            req.close();
+        }
+        catch (SQLException err) {
+            System.out.println("purgeTraps(): "+err);
+        }
+    }
 }

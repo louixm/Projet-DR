@@ -143,7 +143,8 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
         if (evt.getKeyCode() == evt.VK_COMMA)       {this.scale--; System.out.println("Scale = " + this.scale);}
         if (evt.getKeyCode() == evt.VK_H)           PObject.drawHitBox = !PObject.drawHitBox;
         if (evt.getKeyCode() == evt.VK_E)           this.editMode = true;
-        if (evt.getKeyCode() == evt.VK_P)           game.purge(); //TODO: trigger l'item du joueur
+        if (evt.getKeyCode() == evt.VK_P)           game.purge(); 
+        if (evt.getKeyCode() == evt.VK_O)           game.purgeTraps(); 
         if (evt.getKeyCode() == evt.VK_F1 && this.controled.traps.size() >= 1)          switch_trap(0);
         if (evt.getKeyCode() == evt.VK_F2 && this.controled.traps.size() >= 2)          switch_trap(1);
         if (evt.getKeyCode() == evt.VK_F3 && this.controled.traps.size() >= 3)          switch_trap(2);
