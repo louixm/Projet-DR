@@ -238,7 +238,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
                         this.game.map.objects.add(new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0));
                         break;
                     case 5: //Portail
-                        this.game.map.objects.add(new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0));
+                        //this.game.map.objects.add(new Portal(this.game, pos_clicked));
                         break;
                     case 6: //
                         this.game.map.objects.add(new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0));
@@ -271,19 +271,20 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
     public void previsualisationBloc(Vec2 pos_clicked) throws IOException, SQLException{
         switch (this.selectionBloc.blocAPoser) {
                         case 1: //Plateforme
-                            Platform p = new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0);
-                            p.render(this.bufferContext, scale);
+                            Platform platform = new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0);
+                            platform.render(this.bufferContext, scale);
                             break;
                         case 2: //Scie circulaire
-                            Saw s = new Saw(this.game, pos_clicked);
-                            s.render(this.bufferContext, scale);
+                            Saw saw = new Saw(this.game, pos_clicked);
+                            saw.render(this.bufferContext, scale);
                             break;
                         case 3: //Laser
-                            Laser l = new Laser(this.game, pos_clicked, 0);
-                            l.render(this.bufferContext, scale);
+                            Laser laser = new Laser(this.game, pos_clicked, 0);
+                            laser.render(this.bufferContext, scale);
                             break;
                         case 4: //Acide
-                            
+                            //Portal portal = new Portal(this.game, pos_clicked);
+                            //portal.render(this.bufferContext, scale);
                             break;
                         case 5: //Portail
                             
