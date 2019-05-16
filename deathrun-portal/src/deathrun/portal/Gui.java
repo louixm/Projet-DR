@@ -142,8 +142,18 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
         if (evt.getKeyCode() == evt.VK_COMMA)       {this.scale--; System.out.println("Scale = " + this.scale);}
         if (evt.getKeyCode() == evt.VK_H)           PObject.drawHitBox = !PObject.drawHitBox;
         if (evt.getKeyCode() == evt.VK_E)           this.editMode = true;//TODO: trigger l'item du joueur
-        if (evt.getKeyCode() == evt.VK_P)           purge();
+        if (evt.getKeyCode() == evt.VK_P)           game.purge();
+        if (evt.getKeyCode() == evt.VK_F1 && this.controled.traps.size() >= 1)          switch_trap(0);
+        if (evt.getKeyCode() == evt.VK_F2 && this.controled.traps.size() >= 2)          switch_trap(1);
+        if (evt.getKeyCode() == evt.VK_F3 && this.controled.traps.size() >= 3)          switch_trap(2);
     } 
+    
+    public void switch_trap(int i) {
+        if (i < controled.traps.size()) {
+            Trap trap = controled.traps.get(i);
+            trap.enable(!trap.enabled, true);
+        }
+    }
 
     public void render(Graphics2D g) {
         g.drawImage(this.background, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, null);
@@ -164,7 +174,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
         if (e.getButton() == 1) {   // clic gauche
             for (PObject object : game.map.objects) {
                 if (object instanceof Trap && ((Trap)object).collision_box.contains(pos_clicked))
-                    ((Trap)object).takeControl(controled, this);
+                    ((Trap)object).takeControl(controled);
             }
         }
         
@@ -208,24 +218,6 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
     @Override
     public void mouseExited(MouseEvent e) {
          //
-    }
-    
-    public void purge(){
-        try {
-            PreparedStatement req;
-            // effacement de la table des objets
-            req = game.sync.srv.prepareStatement("DELETE FROM pobjects WHERE id < 0");
-            req.executeUpdate();
-            // effacement de la table de joueurs
-            req = game.sync.srv.prepareStatement("DELETE FROM players");
-            req.executeUpdate();
-            
-            System.out.println("Purged players from db");
-            req.close();
-        }
-        catch (SQLException err) {
-            System.out.println("purge(): "+err);
-        }
     }
     
     public void poserObjet(Vec2 pos_clicked) throws SQLException, IOException{

@@ -281,12 +281,13 @@ public class StartMenu extends javax.swing.JFrame {
                     "deathrun2", 
                     "5V8HVbDZMtkOHwaX"
                 ));
-            PreparedStatement req = sync.srv.prepareStatement("SELECT name FROM players");
+            PreparedStatement req = sync.srv.prepareStatement("SELECT name, state FROM players");
             ResultSet r = req.executeQuery();
             DefaultListModel listModel = new DefaultListModel();
             while (r.next()) {
-                        String name = r.getString("name");                    
-                        listModel.addElement(name); 
+                        String name = r.getString("name");  
+                        int state = r.getInt("state");
+                        if (state != 3) listModel.addElement(name); 
             }
             listeJoueurs.setModel(listModel);
         }
