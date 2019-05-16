@@ -25,18 +25,30 @@ import javax.imageio.ImageIO;
  * @author ydejongh
  */
 public class Player extends PObject {
-    public String name;
-    public int avatar;
-    public boolean controled = false;
+    public String name; // pseudo du joueur
+    public int avatar;  // numéro d'avatar choisi
+    public boolean controled = false;   // vrai si le joueur est le joueur actuellement controlé par ce client
+    ArrayList<Trap> traps;  // pieges actuellement controlés par le joueur
+    
+    // status du joueur dans la partie
     public boolean dead = false, hasReachedExitDoor = false, disconnected = false;
     
+    // variables internes de déplacement
     boolean left, right, jump, leftAndRightWithPriorityOnRight; //, hasJumped;
     ArrayList<String> collisionDirection;
-//    private BufferedImage robot, robotBase, robotDr, robotDrEx, robotSaut, robotBasegauche, robotgauche, robotgaucheex, robotsautgauche;     // rajouté par louis animation
+
+    // variable interne de collisions
     Box collision_box;
-    Game game;
+        
+    Game game;  // pour la synchronisation a la table des joueurs
+    public static BufferedImage avatars[][];  // avatars disponibles pour chaque joueur
     
-    public static BufferedImage avatars[];
+    int compteurdanimation = 1;    //compteur pour les animations de personnage
+    long time_next_image;
+    long image_duration = 100000000;
+    int lignedevue = 1;
+    
+    BufferedImage current_image;
     
     public static int availableId(Game game) {
         int id = -1;
@@ -61,26 +73,73 @@ public class Player extends PObject {
         this.game = game;
         this.name = name; 
         this.avatar = avatar;
+        
         collision_box = new Box(-0.5, 0, 0.5, 1.8);
+        traps = new ArrayList<Trap>();
         if (avatars == null) {
-            this.avatars = new BufferedImage[4];
+            this.avatars = new BufferedImage[4][];
             try {
-                this.avatars[0] = ImageIO.read(new File("./images/sentrybot.png"));
-                this.avatars[1] = ImageIO.read(new File("./images/robotBleu.png"));
-                this.avatars[2] = ImageIO.read(new File("./images/robotOrange.png"));
-                this.avatars[3] = ImageIO.read(new File("./images/robotDead.png"));
-//                this.robotBase = ImageIO.read(new File("robotbase.png"));    // rajouté par louis animation
-//                this.robotDr = ImageIO.read(new File("robotdroite.png"));    // rajouté par louis animation
-//                this.robotDrEx = ImageIO.read(new File("robotdroitee.png"));    // rajouté par louis animation
-//                this.robotSaut = ImageIO.read(new File("robotsaut.png"));    // rajouté par louis animation
-//                this.robotBasegauche = ImageIO.read(new File("robotbasegauche.png"));    // rajouté par louis animation
-//                this.robotgauche = ImageIO.read(new File("robotgauche.png"));    // rajouté par louis animation
-//                this.robotgaucheex = ImageIO.read(new File("robotdgaucheex.png"));    // rajouté par louis animation
-//                this.robotsautgauche = ImageIO.read(new File("robotsautgauche.png"));    // rajouté par louis animation
+                this.avatars[0] = new BufferedImage[] { 
+                    ImageIO.read(new File("./images/robotbase.png")),
+                    ImageIO.read(new File("./images/robotdroite.png")),
+                    ImageIO.read(new File("./images/robotdroitee.png")),
+                    ImageIO.read(new File("./images/robotsaut.png")),
+                    ImageIO.read(new File("./images/robotbasegauche.png")),
+                    ImageIO.read(new File("./images/robotgauche.png")),
+                    ImageIO.read(new File("./images/robotdgaucheex.png")),
+                    ImageIO.read(new File("./images/robotsautgauche.png")),
+                    ImageIO.read(new File("./images/robotDead.png")),
+                    
+                };
+                this.avatars[1] = new BufferedImage[]{
+                    ImageIO.read(new File("./images/tourellebase.png")),
+                    ImageIO.read(new File("./images/tourelledroite2.png")),
+                    ImageIO.read(new File("./images/tourelledroite3.png")),
+                    ImageIO.read(new File("./images/tourellesautdroite.png")),
+                    ImageIO.read(new File("./images/tourellebasegauche.png")),
+                    ImageIO.read(new File("./images/tourellegauche2.png")),
+                    ImageIO.read(new File("./images/tourellegauche3.png")),
+                    ImageIO.read(new File("./images/tourellesautgauche.png")),
+                    ImageIO.read(new File("./images/robotDead.png")),
+            
+                 };
+                this.avatars[2] = new BufferedImage[]{
+                    ImageIO.read(new File("./images/tourellebase.png")),
+                    ImageIO.read(new File("./images/tourelledroite2.png")),
+                    ImageIO.read(new File("./images/tourelledroite3.png")),
+                    ImageIO.read(new File("./images/tourellesautdroite.png")),
+                    ImageIO.read(new File("./images/tourellebasegauche.png")),
+                    ImageIO.read(new File("./images/tourellegauche2.png")),
+                    ImageIO.read(new File("./images/tourellegauche3.png")),
+                    ImageIO.read(new File("./images/tourellesautgauche.png")),
+                    ImageIO.read(new File("./images/robotDead.png")),
+                 };
+                this.avatars[3] = new BufferedImage[]{
+                    ImageIO.read(new File("./images/robotDead.png")),
+                    ImageIO.read(new File("./images/robotDead.png")),
+                    ImageIO.read(new File("./images/robotDead.png")),
+                };
+                //this.avatars[3] = new BufferedImageImageIO.read(new File("./images/robotDead.png"));
+                
+                //this.avatars[2] = ImageIO.read(new File("./images/robotOrange.png"));
+                //this.robotBase = ImageIO.read(new File("robotbase.png"));    // rajouté par louis animation
+                //this.robotDr = ImageIO.read(new File("robotdroite.png"));    // rajouté par louis animation
+                //this.robotDrEx = ImageIO.read(new File("robotdroitee.png"));    // rajouté par louis animation
+                //this.robotSaut = ImageIO.read(new File("robotsaut.png"));    // rajouté par louis animation
+                //this.robotBasegauche = ImageIO.read(new File("robotbasegauche.png"));    // rajouté par louis animation
+                //this.robotgauche = ImageIO.read(new File("robotgauche.png"));    // rajouté par louis animation
+                //this.robotgaucheex = ImageIO.read(new File("robotdgaucheex.png"));    // rajouté par louis animation
+                //this.robotsautgauche = ImageIO.read(new File("robotsautgauche.png"));    // rajouté par louis animation
             } catch (IOException ex) {
                 Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        // horloge pour l'affichage des animations
+        time_next_image = System.nanoTime() + image_duration;
+        System.out.println("avatar = "+avatar);
+        System.out.println("avatars[avatar] = "+avatars[avatar]);
+        current_image = this.avatars[avatar][0];
+        
         //double j = game.map.enter.position.y + game.map.enter.size - this.avatars.getHight();
         this.setPosition(game.map.enter.position.add(new Vec2(-0.25,0)));
         
@@ -91,6 +150,7 @@ public class Player extends PObject {
             ResultSet r = req.executeQuery();
             r.next();
             if (!r.getBoolean(1)) {
+                req.close();
                 req = game.sync.srv.prepareStatement("INSERT INTO players VALUES (?, ?, 0, 0, ?, 0, 0, 0)"); //TODO
                 req.setInt(1, db_id);
                 req.setString(2, name);
@@ -106,19 +166,33 @@ public class Player extends PObject {
     }
     
     public void disconnect() {
+        disconnected = true;
         try {
-            PreparedStatement req;
             // effacement de la table des objets
-            req = game.sync.srv.prepareStatement("DELETE FROM pobjects WHERE id = ?");
-            req.setInt(1, db_id);
-            req.executeUpdate();
-            // effacement de la table de joueurs
-            req = game.sync.srv.prepareStatement("DELETE FROM players WHERE id = ?");
-            req.setInt(1, db_id);
-            req.executeUpdate();
+            boolean allDisconnected = true;
+            for (Player p: game.players){
+                if (!p.disconnected)  {allDisconnected = false; break;}
+            }
+            if (allDisconnected) game.purge();
+            else {
+                PreparedStatement req;
+                req = game.sync.srv.prepareStatement("UPDATE players SET state=? WHERE id = ?");
+                req.setInt(1, 3);
+                req.setInt(2, db_id);
+                req.executeUpdate();
+                req.close();
+                System.out.println("Player " + name + " disconnected.");
+            }
+//            req = game.sync.srv.prepareStatement("DELETE FROM pobjects WHERE id = ?");
+//            req.setInt(1, db_id);
+//            req.executeUpdate();
+//            // effacement de la table de joueurs
+//            req = game.sync.srv.prepareStatement("DELETE FROM players WHERE id = ?");
+//            req.setInt(1, db_id);
+//            req.executeUpdate();
+//            
+//            System.out.println("Deleted player with id " + db_id);
             
-            System.out.println("Deleted player with id " + db_id);
-            req.close();
         }
         catch (SQLException err) {
             System.out.println("Player.disconnect(): "+err);
@@ -142,17 +216,84 @@ public class Player extends PObject {
     //--------------- interface d'affichage -----------------
     @Override
     public void render(Graphics2D g, float scale) {
-        g.drawImage(avatars[avatar], 
+        
+        long ac_time = System.nanoTime();
+        if (ac_time > time_next_image)  {
+            if (avatar!=3){
+                if (left) { 
+                    lignedevue =2;
+                
+                    if (compteurdanimation == 1){
+                        current_image = avatars[avatar][4];
+                        compteurdanimation = compteurdanimation + 1;
+                    }
+                    else if (compteurdanimation == 2){
+                        current_image = avatars[avatar][5];
+                        compteurdanimation = compteurdanimation + 1;
+                    }
+                    else if (compteurdanimation == 3){
+                        current_image = avatars[avatar][6];
+                        compteurdanimation = 1;
+                    }
+            
+                }
+                if (right) { 
+                    lignedevue =1;
+                    if (compteurdanimation == 1){
+                        current_image = avatars[avatar][0];
+                        compteurdanimation++;
+                    }
+                    else if (compteurdanimation == 2){
+                        current_image = avatars[avatar][1];
+                        compteurdanimation++;
+                    }
+                    else if (compteurdanimation == 3){
+                        current_image = avatars[avatar][2];
+                        compteurdanimation = 1;
+                    }
+                
+            
+                }
+                if (jump){
+                    if (lignedevue == 1){
+                        current_image = avatars[avatar][3];
+                    }
+                    if (lignedevue == 2) {
+                        current_image = avatars[avatar][7];
+                    }
+                }
+            }
+            if (avatar==3){
+                    if (compteurdanimation == 1){
+                        current_image = avatars[3][0];
+                        compteurdanimation++;
+                    }
+                    else if (compteurdanimation == 2){
+                        current_image = avatars[3][1];
+                        compteurdanimation++;
+                    }
+                    else if (compteurdanimation == 3){
+                        current_image = avatars[3][2];
+                        compteurdanimation = 1;
+                }
+            
+            }
+            time_next_image = ac_time + image_duration;
+        }
+    
+        
+        g.drawImage(current_image, 
             (int) (collision_box.p1.x*scale), 
             (int) (collision_box.p1.y*scale), 
             (int) (collision_box.p2.x*scale), 
             (int) (collision_box.p2.y*scale), 
             0, 0,
-            avatars[avatar].getWidth(null), avatars[avatar].getHeight(null),
+            current_image.getWidth(null), current_image.getHeight(null),
             null);
         
         g.setColor(getPlayerColor());
         g.drawString(name, (int) ((collision_box.p1.x)*scale), (int) ((collision_box.p1.y - 0.1)*scale));
+        if (disconnected) {g.setColor(Color.DARK_GRAY); g.drawString("Disconnected", (int) ((collision_box.p1.x)*scale), (int) ((collision_box.p1.y - 0.4)*scale));}
         super.render(g, scale);
     }
 
@@ -273,6 +414,24 @@ public class Player extends PObject {
             catch (SQLException err) {
                 System.out.println("sql exception:\n"+err);
             }
+        }
+    }
+    
+    public void setState(int state){
+        switch(state){
+            default: {this.dead = false; this.hasReachedExitDoor = false; this.disconnected = false; break;}
+            case 1: {this.dead = true; this.hasReachedExitDoor = false; this.disconnected = false; break;}
+            case 2: {this.dead = false; this.hasReachedExitDoor = true; this.disconnected = false; break;}
+            case 3: {this.dead = false; this.hasReachedExitDoor = false; this.disconnected = true; break;}
+        }
+    }
+    
+    public void setMovement(int movement){
+        switch(movement){
+            default: {this.setLeft(false); this.setRight(false); this.setJump(false); break;}
+            case 1: {this.setLeft(true); this.setRight(false); this.setJump(false); break;}
+            case 2: {this.setLeft(false); this.setRight(true); this.setJump(false); break;}
+            case 3: {this.setLeft(false); this.setRight(false); this.setJump(true); break;}    
         }
     }
     

@@ -25,7 +25,7 @@ import java.awt.event.ActionListener;
  */
 public class Perso {
     
-    private BufferedImage robot, robotBase, robotDr, robotDrEx, robotSaut, robotBasegauche, robotgauche, robotgaucheex, robotsautgauche;
+    private BufferedImage robot, robotdroite1, robotBase, robotdroite2, robotdroite3, robotSaut, robotBasegauche, robotgauche1, robotgauche2, robotgauche3, robotsautgauche;
     private int x, y;
     private boolean gauche, droite, onFloor;
     private double vx = 0, vy = 0;
@@ -36,14 +36,16 @@ public class Perso {
     
     public Perso(){
         try {
-                this.robotBase = ImageIO.read(new File("robotbase.png"));
-                this.robotDr = ImageIO.read(new File("robotdroite.png"));
-                this.robotDrEx = ImageIO.read(new File("robotdroitee.png"));
-                this.robotSaut = ImageIO.read(new File("robotsaut.png"));
-                this.robotBasegauche = ImageIO.read(new File("robotbasegauche.png"));
-                this.robotgauche = ImageIO.read(new File("robotgauche.png"));
-                this.robotgaucheex = ImageIO.read(new File("robotdgaucheex.png"));
-                this.robotsautgauche = ImageIO.read(new File("robotsautgauche.png"));
+                this.robotBase = ImageIO.read(new File("tourellebase.png"));
+                this.robotdroite1 = ImageIO.read(new File("tourelledroite1.png"));
+                this.robotdroite2 = ImageIO.read(new File("tourelledroite2.png"));
+                this.robotdroite3 = ImageIO.read(new File("tourelledroite3.png"));
+                this.robotSaut = ImageIO.read(new File("tourellesautdroite.png"));
+                this.robotBasegauche = ImageIO.read(new File("tourellebasegauche.png"));
+                this.robotgauche1 = ImageIO.read(new File("tourellegauche1.png"));
+                this.robotgauche2 = ImageIO.read(new File("tourellegauche2.png"));
+                this.robotgauche3 = ImageIO.read(new File("tourellegauche3.png"));
+                this.robotsautgauche = ImageIO.read(new File("tourellesautgauche.png"));
             } catch (IOException ex) {
                 Logger.getLogger(Jeu.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -90,13 +92,13 @@ public class Perso {
             this.timer1.start();
             
             if (EtatdAnimation == 0){
-                this.robot = this.robotBasegauche;
+                this.robot = this.robotgauche1;
             }
             if (EtatdAnimation == 1){
-                this.robot = this.robotgauche;
+                this.robot = this.robotgauche2;
             }
             if (EtatdAnimation == 2){
-                this.robot = this.robotgaucheex;
+                this.robot = this.robotgauche3;
             }
             LineOfSight = 2;
             ax = -1;
@@ -107,16 +109,13 @@ public class Perso {
         if (this.droite) {
             this.timer1.start();
             if (EtatdAnimation == 0){
-            this.robot = this.robotBase;
+            this.robot = this.robotdroite1;
             }
             if (EtatdAnimation == 1){
-            this.robot = this.robotDr;
+            this.robot = this.robotdroite2;
             }
             if (EtatdAnimation == 2){
-            this.robot = this.robotDrEx;
-            }
-            if (EtatdAnimation == 3){
-            this.robot = this.robotDr;
+            this.robot = this.robotdroite3;
             }
             LineOfSight = 1;
             ax = 1;

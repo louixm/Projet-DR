@@ -17,6 +17,7 @@ public class Jeu {
 
     private BufferedImage fond;
     private Perso perso = new Perso();
+    private punch punch = new punch() ;
     
     public Jeu() {
         try {
@@ -29,11 +30,13 @@ public class Jeu {
 
     public void MettreAJour() {
         perso.MettreAJour(this.fond.getWidth(), this.fond.getHeight());
+        punch.newImage();
     }
 
     public void Afficher(Graphics2D contexte) {
         contexte.drawImage(this.fond, 0, 0, null);
         perso.Afficher(contexte);
+        punch.Afficher(contexte);
     }
 
     public void setGauche(boolean gauche) {

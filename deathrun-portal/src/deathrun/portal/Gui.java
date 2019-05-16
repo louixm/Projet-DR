@@ -1,6 +1,8 @@
 package deathrun.portal;
 
+import static deathrun.portal.Platform.img;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -10,6 +12,7 @@ import javax.swing.JPanel;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -21,6 +24,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.Timer;
@@ -36,7 +40,7 @@ import javax.swing.Timer;
  *
  * @author ydejongh
  */
-public class Gui extends JFrame implements KeyListener, MouseListener {
+public class Gui extends JFrame implements KeyListener, MouseListener, MouseMotionListener {
     public int scale = 36;	// pixel/m
     public boolean drawHitBox = false;
     public final int WINDOW_WIDTH = 1080, WINDOW_HEIGHT = 720;
@@ -50,6 +54,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
     
     boolean editMode = false;
     private SelectionBloc selectionBloc;
+    public Vec2 positionSouris;
     
     public Game game;
     public Player controled;
@@ -62,6 +67,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.addKeyListener(this);
         this.addMouseListener(this);
+        this.addMouseMotionListener(this);
         this.jLabel1 = new JLabel();
         this.jLabel1.setPreferredSize(new java.awt.Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         this.setContentPane(this.jLabel1);
@@ -91,7 +97,15 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
                 game.step();
                 render(bufferContext);
                 jLabel1.repaint();
+                try {              
+                    previsualisationBloc(positionSouris);
+                } catch (IOException ex) {
+                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
+            
         });
         this.timer.start();
         
@@ -127,9 +141,19 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
         if (evt.getKeyCode() == evt.VK_SEMICOLON)   {this.scale++; System.out.println("Scale = " + this.scale);}
         if (evt.getKeyCode() == evt.VK_COMMA)       {this.scale--; System.out.println("Scale = " + this.scale);}
         if (evt.getKeyCode() == evt.VK_H)           PObject.drawHitBox = !PObject.drawHitBox;
-        if (evt.getKeyCode() == evt.VK_E)           ;//TODO: trigger l'item du joueur
-        if (evt.getKeyCode() == evt.VK_P)           purge();
+        if (evt.getKeyCode() == evt.VK_E)           this.editMode = true;//TODO: trigger l'item du joueur
+        if (evt.getKeyCode() == evt.VK_P)           game.purge();
+        if (evt.getKeyCode() == evt.VK_F1 && this.controled.traps.size() >= 1)          switch_trap(0);
+        if (evt.getKeyCode() == evt.VK_F2 && this.controled.traps.size() >= 2)          switch_trap(1);
+        if (evt.getKeyCode() == evt.VK_F3 && this.controled.traps.size() >= 3)          switch_trap(2);
     } 
+    
+    public void switch_trap(int i) {
+        if (i < controled.traps.size()) {
+            Trap trap = controled.traps.get(i);
+            trap.enable(!trap.enabled, true);
+        }
+    }
 
     public void render(Graphics2D g) {
         g.drawImage(this.background, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, null);
@@ -146,76 +170,39 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
     @Override
     public void mouseClicked(MouseEvent e) { //Moment où le bouton de la souris a été pressé et relaché
         Vec2 pos_clicked = new Vec2(e.getX()/(float)scale, (e.getY()-window_header_size)/(float)scale);
-        
         // prise de controle des pieges
         if (e.getButton() == 1) {   // clic gauche
             for (PObject object : game.map.objects) {
                 if (object instanceof Trap && ((Trap)object).collision_box.contains(pos_clicked))
-                    ((Trap)object).takeControl(controled, this);
+                    ((Trap)object).takeControl(controled);
             }
         }
         
         if (editMode) {
-            try {
-                if (e.getButton()==1 && this.selectionBloc.blocAPoser == 0) { //Si un clic gauche a été effectué et qu'on a pas encore choisi de bloc, alors la fenetre de selection de bloc s'ouvre
-                    selectionBloc.setVisible(true);
-                    selectionBloc.addWindowListener(new java.awt.event.WindowAdapter() { //Attente de la fermeture de la fenetre de selection de bloc
-                            @Override
-                            public void windowClosing(java.awt.event.WindowEvent e) {
-                                System.exit(0);
-                            }
-                        });
-                }
-                else if(e.getButton()==1 && this.selectionBloc.blocAPoser != 0){ //Si un clic gauche a été effectué et qu'on a déjà choisi un bloc, alors le bloc est posé
-
-                    //Tests pour savoir quel bloc a été choisi dans la fenetre SelectBloc
-                    switch (this.selectionBloc.blocAPoser) {
-                    case 1: //Plateforme
-                        this.game.map.objects.add(new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0)); //Ajout du bloc aux coordonnées du clic
-                        System.out.println("Plateforme posée en (x = " + e.getX() + "; y = " + e.getY()+ ").");
-                        break;
-                    case 2: //Scie circulaire
-                        this.game.map.objects.add(new Saw(this.game, pos_clicked)); //Ajout du bloc aux coordonnées du clic
-                        System.out.println("Scie posée en (x = " + e.getX() + "; y = " + e.getY()+ ").");
-                        break;
-                    case 3: //Laser
-                        //this.game.map.objects.add(new Laser(this.game, pos_clicked,0)); //Ajout du bloc aux coordonnées du clic
-                        System.out.println("Laser posé en (x = " + e.getX() + "; y = " + e.getY()+ ").");
-                        break;
-                    case 4: //Acide
-                        //this.game.map.objects.add(new Platform(this.game, new Vec2(e.getX()/scale, e.getY()/scale), new Box (0,0,2,1.5), 0)); //Ajout du bloc aux coordonnées du clic
-                        System.out.println("Acide posé en (x = " + e.getX() + "; y = " + e.getY()+ ").");
-                        break;
-                    case 5: //Portail
-                        this.game.map.objects.add(new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0)); //Ajout du bloc aux coordonnées du clic
-                        System.out.println("Portail posé en (x = " + e.getX() + "; y = " + e.getY()+ ").");
-                        break;
-                    case 6: //
-                        this.game.map.objects.add(new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0)); //Ajout du bloc aux coordonnées du clic
-                        System.out.println("... posé en (x = " + e.getX() + "; y = " + e.getY()+ ").");
-                        break;
-                    case 7: //
-                        this.game.map.objects.add(new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0)); //Ajout du bloc aux coordonnées du clic
-                        System.out.println("... posé en (x = " + e.getX() + "; y = " + e.getY()+ ").");
-                        break;
-                    case 8: //
-                        this.game.map.objects.add(new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0)); //Ajout du bloc aux coordonnées du clic
-                        System.out.println("... posé en (x = " + e.getX() + "; y = " + e.getY()+ ").");
-                        break;
+            if (e.getButton()==1 && this.selectionBloc.blocAPoser == 0) { //Si un clic gauche a été effectué et qu'on a pas encore choisi de bloc, alors la fenetre de selection de bloc s'ouvre
+                selectionBloc.setVisible(true);
+                selectionBloc.addWindowListener(new java.awt.event.WindowAdapter() { //Attente de la fermeture de la fenetre de selection de bloc
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
                     }
-                    this.selectionBloc.blocAPoser = 0;
+                });
+            }
+            else if(e.getButton()==1 && this.selectionBloc.blocAPoser != 0){ try {
+                //Si un clic gauche a été effectué et qu'on a déjà choisi un bloc, alors le bloc est posé
+                this.poserObjet(pos_clicked);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            } catch (IOException ex) {
-                Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (SQLException ex) {
-                Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-         //
+        System.out.println("La souris est entrée dans la fenêtre. Position : (x = " + e.getX() + ", y = " + e.getY() + ").");
     }
 
     @Override
@@ -224,8 +211,8 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
     }
 
     @Override
-    public void mouseEntered(MouseEvent e) {
-         //
+    public void mouseEntered(MouseEvent e) { 
+        //
     }
 
     @Override
@@ -233,21 +220,82 @@ public class Gui extends JFrame implements KeyListener, MouseListener {
          //
     }
     
-    public void purge(){
-        try {
-            PreparedStatement req;
-            // effacement de la table des objets
-            req = game.sync.srv.prepareStatement("DELETE FROM pobjects WHERE id < 0");
-            req.executeUpdate();
-            // effacement de la table de joueurs
-            req = game.sync.srv.prepareStatement("DELETE FROM players");
-            req.executeUpdate();
-            
-            System.out.println("Purged players from db");
-            req.close();
-        }
-        catch (SQLException err) {
-            System.out.println("purge(): "+err);
+    public void poserObjet(Vec2 pos_clicked) throws SQLException, IOException{
+        switch (this.selectionBloc.blocAPoser) {
+                    //Tests pour savoir quel bloc a été choisi dans la fenetre SelectBloc
+                    case 1: //Plateforme
+                        this.game.map.objects.add(new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0)); //Ajout du bloc aux coordonnées du clic
+                        break;
+                    case 2: //Scie circulaire
+                        this.game.map.objects.add(new Saw(this.game, pos_clicked));
+                        break;
+                    case 3: //Laser
+                        this.game.map.objects.add(new Laser(this.game, pos_clicked, 0));
+                        break;
+                    case 4: //Acide
+                        this.game.map.objects.add(new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0));
+                        break;
+                    case 5: //Portail
+                        this.game.map.objects.add(new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0));
+                        break;
+                    case 6: //
+                        this.game.map.objects.add(new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0));
+                        break;
+                    case 7: //
+                        this.game.map.objects.add(new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0));
+                        break;
+                    case 8: //
+                        this.game.map.objects.add(new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0));
+                        break;
+                    }
+        this.selectionBloc.blocAPoser = 0;
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) { //Permet d'obtenir la position de la souris après qu'elle ait bougée
+        if (editMode) {
+            if (this.selectionBloc.blocAPoser != 0){
+                Vec2 pos_clicked = new Vec2(e.getX()/(float)scale, (e.getY()-window_header_size)/(float)scale);
+                this.positionSouris = pos_clicked;
+            }
         }
     }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    public void previsualisationBloc(Vec2 pos_clicked) throws IOException, SQLException{
+        switch (this.selectionBloc.blocAPoser) {
+                        case 1: //Plateforme
+                            Platform p = new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0);
+                            p.render(this.bufferContext, scale);
+                            break;
+                        case 2: //Scie circulaire
+                            Saw s = new Saw(this.game, pos_clicked);
+                            s.render(this.bufferContext, scale);
+                            break;
+                        case 3: //Laser
+                            Laser l = new Laser(this.game, pos_clicked, 0);
+                            l.render(this.bufferContext, scale);
+                            break;
+                        case 4: //Acide
+                            
+                            break;
+                        case 5: //Portail
+                            
+                            break;
+                        case 6: //
+                            
+                            break;
+                        case 7: //
+                            
+                            break;
+                        case 8: //
+
+                            break;
+                    }
+    }
+    
 }
