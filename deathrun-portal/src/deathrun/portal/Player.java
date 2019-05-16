@@ -45,7 +45,7 @@ public class Player extends PObject {
     
     int compteurdanimation = 1;    //compteur pour les animations de personnage
     long time_next_image;
-    long image_duration = 300000000;
+    long image_duration = 100000000;
     int lignedevue = 1;
     
     BufferedImage current_image;
