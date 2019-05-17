@@ -45,7 +45,7 @@ public class Player extends PObject {
     
     int compteurdanimation = 1;    //compteur pour les animations de personnage
     long time_next_image;
-    long image_duration = 100000000;
+    long image_duration = 200000000;
     int lignedevue = 1;
     
     BufferedImage current_image;
@@ -115,9 +115,9 @@ public class Player extends PObject {
                     ImageIO.read(new File("./images/robotDead.png")),
                  };
                 this.avatars[3] = new BufferedImage[]{
-                    ImageIO.read(new File("./images/robotDead.png")),
-                    ImageIO.read(new File("./images/robotDead.png")),
-                    ImageIO.read(new File("./images/robotDead.png")),
+                    ImageIO.read(new File("./images/robotdeath1.png")),
+                    ImageIO.read(new File("./images/robotdeath2.png")),
+                    ImageIO.read(new File("./images/robotdeath3.png")),
                 };
                 //this.avatars[3] = new BufferedImageImageIO.read(new File("./images/robotDead.png"));
                 
