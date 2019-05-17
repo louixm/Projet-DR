@@ -26,6 +26,7 @@ public class DeathrunPortal {
         
         if (menu.start) {
             Game game = new Game(true);
+            //game.purgeTraps();
             Player controled;
             //try {
             game.init(4);// choix de la map 1, 2, 3, 4	// connecte au serveur et construit tous les objets tels que dans la base de donnnées
@@ -43,6 +44,7 @@ public class DeathrunPortal {
             port2.otherPortal = port;
             game.map.objects.add(port);
             game.map.objects.add(port2);
+            //game.map.objects.add(new Punch(game,new Vec2(2,4)));
                     
             controled.acceleration.y = -1; // valeur différente de 0 pour forcer l'update de physicstep initiale
             //TODO: faire plus prore que ca
