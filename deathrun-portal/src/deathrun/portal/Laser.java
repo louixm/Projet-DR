@@ -76,7 +76,7 @@ public class Laser extends Trap {
             for (Player p: game.players){
                 Vec2 p1 = p.getCollisionBox().p1 ; //point inférieur gauche
                 Vec2 p2 = p.getCollisionBox().p2 ; //point supérieur droit
-                Vec2 p3 = new Vec2(p1.x, p2.y) ; // point supérieur gauche
+                Vec2 p3 = new Vec2(p1.x, p2.y) ; // point inférieur gauche
                 Vec2 p4 = new Vec2(p2.x , p1.y) ; // point supérieur gauche
                 double proj1 = p1.sub(collision_box.center()).cross(this.vectir) ;
                 double proj2 = p2.sub(collision_box.center()).cross(this.vectir) ;
