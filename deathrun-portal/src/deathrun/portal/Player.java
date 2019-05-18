@@ -6,6 +6,8 @@
 package deathrun.portal;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -45,7 +47,7 @@ public class Player extends PObject {
     
     int compteurdanimation = 1;    //compteur pour les animations de personnage
     long time_next_image;
-    long image_duration = 100000000;
+    long image_duration = 200000000;
     int lignedevue = 1;
     
     BufferedImage current_image;
@@ -115,9 +117,9 @@ public class Player extends PObject {
                     ImageIO.read(new File("./images/robotDead.png")),
                  };
                 this.avatars[3] = new BufferedImage[]{
-                    ImageIO.read(new File("./images/robotDead.png")),
-                    ImageIO.read(new File("./images/robotDead.png")),
-                    ImageIO.read(new File("./images/robotDead.png")),
+                    ImageIO.read(new File("./images/robotdeath1.png")),
+                    ImageIO.read(new File("./images/robotdeath2.png")),
+                    ImageIO.read(new File("./images/robotdeath3.png")),
                 };
                 //this.avatars[3] = new BufferedImageImageIO.read(new File("./images/robotDead.png"));
                 
@@ -292,8 +294,10 @@ public class Player extends PObject {
             null);
         
         g.setColor(getPlayerColor());
-        g.drawString(name, (int) ((collision_box.p1.x)*scale), (int) ((collision_box.p1.y - 0.1)*scale));
-        if (disconnected) {g.setColor(Color.DARK_GRAY); g.drawString("Disconnected", (int) ((collision_box.p1.x)*scale), (int) ((collision_box.p1.y - 0.4)*scale));}
+//        g.drawString(name, (int) ((collision_box.p1.x)*scale), (int) ((collision_box.p1.y - 0.1)*scale));
+          drawCenteredString(g, name, collision_box, 3, new Font("Trebuchet MS", Font.BOLD, 13), scale);
+        if (disconnected) {g.setColor(Color.DARK_GRAY); drawCenteredString(g, "Disconnected", collision_box, 15, new Font("Trebuchet MS", Font.ITALIC, 10), scale);}
+//        if (disconnected) {g.setColor(Color.DARK_GRAY); g.drawString("Disconnected", (int) ((collision_box.p1.x)*scale), (int) ((collision_box.p1.y - 0.4)*scale));}
         super.render(g, scale);
     }
 
@@ -433,6 +437,20 @@ public class Player extends PObject {
             case 2: {this.setLeft(false); this.setRight(true); this.setJump(false); break;}
             case 3: {this.setLeft(false); this.setRight(false); this.setJump(true); break;}    
         }
+    }
+    
+    public void drawCenteredString(Graphics g, String text, Box box, int up, Font font, float scale) {
+        // Get the FontMetrics
+        FontMetrics metrics = g.getFontMetrics(font);
+        // Determine the X coordinate for the text
+        int x = (int) (box.p1.x*scale) + ((int) (box.getWidth()*scale) - metrics.stringWidth(text)) / 2;
+        // Determine the Y coordinate for the text (note we add the ascent, as in java 2d 0 is top of the screen)
+        int y;
+        y = (int) (box.p1.y*scale) - up; //+ (((int) (box.getHeight()*scale) - metrics.getHeight()) / 2) + metrics.getAscent();
+        // Set the font
+        g.setFont(font);
+        // Draw the String
+        g.drawString(text, x, y);
     }
     
 }

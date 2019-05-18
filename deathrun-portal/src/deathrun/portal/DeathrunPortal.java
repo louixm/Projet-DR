@@ -26,6 +26,7 @@ public class DeathrunPortal {
         
         if (menu.start) {
             Game game = new Game(true);
+            //game.purgeTraps();
             Player controled;
             //try {
             game.init(4);// choix de la map 1, 2, 3, 4	// connecte au serveur et construit tous les objets tels que dans la base de donnnées
