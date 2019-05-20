@@ -69,7 +69,7 @@ public class Punch extends Trap {
     
     @Override
     public void onGameStep(Game game, float dt) {
-        if (enabled) {
+        //if (enabled) {
             
             for (Player p: game.players){
                 Vec2 p1 = p.getCollisionBox().p1 ; //point supérieur gauche
@@ -83,7 +83,7 @@ public class Punch extends Trap {
                     p.setDead(false);
                 }
             }
-        }
+        //}
     }
     
     
