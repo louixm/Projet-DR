@@ -27,7 +27,9 @@ public class Punch extends Trap {
     int typePlateforme;
     int step;
     Vec2 initPosition;   //posiion initiale
-    Vec2 activPosition;   //position quand le piège est sous controle
+   // Vec2 activPosition;   //position quand le piège est sous controle
+    long time_next_image;
+    long image_duration = 20000000;
     
     public Punch(Game game, Vec2 position) throws IOException, SQLException {
         super(game);
@@ -37,12 +39,13 @@ public class Punch extends Trap {
             img = ImageIO.read(new File("./images/punch0.png")); //poinçon denté
         }*/
         Image im = ImageIO.read(new File("./images/punch.png"));
-        collision_box = new Box(0,0,im.getWidth(null)/36f,im.getHeight(null)/36f); //36 = scale & a dimension de la box est celle de l'image
+        
         //Vec2 realPos = new Vec2(position.x-(collision_box.getWidth()/2),position.y-(collision_box.getHeight()/2));   //pour centrer la box 
         /*collision_box = collision_box.translateToPosition(initPosition);
         setPosition(initPosition);*/
         Image im0 = ImageIO.read(new File("./images/punch0.png"));
-        this.activPosition = new Vec2(initPosition.x-((im0.getWidth(null)/(2*36f))-(im.getWidth(null)/(2*36f))),initPosition.y);
+        collision_box = new Box(0,0,im.getWidth(null)/36f,im.getHeight(null)/36f); //36 = scale & a dimension de la box est celle de l'image
+        //this.activPosition = new Vec2(initPosition.x-((im0.getWidth(null)/(2*36f))-(im.getWidth(null)/(2*36f))),initPosition.y);
         
         
     }
@@ -91,7 +94,7 @@ public class Punch extends Trap {
     public void render(Graphics2D canvas, float scale) {
         
         // (comment savoir) si le pège n'est en pocession de personne, on prend l'img "punch"
-        if (false){  
+        /*if (false){  
             try {
                 img = ImageIO.read(new File("./images/punch.png"));
             } catch (IOException ex) {
@@ -106,9 +109,15 @@ public class Punch extends Trap {
         } 
         
         // (comment savoir) si le piège appartient à un joueur
-        else{   
+        else{*/   
             
+        
+        
+        
             // -----------------MAJ de l'image---------------------------
+            
+        long ac_time = System.nanoTime();
+        if (ac_time > time_next_image)  {    
             
             // si le piège n'est pas activé on met l'image "punch0"
             if (!enabled){     
@@ -142,20 +151,25 @@ public class Punch extends Trap {
                     Logger.getLogger(Punch.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 
-                // (comment avoir un seul cycle pas appui)condition d'arrêt du cycle
+                // condition d'arrêt du cycle
                 if (step == 9){
+                    this.enable(false, true);
                     step=0;
                 }
                 
                 
         
             }
+            
             // Redimensionnement de la box de collision
             collision_box = new Box(0,0 , img.getWidth(null)/scale,img.getHeight(null)/scale); //la dimension de la box est celle de l'image
             //Vec2 realPos = new Vec2(position.x-(collision_box.getWidth()/2),position.y-(collision_box.getHeight()/2));   //pour centrer la box 
-            collision_box = collision_box.translateToPosition(activPosition);
-            setPosition(activPosition);
+            collision_box = collision_box.translateToPosition(initPosition);
+            setPosition(initPosition);
+            
+            time_next_image = ac_time + image_duration;
         }
+        
         
         // ---------------affichage de PObject ----------------------      
         canvas.drawImage(img, 
