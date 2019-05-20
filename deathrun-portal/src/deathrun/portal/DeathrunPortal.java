@@ -44,7 +44,7 @@ public class DeathrunPortal {
             port2.otherPortal = port;
             game.map.objects.add(port);
             game.map.objects.add(port2);
-            game.map.objects.add(new Punch(game,new Vec2(6,4)));
+            game.map.objects.add(new Punch(game,new Vec2(6,8)));
                     
             controled.acceleration.y = -1; // valeur différente de 0 pour forcer l'update de physicstep initiale
             //TODO: faire plus prore que ca

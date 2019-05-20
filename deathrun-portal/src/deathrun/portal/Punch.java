@@ -169,9 +169,5 @@ public class Punch extends Trap {
         super.render(canvas, scale);
     }
     
-    @Override
-    public void onCollision(Game g, PObject other) {
-        ((Player)other).setDead(true);
-    }
     
 }
