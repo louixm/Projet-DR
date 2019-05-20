@@ -179,7 +179,8 @@ public class Player extends PObject {
             else {
                 PreparedStatement req;
                 req = game.sync.srv.prepareStatement("UPDATE players SET state=? WHERE id = ?");
-                req.setInt(1, 3);
+                if (this.dead) req.setInt(1, 4);
+                else req.setInt(1, 3);
                 req.setInt(2, db_id);
                 req.executeUpdate();
                 req.close();
@@ -430,6 +431,7 @@ public class Player extends PObject {
             case 1: {this.setDead(true, false); this.hasReachedExitDoor = false; this.disconnected = false; break;}
             case 2: {this.setDead(false, false); this.hasReachedExitDoor = true; this.disconnected = false; break;}
             case 3: {this.setDead(false, false); this.hasReachedExitDoor = false; this.disconnected = true; break;}
+            case 4: {this.setDead(true, false); this.hasReachedExitDoor = false; this.disconnected = true; break;}
         }
     }
     
