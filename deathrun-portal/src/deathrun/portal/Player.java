@@ -330,26 +330,29 @@ public class Player extends PObject {
         this.jump = jump;  
     }
     
-    public void setDead(boolean dead) {
+    public void setDead(boolean dead) {setDead(dead, true);}
+    public void setDead(boolean dead, boolean syncAndEndRound) {
         if (!this.dead) {
             this.dead = dead;
             if (dead) {
                 avatar = 3;
-                System.out.println("player "+name+" is dead");
-                try {
-                    PreparedStatement req = game.sync.srv.prepareStatement("UPDATE players SET state=? WHERE id = ?");
-                    req.setInt(1, 1); //state = 0 (en vie), 1 (dead), 2 (exit door)
-                    // id de l'objet a modifier
-                    req.setInt(2, db_id);
+                if(syncAndEndRound){
+                    System.out.println("player "+name+" is dead");
+                    try {
+                        PreparedStatement req = game.sync.srv.prepareStatement("UPDATE players SET state=? WHERE id = ?");
+                        req.setInt(1, 1); //state = 0 (en vie), 1 (dead), 2 (exit door)
+                        // id de l'objet a modifier
+                        req.setInt(2, db_id);
 
-                    // execution de la requete
-                    req.executeUpdate();
-                    req.close();
+                        // execution de la requete
+                        req.executeUpdate();
+                        req.close();
+                    }
+                    catch (SQLException err) {
+                        System.out.println("sql exception:\n"+err);
+                    }
+                    game.tryEndRound();
                 }
-                catch (SQLException err) {
-                    System.out.println("sql exception:\n"+err);
-                }
-                game.tryEndRound();
             }
         }
     }
@@ -360,15 +363,15 @@ public class Player extends PObject {
     }
     
     public void applyMovementChanges(float dt){
-        if (dead || hasReachedExitDoor)   return;
+//        if (dead || hasReachedExitDoor)   return;
         
-        if (this.left && (!this.right || !this.leftAndRightWithPriorityOnRight)){
+        if (!(dead || hasReachedExitDoor) && this.left && (!this.right || !this.leftAndRightWithPriorityOnRight)){
             if (this.velocity.x > 0)        this.acceleration.x = -40;
             else if (this.velocity.x > -7)  this.acceleration.x = -20;
             else                            this.acceleration.x = 0;
             syncMovement(1);
         }
-        else if (this.right && (!this.left || this.leftAndRightWithPriorityOnRight)){
+        else if (!(dead || hasReachedExitDoor) && this.right && (!this.left || this.leftAndRightWithPriorityOnRight)){
             if (this.velocity.x < 0)        this.acceleration.x = 40;
             else if (this.velocity.x < 7)   this.acceleration.x = 20;
             else                            this.acceleration.x = 0;
@@ -382,7 +385,7 @@ public class Player extends PObject {
             syncMovement(0);
         }
         
-        if (this.jump) {
+        if (!(dead || hasReachedExitDoor) && this.jump) {
             if (acceleration.y == 0)    this.velocity.y = -6;
             else if (velocity.y > 0 && (
                     (this.right && this.collisionDirection.contains("right")) 
@@ -423,10 +426,10 @@ public class Player extends PObject {
     
     public void setState(int state){
         switch(state){
-            default: {this.dead = false; this.hasReachedExitDoor = false; this.disconnected = false; break;}
-            case 1: {this.dead = true; this.hasReachedExitDoor = false; this.disconnected = false; break;}
-            case 2: {this.dead = false; this.hasReachedExitDoor = true; this.disconnected = false; break;}
-            case 3: {this.dead = false; this.hasReachedExitDoor = false; this.disconnected = true; break;}
+            default: {this.setDead(false, false); this.hasReachedExitDoor = false; this.disconnected = false; break;}
+            case 1: {this.setDead(true, false); this.hasReachedExitDoor = false; this.disconnected = false; break;}
+            case 2: {this.setDead(false, false); this.hasReachedExitDoor = true; this.disconnected = false; break;}
+            case 3: {this.setDead(false, false); this.hasReachedExitDoor = false; this.disconnected = true; break;}
         }
     }
     
