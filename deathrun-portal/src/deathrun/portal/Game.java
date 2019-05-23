@@ -325,7 +325,7 @@ public class Game {
     public void tryEndRound(){
         if (roundEnded) return;
         for (Player player : this.players){
-            if (!(player.dead || player.hasReachedExitDoor) || player.disconnected) return;
+            if (!(player.dead || player.hasReachedExitDoor || player.disconnected)) return;
         }
         roundEnded = true;
         ScoreFrame scoreFrame = new ScoreFrame(this);
