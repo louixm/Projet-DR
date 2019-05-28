@@ -61,6 +61,6 @@ public class Portal extends PObject{
     }
     
     @Override public void onCollision(Game g, PObject other) {
-            other.setPosition(otherPortal.position.add(new Vec2(Math.signum(other.velocity.x)*2,Math.signum(other.velocity.y)*2)));
+            other.setPosition(otherPortal.position.add(new Vec2(Math.signum(other.velocity.x/3)*other.getCollisionBox().getWidth(),Math.signum(other.velocity.y/3)*other.getCollisionBox().getHeight())));
                 }            
     }
