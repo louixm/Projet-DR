@@ -8,9 +8,9 @@ package deathrun.portal;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 import javax.swing.JFrame;
-
 /**
  *
  * @author ydejongh
@@ -29,6 +29,8 @@ public class DeathrunPortal {
             //game.purgeTraps();
             Player controled;
             //try {
+            //Random rand = new Random();
+            //int choixMap = rand.nextInt(4)+1;
             game.init(4);// choix de la map 1, 2, 3, 4	// connecte au serveur et construit tous les objets tels que dans la base de donnnées
             //TODO: check dans la db players et ajouter au jeu tous ceux deja existants
             controled = new Player(game, menu.pseudo, menu.avatar);
