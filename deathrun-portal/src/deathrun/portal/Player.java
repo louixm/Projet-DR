@@ -41,15 +41,20 @@ public class Player extends PObject {
 
     // variable interne de collisions
     Box collision_box;
+    Box visual_box;
         
     Game game;  // pour la synchronisation a la table des joueurs
     public static BufferedImage avatars[][];  // avatars disponibles pour chaque joueur
     
     int compteurdanimation = 1;    //compteur pour les animations de personnage
     long time_next_image;
-    long image_duration = 200000000;
+    long image_duration = 100000000;
     int lignedevue = 1;
     
+    int compteurdanimation_death = 1;    //compteur pour les animations de personnage
+    long time_next_image_death;
+    long image_duration_death = 200000000;
+    //int lignedevue_death = 1;
     BufferedImage current_image;
     
     public static int availableId(Game game) {
@@ -76,7 +81,8 @@ public class Player extends PObject {
         this.name = name; 
         this.avatar = avatar;
         
-        collision_box = new Box(-0.5, 0, 0.5, 1.8);
+        collision_box = new Box(-0.2, 0, 0.2, 1.7);
+        visual_box = new Box(-0.5, 0, 0.5, 1.8);
         traps = new ArrayList<Trap>();
         if (avatars == null) {
             this.avatars = new BufferedImage[4][];
@@ -117,9 +123,11 @@ public class Player extends PObject {
                     ImageIO.read(new File("./images/robotDead.png")),
                  };
                 this.avatars[3] = new BufferedImage[]{
-                    ImageIO.read(new File("./images/robotdeath1.png")),
-                    ImageIO.read(new File("./images/robotdeath2.png")),
-                    ImageIO.read(new File("./images/robotdeath3.png")),
+                    ImageIO.read(new File("./images/robotdeath1v2.png")),
+                    ImageIO.read(new File("./images/robotdeath2v2.png")),
+                    ImageIO.read(new File("./images/robotdeath3v2.png")),
+                    ImageIO.read(new File("./images/robotdeath4v2.png")),
+                    ImageIO.read(new File("./images/robotdeath5v2.png")),
                 };
                 //this.avatars[3] = new BufferedImageImageIO.read(new File("./images/robotDead.png"));
                 
@@ -138,6 +146,7 @@ public class Player extends PObject {
         }
         // horloge pour l'affichage des animations
         time_next_image = System.nanoTime() + image_duration;
+        time_next_image_death = System.nanoTime() + image_duration_death;
         System.out.println("avatar = "+avatar);
         System.out.println("avatars[avatar] = "+avatars[avatar]);
         current_image = this.avatars[avatar][0];
@@ -179,7 +188,8 @@ public class Player extends PObject {
             else {
                 PreparedStatement req;
                 req = game.sync.srv.prepareStatement("UPDATE players SET state=? WHERE id = ?");
-                req.setInt(1, 3);
+                if (this.dead) req.setInt(1, 4);
+                else req.setInt(1, 3);
                 req.setInt(2, db_id);
                 req.executeUpdate();
                 req.close();
@@ -205,6 +215,7 @@ public class Player extends PObject {
     public void setPosition(Vec2 pos) {
         super.setPosition(pos);
         collision_box = collision_box.translateToPosition(pos);
+        visual_box = visual_box.translateToPosition(pos.add(new Vec2(-0.3,0)));
     }
     
     //--------------- interface de gestion des collisions -----------------
@@ -218,10 +229,10 @@ public class Player extends PObject {
     //--------------- interface d'affichage -----------------
     @Override
     public void render(Graphics2D g, float scale) {
+        if (avatar!=3){
+            long ac_time = System.nanoTime();
+            if (ac_time > time_next_image)  {
         
-        long ac_time = System.nanoTime();
-        if (ac_time > time_next_image)  {
-            if (avatar!=3){
                 if (left) { 
                     lignedevue =2;
                 
@@ -264,31 +275,56 @@ public class Player extends PObject {
                         current_image = avatars[avatar][7];
                     }
                 }
+                if (!left && !right && !jump){
+                    if (lignedevue ==1){
+                        current_image = avatars[avatar][0];
+                    }
+                    if (lignedevue ==2){
+                        current_image = avatars[avatar][4];
+                    }
+                }
+                time_next_image = ac_time + image_duration;
             }
-            if (avatar==3){
-                    if (compteurdanimation == 1){
+            
+           
+            
+            
+        }
+        if (avatar==3){
+            long ac_time = System.nanoTime();
+            if (ac_time > time_next_image_death)  {
+                    if (compteurdanimation_death == 1){
                         current_image = avatars[3][0];
-                        compteurdanimation++;
+                        compteurdanimation_death++;
                     }
-                    else if (compteurdanimation == 2){
+                    else if (compteurdanimation_death == 2){
                         current_image = avatars[3][1];
-                        compteurdanimation++;
+                        compteurdanimation_death++;
                     }
-                    else if (compteurdanimation == 3){
+                    else if (compteurdanimation_death == 3){
                         current_image = avatars[3][2];
-                        compteurdanimation = 1;
+                        compteurdanimation_death++;
+                    }
+                    else if (compteurdanimation_death == 4){
+                        current_image = avatars[3][3];
+                        compteurdanimation_death++;
+                    }
+                    else if (compteurdanimation_death == 5){
+                        current_image = avatars[3][4];
+                        compteurdanimation_death = 1;
+                    }
+                    time_next_image_death = ac_time + image_duration_death;
                 }
             
+            
             }
-            time_next_image = ac_time + image_duration;
-        }
     
         
         g.drawImage(current_image, 
-            (int) (collision_box.p1.x*scale), 
-            (int) (collision_box.p1.y*scale), 
-            (int) (collision_box.p2.x*scale), 
-            (int) (collision_box.p2.y*scale), 
+            (int) (visual_box.p1.x*scale), 
+            (int) (visual_box.p1.y*scale), 
+            (int) (visual_box.p2.x*scale), 
+            (int) (visual_box.p2.y*scale), 
             0, 0,
             current_image.getWidth(null), current_image.getHeight(null),
             null);
@@ -430,6 +466,7 @@ public class Player extends PObject {
             case 1: {this.setDead(true, false); this.hasReachedExitDoor = false; this.disconnected = false; break;}
             case 2: {this.setDead(false, false); this.hasReachedExitDoor = true; this.disconnected = false; break;}
             case 3: {this.setDead(false, false); this.hasReachedExitDoor = false; this.disconnected = true; break;}
+            case 4: {this.setDead(true, false); this.hasReachedExitDoor = false; this.disconnected = true; break;}
         }
     }
     

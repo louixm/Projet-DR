@@ -63,7 +63,7 @@ public class ScoreFrame extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton2);
-        jButton2.setBounds(207, 270, 60, 25);
+        jButton2.setBounds(207, 270, 60, 23);
 
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
         getContentPane().add(jSeparator1);

@@ -58,22 +58,24 @@ public class ExitDoor extends PObject{
     @Override public void onCollision(Game g, PObject other) {
         if (other instanceof Player) {
             Player player = (Player) other;
-            System.out.println("player "+player.name+" reached the door");
-            try {
-                    PreparedStatement req = g.sync.srv.prepareStatement("UPDATE players SET state=? WHERE id = ?");
-                    req.setInt(1, 2); //state = 0 (en vie), 1 (dead), 2 (exit door)
-                    // id de l'objet a modifier
-                    req.setInt(2, player.db_id);
+            if (!player.disconnected){
+                System.out.println("player "+player.name+" reached the door");
+                try {
+                        PreparedStatement req = g.sync.srv.prepareStatement("UPDATE players SET state=? WHERE id = ?");
+                        req.setInt(1, 2); //state = 0 (en vie), 1 (dead), 2 (exit door)
+                        // id de l'objet a modifier
+                        req.setInt(2, player.db_id);
 
-                    // execution de la requete
-                    req.executeUpdate();
-                    req.close();
-                }
-                catch (SQLException err) {
-                    System.out.println("sql exception:\n"+err);
-                }
-            player.hasReachedExitDoor = true;
-            g.tryEndRound();
+                        // execution de la requete
+                        req.executeUpdate();
+                        req.close();
+                    }
+                    catch (SQLException err) {
+                        System.out.println("sql exception:\n"+err);
+                    }
+                player.hasReachedExitDoor = true;
+                g.tryEndRound();
+            }
         }
     }
 }

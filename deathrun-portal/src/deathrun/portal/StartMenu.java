@@ -287,7 +287,7 @@ public class StartMenu extends javax.swing.JFrame {
             while (r.next()) {
                         String name = r.getString("name");  
                         int state = r.getInt("state");
-                        if (state != 3) listModel.addElement(name); 
+                        if (state < 3) listModel.addElement(name); 
             }
             listeJoueurs.setModel(listModel);
         }

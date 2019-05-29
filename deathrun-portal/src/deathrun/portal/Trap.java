@@ -10,6 +10,7 @@ import java.awt.Graphics2D;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,26 +29,28 @@ public class Trap extends PObject {
     long taken_time = 0;
     final long take_time = 2000;
     Game game;
+    Timestamp trap_last_sync;
 
     public Trap(Game game) throws SQLException {
         super(game);
         this.game = game;
         this.enabled = false;
         
+        trap_last_sync = null;
         if (game.sync != null) {
             // inserer dans la base de donnée
             PreparedStatement req = game.sync.srv.prepareStatement("SELECT EXISTS(SELECT id FROM traps WHERE id = ?)");
+            req.setInt(1, db_id);
+            ResultSet r = req.executeQuery();
+            r.next();
+            if (!r.getBoolean(1)) {
+                req.close();
+                req = game.sync.srv.prepareStatement("INSERT INTO traps VALUE (?, ?, false, 0)");
                 req.setInt(1, db_id);
-                ResultSet r = req.executeQuery();
-                r.next();
-                if (!r.getBoolean(1)) {
-                    req.close();
-                    req = game.sync.srv.prepareStatement("INSERT INTO traps VALUE (?, ?, false, 0)");
-                    req.setInt(1, db_id);
-                    req.setInt(2, 0);
-                    req.executeUpdate();
-                    req.close();
-                }
+                req.setInt(2, 0);
+                req.executeUpdate();
+                req.close();
+            }
         }
     }
     
@@ -81,12 +84,15 @@ public class Trap extends PObject {
         if (withsync) {
             try {
                 // noter le joueur comme pilote du piege dans la base de donnée
-                PreparedStatement req = game.sync.srv.prepareStatement("UPDATE traps SET owner=?, date_sync=NOW() WHERE id = ?");
+                PreparedStatement req = game.sync.srv.prepareStatement("UPDATE traps SET owner=?, date_sync=? WHERE id = ? AND date_sync <= ?");
                 int userid = (user != null)? user.db_id:0;
                 req.setInt(1, userid);
-                req.setInt(2, db_id);
+                req.setTimestamp(2, game.db_last_sync);
+                req.setInt(3, db_id);
+                req.setTimestamp(4, game.db_last_sync);
                 req.executeUpdate();
                 req.close();
+                
             } catch (SQLException err) {
                 System.out.println("Trap.setControl: "+err);
             }
