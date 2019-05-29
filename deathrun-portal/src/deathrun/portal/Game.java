@@ -210,9 +210,16 @@ public class Game {
             if (sync == null)   return;
             // sinon essai de connexion
             try {
+                // recuperer la date serveur
+                PreparedStatement reqtime = sync.srv.prepareStatement("SELECT now();");
+                ResultSet rtime = reqtime.executeQuery();
+                rtime.next();
+                Timestamp db_time = rtime.getTimestamp(1);
+                rtime.close();
+                
                 // synchronisation des objets physiques
                 // recupérer les infos du serveur plus récentes que la derniere reception
-                PreparedStatement reqobjects = sync.srv.prepareStatement("SELECT id,x,y,vx,vy,date_sync FROM pobjects WHERE date_sync >= ?;"); // WHERE date_sync > ?;
+                PreparedStatement reqobjects = sync.srv.prepareStatement("SELECT id,x,y,vx,vy,date_sync FROM pobjects WHERE date_sync > ?;"); // WHERE date_sync > ?;
                 reqobjects.setTimestamp(1, db_last_sync);
                 
                 ResultSet robjects = reqobjects.executeQuery();
@@ -263,7 +270,7 @@ public class Game {
                 rplayers.close();
                 
                 // synchronisation de la table des pieges
-                PreparedStatement reqtraps = sync.srv.prepareStatement("SELECT id,owner,enabled FROM traps WHERE date_sync >= ? ");
+                PreparedStatement reqtraps = sync.srv.prepareStatement("SELECT id,owner,enabled FROM traps WHERE date_sync > ?");
                 reqtraps.setTimestamp(1, db_last_sync);
                 ResultSet rtraps = reqtraps.executeQuery();
                 while (rtraps.next()) {
@@ -282,12 +289,8 @@ public class Game {
                     trap.enable(enabled, false);
                 }
                 
-                
-                PreparedStatement reqtime = sync.srv.prepareStatement("SELECT now();");
-                ResultSet rtime = reqtime.executeQuery();
-                rtime.next();
-                db_last_sync = rtime.getTimestamp(1);
-                rtime.close();
+                // set last sync time
+                db_last_sync = db_time;
             }
             catch (SQLException err) {
                 System.out.println("syncUpdate: "+err);
