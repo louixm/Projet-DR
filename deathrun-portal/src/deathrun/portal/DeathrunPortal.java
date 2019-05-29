@@ -40,8 +40,8 @@ public class DeathrunPortal {
 
             game.map.objects.add(new Saw(game, game.map.size.center().sub(new Vec2(1, 1))));
             game.map.objects.add(new Laser(game,new Vec2(4, 8),(float)Math.PI/6));
-            Portal port = new Portal(game,new Vec2(2, 3));
-            Portal port2 = new Portal(game,new Vec2(20,8));
+            Portal port = new Portal(game,new Vec2(2, 3), new boolean[] {false,true});
+            Portal port2 = new Portal(game,new Vec2(20,8), new boolean[] {false,true});
             port.otherPortal = port2;
             port2.otherPortal = port;
             game.map.objects.add(port);
