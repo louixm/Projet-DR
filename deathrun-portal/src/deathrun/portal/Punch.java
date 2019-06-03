@@ -55,8 +55,6 @@ public class Punch extends Trap {
     //--------------- interface de gestion des collisions -----------------*/
     
     
-    
-    
     @Override
     public void onGameStep(Game game, float dt) {
         for (Player p: game.players){
@@ -112,9 +110,6 @@ public class Punch extends Trap {
         long ac_time = System.nanoTime();
         if (ac_time > time_next_image)  {    
             
-            
-            
-            
             // si le piège n'est pas activé on met l'image "punch0"
             if (!enabled){   
                 img = im0;
@@ -135,8 +130,6 @@ public class Punch extends Trap {
                 }else{
                     numImage = 4-(step-(5*fiveMulticator));
                 }
-        
-                
                 if (numImage==0){
                     img = im0;
                 }
@@ -152,15 +145,11 @@ public class Punch extends Trap {
                 if (numImage==4){
                     img = im4;
                 }
-                
-                // condition d'arrêt du cycle
+                    // condition d'arrêt du cycle
                 if (step == 9){
-                    this.enable(false, true);
+                    this.enable(false, false);
                     step=0;
                 }
-                
-                
-        
             }
             
             // positionnement de l'image en fonction de sa rotation
@@ -178,10 +167,9 @@ public class Punch extends Trap {
             // Redimensionnement de la box de collision
             collision_box = new Box(0,0 , img.getWidth(null)/scale,img.getHeight(null)/scale); //la dimension de la box est celle de l'image
             collision_box = collision_box.translateToPosition(activPosition);
-            setPosition(activPosition);
-            
+            }
             time_next_image = ac_time + image_duration;
-        }
+        
         
         
         // ---------------affichage de PObject ----------------------      
