@@ -29,7 +29,7 @@ public class Punch extends Trap {
     long image_duration = 20000000;
     
     public Punch(Game game, int id, Vec2 position) throws IOException, SQLException {
-        super(game);
+        super(game, "punch");
         
         this.sens=id;
         
