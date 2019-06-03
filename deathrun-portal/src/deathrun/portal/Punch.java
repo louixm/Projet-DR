@@ -153,8 +153,8 @@ public class Punch extends Trap {
                 }
                     // condition d'arrêt du cycle
                 if (step == 9){
-                    this.enable(false, false);
                     step=0;
+                    this.enable(false, false);
                 }
             }
             
