@@ -331,8 +331,10 @@ public class Player extends PObject {
         
         g.setColor(getPlayerColor());
         drawCenteredString(g, name, collision_box, 3, new Font("Trebuchet MS", Font.BOLD, 13), scale);
-        if (disconnected)
-            g.setColor(Color.DARK_GRAY); drawCenteredString(g, "Disconnected", collision_box, 15, new Font("Trebuchet MS", Font.ITALIC, 10), scale);
+        if (disconnected){
+            g.setColor(Color.DARK_GRAY);
+            drawCenteredString(g, "Disconnected", collision_box, 15, new Font("Trebuchet MS", Font.ITALIC, 10), scale);
+        }
         super.render(g, scale);
     }
 
