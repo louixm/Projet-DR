@@ -33,7 +33,7 @@ public class Punch extends Trap {
     long image_duration = 20000000;
     
     public Punch(Game game, int id, Vec2 position) throws IOException, SQLException {
-        super(game);
+        super(game, "punch");
         
         this.sens=id;
         
@@ -49,8 +49,6 @@ public class Punch extends Trap {
         return (other instanceof Player)?1:0;
     }
     //--------------- interface de gestion des collisions -----------------*/
-    
-    
     
     
     @Override
@@ -111,65 +109,59 @@ public class Punch extends Trap {
             try {
                 Image im = ImageIO.read(new File("./images/punch"+sens+"_0.png"));
             
-            
-            // si le piège n'est pas activé on met l'image "punch0"
-            if (!enabled){     
-                try {
-                    img = ImageIO.read(new File("./images/punch"+sens+"_0.png"));
-                } catch (IOException ex) {
-                    Logger.getLogger(Punch.class.getName()).log(Level.SEVERE, null, ex);
+                // si le piège est activé
+                if (step > 0 || enabled) {
+                    // incrementer le compteur de frame
+                    step ++;
+
+                    // évolution du numéro de l'immage
+                    int fiveMulticator = (int)step/5;
+                    int numImage;
+                    if (fiveMulticator % 2 == 0){
+                        numImage = step-(5*fiveMulticator);
+                    }else{
+                        numImage = 4-(step-(5*fiveMulticator));
+                    }
+
+
+                    try {
+                        img = ImageIO.read(new File("./images/punch"+sens+"_"+numImage+".png"));
+                    } catch (IOException ex) {
+                        Logger.getLogger(Punch.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                    // condition d'arrêt du cycle
+                    if (step == 9){
+                        this.enable(false, false);
+                        step=0;
+                    }
                 }
-                step=0;
-            } 
-            
-            // si le piège est activé
-            else {  
-                
-                // incrementer le compteur de frame
-                step ++;
-                
-                // évolution du numéro de l'immage
-                int fiveMulticator = (int)step/5;
-                int numImage;
-                if (fiveMulticator % 2 == 0){
-                    numImage = step-(5*fiveMulticator);
-                }else{
-                    numImage = 4-(step-(5*fiveMulticator));
+                // si le piège n'est pas activé on met l'image "punch0"
+                else {
+                    try {
+                        img = ImageIO.read(new File("./images/punch"+sens+"_0.png"));
+                    } catch (IOException ex) {
+                        Logger.getLogger(Punch.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    step = 0;
                 }
-        
-                
-                try {
-                    img = ImageIO.read(new File("./images/punch"+sens+"_"+numImage+".png"));
-                } catch (IOException ex) {
-                    Logger.getLogger(Punch.class.getName()).log(Level.SEVERE, null, ex);
+
+                // positionnement de l'image en fonction de sa rotation
+                if (sens == 1){
+                    activPosition = new Vec2(initPosition.x-((img.getWidth(null)-im.getWidth(null))/scale),initPosition.y); 
                 }
-                
-                // condition d'arrêt du cycle
-                if (step == 9){
-                    this.enable(false, true);
-                    step=0;
+                if(sens == 2){
+                    activPosition = new Vec2(initPosition.x,initPosition.y-(img.getHeight(null)-im.getHeight(null))/scale); 
                 }
-                
-                
-        
-            }
-            
-            // positionnement de l'image en fonction de sa rotation
-            if (sens == 1){
-                activPosition = new Vec2(initPosition.x-((img.getWidth(null)-im.getWidth(null))/scale),initPosition.y); 
-            }
-            if(sens == 2){
-                activPosition = new Vec2(initPosition.x,initPosition.y-(img.getHeight(null)-im.getHeight(null))/scale); 
-            }
-            if (sens == 3 || sens == 0){
-                activPosition = initPosition; 
-            }
-            
-            
-            // Redimensionnement de la box de collision
-            collision_box = new Box(0,0 , img.getWidth(null)/scale,img.getHeight(null)/scale); //la dimension de la box est celle de l'image
-            collision_box = collision_box.translateToPosition(activPosition);
-            setPosition(activPosition);
+                if (sens == 3 || sens == 0){
+                    activPosition = initPosition; 
+                }
+
+
+                // Redimensionnement de la box de collision
+                collision_box = new Box(0,0 , img.getWidth(null)/scale,img.getHeight(null)/scale); //la dimension de la box est celle de l'image
+                collision_box = collision_box.translateToPosition(activPosition);
+                setPosition(activPosition);
             
             } catch (IOException ex) {
                 Logger.getLogger(Punch.class.getName()).log(Level.SEVERE, null, ex);

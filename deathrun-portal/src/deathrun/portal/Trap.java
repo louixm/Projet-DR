@@ -34,8 +34,8 @@ public class Trap extends PObject {
     
     
 
-    public Trap(Game game) throws SQLException {
-        super(game);
+    public Trap(Game game, String db_type) throws SQLException {
+        super(game, db_type);
         this.game = game;
         this.enabled = false;
         
@@ -47,7 +47,7 @@ public class Trap extends PObject {
             r.next();
             if (!r.getBoolean(1)) {
                 req.close();
-                req = game.sync.srv.prepareStatement("INSERT INTO traps VALUE (?, ?, false, 0)");
+                req = game.sync.srv.prepareStatement("INSERT INTO traps VALUE (?, ?, false, NOW())");
                 req.setInt(1, db_id);
                 req.setInt(2, 0);
                 req.executeUpdate();
