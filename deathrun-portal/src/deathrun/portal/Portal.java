@@ -17,16 +17,18 @@ import javax.imageio.ImageIO;
 public class Portal extends PObject{
     Box box;
     Box collision_box;
+    boolean sens[];
     static Image img;
     final double size = 3;  // diametre de la porte
     final double csize = 1; // largeur hauteur de la boite de collisions
     public Portal otherPortal;
     
-    public Portal(Game game, Vec2 position) throws IOException, SQLException {
+    public Portal(Game game, Vec2 position, boolean sens[]) throws IOException, SQLException {
         super(game);
         this.position = position;
         this.box = new Box(position.x, position.y, position.x+size, position.y+size);
         this.collision_box = new Box(position.x+(size-csize)/2, position.y+(size-csize)/2, position.x+(size+csize)/2, position.y+(size+csize)/2);
+        this.sens = sens;
 //        this.otherPortail = new Portail(game, otherPortail.position,this);
         
         if (img == null) {
@@ -61,6 +63,9 @@ public class Portal extends PObject{
     }
     
     @Override public void onCollision(Game g, PObject other) {
-            other.setPosition(otherPortal.position.add(new Vec2(Math.signum(other.velocity.x)*2,Math.signum(other.velocity.y)*2)));
-                }            
+        other.setPosition(otherPortal.position.add(new Vec2(
+            ((sens[0])?1:-1) * Math.signum(other.velocity.x/3)*other.getCollisionBox().getWidth(),
+            ((sens[1])?1:-1) * Math.signum(other.velocity.y/3)*other.getCollisionBox().getHeight())
+        ));
     }
+}

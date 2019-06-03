@@ -41,6 +41,7 @@ public class Player extends PObject {
 
     // variable interne de collisions
     Box collision_box;
+    Box visual_box;
         
     Game game;  // pour la synchronisation a la table des joueurs
     public static BufferedImage avatars[][];  // avatars disponibles pour chaque joueur
@@ -75,12 +76,13 @@ public class Player extends PObject {
     
     
     public Player(Game game, String name, int avatar) throws SQLException {
-        super(game, availableId(game));  // creer en ajoutant a la fin
+        super(game, availableId(game), name);  // creer en ajoutant a la fin
         this.game = game;
         this.name = name; 
         this.avatar = avatar;
         
-        collision_box = new Box(-0.5, 0, 0.5, 1.8);
+        collision_box = new Box(-0.2, 0, 0.2, 1.7);
+        visual_box = new Box(-0.5, 0, 0.5, 1.8);
         traps = new ArrayList<Trap>();
         if (avatars == null) {
             this.avatars = new BufferedImage[4][];
@@ -213,6 +215,7 @@ public class Player extends PObject {
     public void setPosition(Vec2 pos) {
         super.setPosition(pos);
         collision_box = collision_box.translateToPosition(pos);
+        visual_box = visual_box.translateToPosition(pos.add(new Vec2(-0.3,0)));
     }
     
     //--------------- interface de gestion des collisions -----------------
@@ -318,19 +321,18 @@ public class Player extends PObject {
     
         
         g.drawImage(current_image, 
-            (int) (collision_box.p1.x*scale), 
-            (int) (collision_box.p1.y*scale), 
-            (int) (collision_box.p2.x*scale), 
-            (int) (collision_box.p2.y*scale), 
+            (int) (visual_box.p1.x*scale), 
+            (int) (visual_box.p1.y*scale), 
+            (int) (visual_box.p2.x*scale), 
+            (int) (visual_box.p2.y*scale), 
             0, 0,
             current_image.getWidth(null), current_image.getHeight(null),
             null);
         
         g.setColor(getPlayerColor());
-//        g.drawString(name, (int) ((collision_box.p1.x)*scale), (int) ((collision_box.p1.y - 0.1)*scale));
-          drawCenteredString(g, name, collision_box, 3, new Font("Trebuchet MS", Font.BOLD, 13), scale);
-        if (disconnected) {g.setColor(Color.DARK_GRAY); drawCenteredString(g, "Disconnected", collision_box, 15, new Font("Trebuchet MS", Font.ITALIC, 10), scale);}
-//        if (disconnected) {g.setColor(Color.DARK_GRAY); g.drawString("Disconnected", (int) ((collision_box.p1.x)*scale), (int) ((collision_box.p1.y - 0.4)*scale));}
+        drawCenteredString(g, name, collision_box, 3, new Font("Trebuchet MS", Font.BOLD, 13), scale);
+        if (disconnected)
+            g.setColor(Color.DARK_GRAY); drawCenteredString(g, "Disconnected", collision_box, 15, new Font("Trebuchet MS", Font.ITALIC, 10), scale);
         super.render(g, scale);
     }
 

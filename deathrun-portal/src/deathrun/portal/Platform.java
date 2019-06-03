@@ -25,7 +25,7 @@ public class Platform extends PObject {
     int typePlateforme;
     
     public Platform(Game game, Vec2 position, Box box, int typePlateforme) throws IOException, SQLException {
-        super(game);
+        super(game, String.valueOf(typePlateforme));
         this.collision_box = box;
         setPosition(position);
         this.typePlateforme = typePlateforme;

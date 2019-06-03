@@ -10,6 +10,7 @@ import java.awt.Graphics2D;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,26 +29,32 @@ public class Trap extends PObject {
     long taken_time = 0;
     final long take_time = 2000;
     Game game;
+    
+    
+    
+    
 
-    public Trap(Game game) throws SQLException {
-        super(game);
+    public Trap(Game game, String db_type) throws SQLException {
+        super(game, db_type);
         this.game = game;
         this.enabled = false;
         
         if (game.sync != null) {
             // inserer dans la base de donnée
             PreparedStatement req = game.sync.srv.prepareStatement("SELECT EXISTS(SELECT id FROM traps WHERE id = ?)");
+            req.setInt(1, db_id);
+            ResultSet r = req.executeQuery();
+            r.next();
+            if (!r.getBoolean(1)) {
+                req.close();
+                req = game.sync.srv.prepareStatement("INSERT INTO traps VALUE (?, ?, false, 0)");
                 req.setInt(1, db_id);
-                ResultSet r = req.executeQuery();
-                r.next();
-                if (!r.getBoolean(1)) {
-                    req.close();
-                    req = game.sync.srv.prepareStatement("INSERT INTO traps VALUE (?, ?, false, 0)");
-                    req.setInt(1, db_id);
-                    req.setInt(2, 0);
-                    req.executeUpdate();
-                    req.close();
-                }
+                req.setInt(2, 0);
+                req.executeUpdate();
+                req.close();
+                
+                update_date_sync(game.sync);
+            }
         }
     }
     
@@ -56,12 +63,16 @@ public class Trap extends PObject {
         
         if (withsync) {
             try {
+                System.out.println("trap "+db_id+" has been sent");
                 // noter le joueur comme pilote du piege dans la base de donnée
                 PreparedStatement req = game.sync.srv.prepareStatement("UPDATE traps SET enabled=?, date_sync=NOW() WHERE id = ?");
                 req.setBoolean(1, enable);
                 req.setInt(2, db_id);
                 req.executeUpdate();
                 req.close();
+                
+                update_date_sync(game.sync);
+                
             } catch (SQLException err) {
                 System.out.println("Trap.enable: "+err);
             }
@@ -76,7 +87,7 @@ public class Trap extends PObject {
     }
     
     void setControl(Player user, boolean withsync) {
-        System.out.println("local player can now control the trap !");
+        System.out.println("trap "+db_id+" control taken");
         
         if (withsync) {
             try {
@@ -87,6 +98,9 @@ public class Trap extends PObject {
                 req.setInt(2, db_id);
                 req.executeUpdate();
                 req.close();
+                
+                update_date_sync(game.sync);
+                
             } catch (SQLException err) {
                 System.out.println("Trap.setControl: "+err);
             }

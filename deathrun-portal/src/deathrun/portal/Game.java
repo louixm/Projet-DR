@@ -210,9 +210,16 @@ public class Game {
             if (sync == null)   return;
             // sinon essai de connexion
             try {
+                // recuperer la date serveur
+                PreparedStatement reqtime = sync.srv.prepareStatement("SELECT now();");
+                ResultSet rtime = reqtime.executeQuery();
+                rtime.next();
+                Timestamp db_time = rtime.getTimestamp(1);
+                rtime.close();
+                
                 // synchronisation des objets physiques
                 // recupérer les infos du serveur plus récentes que la derniere reception
-                PreparedStatement reqobjects = sync.srv.prepareStatement("SELECT id,x,y,vx,vy,date_sync FROM pobjects WHERE date_sync >= ?;"); // WHERE date_sync > ?;
+                PreparedStatement reqobjects = sync.srv.prepareStatement("SELECT id,x,y,vx,vy,date_sync FROM pobjects WHERE date_sync > ? ");
                 reqobjects.setTimestamp(1, db_last_sync);
                 
                 ResultSet robjects = reqobjects.executeQuery();
@@ -228,7 +235,8 @@ public class Game {
                             obj = syncNewPlayer(id);                      
                         }
                     }
-                    else        obj = map.objects.get(id);
+                    else       
+                        obj = map.objects.get(id);
                     
                     Timestamp server_sync = robjects.getTimestamp("date_sync");
                     if (obj.last_sync == null || server_sync.compareTo(obj.last_sync) > 0) {
@@ -241,7 +249,8 @@ public class Game {
                 robjects.close();
                 
                 // synchronisation de la table des joueurs
-                PreparedStatement reqplayers = sync.srv.prepareStatement("SELECT id,state,movement FROM players"); // WHERE date_sync > ?;
+                PreparedStatement reqplayers = sync.srv.prepareStatement("SELECT id,state,movement FROM players");
+                
                 ResultSet rplayers = reqplayers.executeQuery();
                 while (rplayers.next()){
                     int id = rplayers.getInt("id");
@@ -263,31 +272,35 @@ public class Game {
                 rplayers.close();
                 
                 // synchronisation de la table des pieges
-                PreparedStatement reqtraps = sync.srv.prepareStatement("SELECT id,owner,enabled FROM traps WHERE date_sync >= ? ");
+                PreparedStatement reqtraps = sync.srv.prepareStatement("SELECT id,owner,enabled,date_sync FROM traps WHERE date_sync > ?");
                 reqtraps.setTimestamp(1, db_last_sync);
                 ResultSet rtraps = reqtraps.executeQuery();
                 while (rtraps.next()) {
                     int trapid = rtraps.getInt("id");
                     int ownerid = rtraps.getInt("owner");
                     boolean enabled = rtraps.getBoolean("enabled");
+                    
                     Trap trap = (Trap) map.objects.get(trapid);
-                    int ownerindex = -ownerid-1;
-                    Player owner;
-                    if (ownerindex > 0 && ownerindex < players.size())
-                        owner = players.get(ownerindex);
-                    else
-                        owner = null;
-                    // assignation
-                    trap.setControl(owner, false);
-                    trap.enable(enabled, false);
+                    Timestamp server_sync = rtraps.getTimestamp("date_sync");
+                    System.out.println("here is "+trap.last_sync+"  sync is "+server_sync);
+                    if (trap.last_sync == null || server_sync.compareTo(trap.last_sync) > 0) {
+                        System.out.println("trap "+trapid+" has been sync");
+                        
+                        int ownerindex = -ownerid-1;
+                        Player owner;
+                        if (ownerindex >= 0 && ownerindex < players.size())
+                            owner = players.get(ownerindex);
+                        else
+                            owner = null;
+                        // assignation
+                        trap.setControl(owner, false);
+                        trap.enable(enabled, false);
+                        trap.last_sync = (Timestamp) server_sync.clone();
+                    }
                 }
                 
-                
-                PreparedStatement reqtime = sync.srv.prepareStatement("SELECT now();");
-                ResultSet rtime = reqtime.executeQuery();
-                rtime.next();
-                db_last_sync = rtime.getTimestamp(1);
-                rtime.close();
+                // set last sync time
+                db_last_sync = db_time;
             }
             catch (SQLException err) {
                 System.out.println("syncUpdate: "+err);
