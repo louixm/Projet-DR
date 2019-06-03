@@ -88,6 +88,7 @@ public class StartMenu extends javax.swing.JFrame {
         imageBotOrange = new javax.swing.JButton();
         imageSentryBot = new javax.swing.JButton();
         imageBotBleu = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
         Pseudo_label = new javax.swing.JLabel();
         Text_Pseudo = new javax.swing.JTextField();
         background = new javax.swing.JLabel();
@@ -165,6 +166,17 @@ public class StartMenu extends javax.swing.JFrame {
         getContentPane().add(imageBotBleu);
         imageBotBleu.setBounds(120, 130, 80, 70);
 
+        jButton1.setBackground(new java.awt.Color(255, 0, 51));
+        jButton1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jButton1.setText("PURGE");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton1);
+        jButton1.setBounds(170, 230, 160, 60);
+
         Pseudo_label.setForeground(new java.awt.Color(255, 153, 0));
         Pseudo_label.setText("Pseudo :");
         getContentPane().add(Pseudo_label);
@@ -222,6 +234,27 @@ public class StartMenu extends javax.swing.JFrame {
         pseudo = Text_Pseudo.getText();
     }//GEN-LAST:event_Text_PseudoKeyReleased
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        try {
+            sync = new Sync(DriverManager.getConnection(
+                    "jdbc:mysql://nemrod.ens2m.fr:3306/20182019_s2_vs2_tp1_deathrun?serverTimezone=UTC", 
+                    "deathrun2", 
+                    "5V8HVbDZMtkOHwaX"
+                ));
+            PreparedStatement req = sync.srv.prepareStatement("DELETE FROM players");
+            req.executeUpdate();
+            req = sync.srv.prepareStatement("DELETE FROM pobjects");
+            req.executeUpdate();
+            req = sync.srv.prepareStatement("DELETE FROM traps");
+            req.executeUpdate();
+        }
+                
+        catch (SQLException err) {
+            System.out.println("sql connection error, fail to init game:\n\t"+err);
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -264,6 +297,7 @@ public class StartMenu extends javax.swing.JFrame {
     private javax.swing.JButton imageBotBleu;
     private javax.swing.JButton imageBotOrange;
     private javax.swing.JButton imageSentryBot;
+    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel labelChoixAvatar;

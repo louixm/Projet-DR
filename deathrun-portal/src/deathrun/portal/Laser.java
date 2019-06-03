@@ -32,7 +32,7 @@ public class Laser extends Trap {
     
     
     public Laser(Game game, Vec2 position, float angle) throws IOException, SQLException {
-        super(game);
+        super(game, "laser");
         this.collision_box = new Box(0, 0, 1, 1).translate(position);
         this.angle = angle;
 
