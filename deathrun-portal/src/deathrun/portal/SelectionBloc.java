@@ -25,7 +25,7 @@ public class SelectionBloc extends javax.swing.JDialog {
         // Affichage des images des blocs sur les boutons après redimensionnement
         jButton1.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/patterns/Tile (15).png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
         jButton2.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/Saw.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
-        jButton3.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/laser.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
+        jButton3.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/laser2.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
         jButton4.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/punch0_0.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
         jButton5.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/portail.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
         jButton6.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/Barrel (1).png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
