@@ -22,6 +22,7 @@ abstract public class PObject {
     public Vec2 position;
     public Vec2 velocity;
     public Vec2 acceleration;
+    public String db_type;
     
     long prev_time; // (ns) instant de dernier pas physique
     long next_sync; // (ns) instant de prochaine synchronisation prévue de l'etat du jeu avec la BDD
@@ -31,13 +32,14 @@ abstract public class PObject {
     
     static boolean drawHitBox = false;
     
-    PObject(Game game) throws SQLException { this(game, game.map.objects.size()); }
-    PObject(Game game, int db_id) throws SQLException 	{ 
+    PObject(Game game) throws SQLException { this(game, game.map.objects.size(), ""); }
+    PObject(Game game, String db_type) throws SQLException { this(game, game.map.objects.size(), db_type); }
+    PObject(Game game, int db_id, String db_type) throws SQLException 	{ 
         this.db_id = db_id; 
         this.position = new Vec2();
         this.velocity = new Vec2();
         this.acceleration = new Vec2();
-        
+        this.db_type = db_type;
         this.last_sync = null;      // initialisation du jeu: pas de derniere sync en date
         
         if (game.sync != null) {
@@ -46,8 +48,9 @@ abstract public class PObject {
             ResultSet r = req.executeQuery();
             r.next();
             if (!r.getBoolean(1)) {
-                req = game.sync.srv.prepareStatement("INSERT INTO pobjects VALUES (?,0,0,0,0,0)");
+                req = game.sync.srv.prepareStatement("INSERT INTO pobjects VALUES (?,0,0,0,0,0,?)");
                 req.setInt(1, db_id);
+                req.setString(2, db_type);
                 req.executeUpdate();
                 req.close();
             }

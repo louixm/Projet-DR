@@ -31,8 +31,8 @@ public class Trap extends PObject {
     Game game;
     Timestamp trap_last_sync;
 
-    public Trap(Game game) throws SQLException {
-        super(game);
+    public Trap(Game game, String db_type) throws SQLException {
+        super(game, db_type);
         this.game = game;
         this.enabled = false;
         
