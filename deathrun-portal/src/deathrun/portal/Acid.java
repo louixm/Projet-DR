@@ -21,20 +21,26 @@ import javax.imageio.ImageIO;
  * @author kbenie
  */
 public class Acid extends Trap {
-    Box collision_box;
+    //Box collision_box;
     static Image img;
+    static Image im;
     int typePlateforme;
     int step;
+    int div;
+    static final String db_type = "acid";
+    
     
     public Acid(Game game, Vec2 position) throws IOException, SQLException {
-        super(game);
+        super(game, db_type);
         if (img == null) {
             img = ImageIO.read(new File("./images/Acid_1.png")); //Acid
         }
-        this.collision_box = new Box(0, 0, img.getWidth(null), img.getHeight(null)).translate(position);
+        
+        div = 3;
+        this.collision_box = new Box(0, 0, img.getWidth(null)/(div*36f), img.getHeight(null)/(div*36f)).translate(position);
         setPosition(position);
         
-        
+        im = ImageIO.read(new File("./images/Tile_10.png"));
     
     }
     
@@ -54,17 +60,11 @@ public class Acid extends Trap {
             Vec2 p2 = p.getCollisionBox().p2 ; //point inférieur droit
             Vec2 p3 = new Vec2(p1.x, p2.y) ; // point inférieur gauche
             Vec2 p4 = new Vec2(p2.x , p1.y) ; // point supérieur droit
-            try {
-                Image im = ImageIO.read(new File("./images/Tile_10.png"));
-                if (p3.x<(collision_box.p2.x - im.getHeight(null)) & p2.x>(collision_box.p1.x + im.getHeight(null)) & p2.y == collision_box.p1.y){
-                     p.setDead(true);
+            if (p3.x<(collision_box.p2.x - im.getHeight(null)/div) && p2.x>(collision_box.p1.x + im.getHeight(null)/div) && p2.y == collision_box.p1.y){
+                p.setDead(true);
                     // Player Killed
-                }else{
-                    p.setDead(false);
-                }
-                
-            } catch (IOException ex) {
-                Logger.getLogger(Acid.class.getName()).log(Level.SEVERE, null, ex);
+            }else{
+                p.setDead(false);
             }
         }
     }

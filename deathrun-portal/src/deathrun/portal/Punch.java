@@ -20,6 +20,11 @@ import javax.imageio.ImageIO;
  */
 public class Punch extends Trap {
     static Image img;
+    static Image im0;
+    static Image im1;
+    static Image im2;
+    static Image im3;
+    static Image im4;
     int typePlateforme;
     int step;
     int sens;  // 0 = tue en descente; 1 = tue à gauche, 2 tue en haut, 3 tue à droite
@@ -30,12 +35,16 @@ public class Punch extends Trap {
     
     public Punch(Game game, int id, Vec2 position) throws IOException, SQLException {
         super(game, "punch");
-        
         this.sens=id;
-        
         this.initPosition = position;
         collision_box = new Box(0,0 , 1,1);
         
+        
+        im0 = ImageIO.read(new File("./images/punch"+sens+"_0.png"));
+        im1 = ImageIO.read(new File("./images/punch"+sens+"_1.png"));
+        im2 = ImageIO.read(new File("./images/punch"+sens+"_2.png"));
+        im3 = ImageIO.read(new File("./images/punch"+sens+"_3.png"));
+        im4 = ImageIO.read(new File("./images/punch"+sens+"_4.png"));
         
     }
     
@@ -103,17 +112,12 @@ public class Punch extends Trap {
         long ac_time = System.nanoTime();
         if (ac_time > time_next_image)  {    
             
-            try {
-                Image im = ImageIO.read(new File("./images/punch"+sens+"_0.png"));
+            
             
             
             // si le piège n'est pas activé on met l'image "punch0"
-            if (!enabled){     
-                try {
-                    img = ImageIO.read(new File("./images/punch"+sens+"_0.png"));
-                } catch (IOException ex) {
-                    Logger.getLogger(Punch.class.getName()).log(Level.SEVERE, null, ex);
-                }
+            if (!enabled){   
+                img = im0;
                 step=0;
             } 
             
@@ -133,10 +137,20 @@ public class Punch extends Trap {
                 }
         
                 
-                try {
-                    img = ImageIO.read(new File("./images/punch"+sens+"_"+numImage+".png"));
-                } catch (IOException ex) {
-                    Logger.getLogger(Punch.class.getName()).log(Level.SEVERE, null, ex);
+                if (numImage==0){
+                    img = im0;
+                }
+                if (numImage==1){
+                    img = im1;
+                }
+                if (numImage==2){
+                    img = im2;
+                }
+                if (numImage==3){
+                    img = im3;
+                }
+                if (numImage==4){
+                    img = im4;
                 }
                 
                 // condition d'arrêt du cycle
@@ -151,10 +165,10 @@ public class Punch extends Trap {
             
             // positionnement de l'image en fonction de sa rotation
             if (sens == 1){
-                activPosition = new Vec2(initPosition.x-((img.getWidth(null)-im.getWidth(null))/scale),initPosition.y); 
+                activPosition = new Vec2(initPosition.x-((img.getWidth(null)-im0.getWidth(null))/scale),initPosition.y); 
             }
             if(sens == 2){
-                activPosition = new Vec2(initPosition.x,initPosition.y-(img.getHeight(null)-im.getHeight(null))/scale); 
+                activPosition = new Vec2(initPosition.x,initPosition.y-(img.getHeight(null)-im0.getHeight(null))/scale); 
             }
             if (sens == 3 || sens == 0){
                 activPosition = initPosition; 
@@ -165,10 +179,6 @@ public class Punch extends Trap {
             collision_box = new Box(0,0 , img.getWidth(null)/scale,img.getHeight(null)/scale); //la dimension de la box est celle de l'image
             collision_box = collision_box.translateToPosition(activPosition);
             setPosition(activPosition);
-            
-            } catch (IOException ex) {
-                Logger.getLogger(Punch.class.getName()).log(Level.SEVERE, null, ex);
-            }
             
             time_next_image = ac_time + image_duration;
         }
