@@ -52,10 +52,10 @@ public class Portal extends PObject{
     //--------------- interface d'affichage -----------------
     @Override public void render(Graphics2D canvas, float scale) {
         canvas.drawImage(img, 
-                (int) (box.p1.x*scale), 
-                (int) (box.p1.y*scale), 
-                (int) (box.p2.x*scale), 
-                (int) (box.p2.y*scale), 
+                (int) (box.p1.x*scale),
+                (int) (box.p1.y*scale),
+                (int) (box.p2.x*scale),
+                (int) (box.p2.y*scale),
                 0, 0,
                 img.getWidth(null), img.getHeight(null),
                 null);

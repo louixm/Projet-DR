@@ -55,6 +55,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
     boolean editMode = false;
     private SelectionBloc selectionBloc;
     public Vec2 positionSouris = new Vec2(0/(float)scale, (0-window_header_size)/(float)scale);
+    private int orientationBloc = 0; //Entier allant de 0 à 7 permettant de changer l'orientation d'un bloc
     
     public Game game;
     public Player controled;
@@ -98,7 +99,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
                 render(bufferContext);
                 jLabel1.repaint();
                 try {              
-                    previsualisationBloc(positionSouris);
+                    previsualisationBloc(positionSouris, orientationBloc);
                 } catch (IOException ex) {
                     Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (SQLException ex) {
@@ -142,13 +143,18 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
         if (evt.getKeyCode() == evt.VK_SEMICOLON)   {this.scale++; System.out.println("Scale = " + this.scale);}
         if (evt.getKeyCode() == evt.VK_COMMA)       {this.scale--; System.out.println("Scale = " + this.scale);}
         if (evt.getKeyCode() == evt.VK_H)           PObject.drawHitBox = !PObject.drawHitBox;
-        if (evt.getKeyCode() == evt.VK_E)           this.editMode = true;
+        if (evt.getKeyCode() == evt.VK_E)           {this.editMode = !this.editMode; System.out.println("Mode édition actif : " + this.editMode);}
         if (evt.getKeyCode() == evt.VK_P)           game.purge(); 
         if (evt.getKeyCode() == evt.VK_O)           game.purgeTraps(); 
         if (evt.getKeyCode() == evt.VK_F1)          switch_trap(0);
         if (evt.getKeyCode() == evt.VK_F2)          switch_trap(1);
         if (evt.getKeyCode() == evt.VK_F3)          switch_trap(2);
-        if (evt.getKeyCode() == evt.VK_F)         System.out.println("-------------------------\nPlayer " + controled.name + "\nDisconnected : " + controled.disconnected + "\nDead : " + controled.dead);
+        
+        if (editMode){
+            if (evt.getKeyCode() == evt.VK_LEFT)    {if (orientationBloc == 0) orientationBloc = 7; else orientationBloc--;}
+            if (evt.getKeyCode() == evt.VK_RIGHT)   {if (orientationBloc == 7) orientationBloc = 0; else orientationBloc++;}
+        }
+                  
     } 
     
     public void switch_trap(int i) {
@@ -187,13 +193,12 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
                 selectionBloc.addWindowListener(new java.awt.event.WindowAdapter() { //Attente de la fermeture de la fenetre de selection de bloc
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
+                        selectionBloc.dispose();
                     }
                 });
             }
-            else if(e.getButton()==1 && this.selectionBloc.blocAPoser != 0){ try {
-                //Si un clic gauche a été effectué et qu'on a déjà choisi un bloc, alors le bloc est posé
-                this.poserObjet(pos_clicked);
+            else if(e.getButton()==1 && this.selectionBloc.blocAPoser != 0){ try { //Si un clic gauche a été effectué et qu'on a déjà choisi un bloc, alors le bloc est posé
+                poserObjet(pos_clicked, orientationBloc);
                 } catch (SQLException ex) {
                     Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IOException ex) {
@@ -223,7 +228,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
          //
     }
     
-    public void poserObjet(Vec2 pos_clicked) throws SQLException, IOException{
+    public void poserObjet(Vec2 pos_clicked, int orientationBloc) throws SQLException, IOException{
         switch (this.selectionBloc.blocAPoser) {
                     //Tests pour savoir quel bloc a été choisi dans la fenetre SelectBloc
                     case 1: //Plateforme
@@ -233,10 +238,13 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
                         this.game.map.objects.add(new Saw(this.game, pos_clicked));
                         break;
                     case 3: //Laser
-                        this.game.map.objects.add(new Laser(this.game, pos_clicked, 0));
+                        float angle = 360/orientationBloc;
+                        this.game.map.objects.add(new Laser(this.game, pos_clicked, angle));
                         break;
-                    case 4: //Acide
-                        this.game.map.objects.add(new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0));
+                    case 4: //Punch
+                        int orientation = orientationBloc;
+                        if(orientation >= 4){orientation = orientation - 4;};
+                        this.game.map.objects.add(new Punch(this.game, orientation, pos_clicked));
                         break;
                     case 5: //Portail
                         //this.game.map.objects.add(new Portal(this.game, pos_clicked));
@@ -269,7 +277,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
         //throw new UnsupportedOperationException("Not supported yet.");
     }
     
-    public void previsualisationBloc(Vec2 pos_clicked) throws IOException, SQLException{
+    public void previsualisationBloc(Vec2 pos_clicked, int orientationBloc) throws IOException, SQLException{
         switch (this.selectionBloc.blocAPoser) {
                         case 1: //Plateforme
                             Platform platform = new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0);
@@ -280,12 +288,15 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
                             saw.render(this.bufferContext, scale);
                             break;
                         case 3: //Laser
-                            Laser laser = new Laser(this.game, pos_clicked, 0);
+                            float angle = 360 - 360/(orientationBloc+1);
+                            Laser laser = new Laser(this.game, pos_clicked, angle);
                             laser.render(this.bufferContext, scale);
                             break;
-                        case 4: //Acide
-                            //Portal portal = new Portal(this.game, pos_clicked);
-                            //portal.render(this.bufferContext, scale);
+                        case 4: //Punch
+                            int orientation = orientationBloc;
+                            if(orientation >= 4){orientation = orientation - 4;};
+                            Punch punch = new Punch(this.game, orientation, pos_clicked);
+                            punch.render(this.bufferContext, scale);//portal.render(this.bufferContext, scale);
                             break;
                         case 5: //Portail
                             

@@ -272,13 +272,15 @@ public class Game {
                 rplayers.close();
                 
                 // synchronisation de la table des pieges
-                PreparedStatement reqtraps = sync.srv.prepareStatement("SELECT id,owner,enabled,date_sync FROM traps WHERE date_sync > ?");
-                reqtraps.setTimestamp(1, db_last_sync);
+                PreparedStatement reqtraps = sync.srv.prepareStatement("SELECT id,owner,enabled,date_sync FROM traps");
+                //reqtraps.setTimestamp(1, db_last_sync);
                 ResultSet rtraps = reqtraps.executeQuery();
                 while (rtraps.next()) {
                     int trapid = rtraps.getInt("id");
                     int ownerid = rtraps.getInt("owner");
                     boolean enabled = rtraps.getBoolean("enabled");
+                    
+                    if (trapid >= map.objects.size())    continue;
                     
                     Trap trap = (Trap) map.objects.get(trapid);
                     Timestamp server_sync = rtraps.getTimestamp("date_sync");

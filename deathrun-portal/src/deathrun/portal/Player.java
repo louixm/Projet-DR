@@ -112,14 +112,14 @@ public class Player extends PObject {
             
                  };
                 this.avatars[2] = new BufferedImage[]{
-                    ImageIO.read(new File("./images/tourellebase.png")),
-                    ImageIO.read(new File("./images/tourelledroite2.png")),
-                    ImageIO.read(new File("./images/tourelledroite3.png")),
-                    ImageIO.read(new File("./images/tourellesautdroite.png")),
-                    ImageIO.read(new File("./images/tourellebasegauche.png")),
-                    ImageIO.read(new File("./images/tourellegauche2.png")),
-                    ImageIO.read(new File("./images/tourellegauche3.png")),
-                    ImageIO.read(new File("./images/tourellesautgauche.png")),
+                    ImageIO.read(new File("./images/sentrybotbasedroite.png")),
+                    ImageIO.read(new File("./images/sentrybotdroite1.png")),
+                    ImageIO.read(new File("./images/sentrybotdroite2.png")),
+                    ImageIO.read(new File("./images/sentrybotsaut1.png")),
+                    ImageIO.read(new File("./images/sentrybotbasegauche.png")),
+                    ImageIO.read(new File("./images/sentrybotgauche1.png")),
+                    ImageIO.read(new File("./images/sentrybotgauche2.png")),
+                    ImageIO.read(new File("./images/sentrybotsaut2.png")),
                     ImageIO.read(new File("./images/robotDead.png")),
                  };
                 this.avatars[3] = new BufferedImage[]{
@@ -367,7 +367,7 @@ public class Player extends PObject {
         this.jump = jump;  
     }
     
-    public void setDead(boolean dead) {setDead(dead, true);}
+    public void setDead(boolean dead) { setDead(dead, controled); }
     public void setDead(boolean dead, boolean syncAndEndRound) {
         if (!this.dead) {
             this.dead = dead;
