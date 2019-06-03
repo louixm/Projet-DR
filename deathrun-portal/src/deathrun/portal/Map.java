@@ -50,9 +50,13 @@ public class Map {
         }
         else if (mapNumber == 4){
             
-            
-            m.objects.add(new Platform(g, new Vec2(b.getWidth()/2,b.getHeight()/4),1,b.getHeight()/2,6));
             m.objects.add(new Platform(g, new Vec2(1,b.getHeight()-1),10,b.getWidth(),1));
+            
+            //Croix centrale
+            m.objects.add(new Platform(g, new Vec2(-1+b.getWidth()/2,b.getHeight()/4),1,b.getHeight()/2,6));
+            m.objects.add(new Platform(g, new Vec2((b.getWidth()/2)-5,b.getHeight()/2),10,1,1));
+            
+            
             m.enter.setPosition(new Vec2(0, m.enter.size));
             m.objects.add(m.enter);
             
