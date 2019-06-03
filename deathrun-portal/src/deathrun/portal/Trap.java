@@ -47,7 +47,7 @@ public class Trap extends PObject {
             r.next();
             if (!r.getBoolean(1)) {
                 req.close();
-                req = game.sync.srv.prepareStatement("INSERT INTO traps VALUE (?, ?, false, 0)");
+                req = game.sync.srv.prepareStatement("INSERT INTO traps VALUE (?, ?, false, NOW())");
                 req.setInt(1, db_id);
                 req.setInt(2, 0);
                 req.executeUpdate();
