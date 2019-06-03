@@ -365,7 +365,7 @@ public class Player extends PObject {
         this.jump = jump;  
     }
     
-    public void setDead(boolean dead) {setDead(dead, true);}
+    public void setDead(boolean dead) { setDead(dead, controled); }
     public void setDead(boolean dead, boolean syncAndEndRound) {
         if (!this.dead) {
             this.dead = dead;
