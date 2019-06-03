@@ -51,10 +51,10 @@ public class Map {
         else if (mapNumber == 4){
             
             
-            m.objects.add(new Platform(g, new Vec2(b.getWidth()/2,0),b.getHeight()/4,b.getHeight()/2,6));
+            m.objects.add(new Platform(g, new Vec2(b.getWidth()/2,b.getHeight()/4),1,b.getHeight()/2,6));
             m.objects.add(new Platform(g, new Vec2(1,b.getHeight()-1),10,b.getWidth(),1));
-            //m.enter.setPosition(new Vec2(0, ((b.getHeight()-h)/2)-m.enter.size));
-            //m.objects.add(m.enter);
+            m.enter.setPosition(new Vec2(0, m.enter.size));
+            m.objects.add(m.enter);
             
             //m.objects.add(new Platform(g, new Vec2(b.getWidth()-l,((b.getHeight()-h)/2)),l,h,2));
             //m.objects.add(new Platform(g, new Vec2(b.getWidth()-0.5*l,b.getHeight()-6*h),0.5*l,6*h,4));
