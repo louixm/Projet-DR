@@ -46,7 +46,7 @@ abstract public class PObject {
             ResultSet r = req.executeQuery();
             r.next();
             if (!r.getBoolean(1)) {
-                req = game.sync.srv.prepareStatement("INSERT INTO pobjects VALUES (?,0,0,0,0,0)");
+                req = game.sync.srv.prepareStatement("INSERT INTO pobjects VALUES (?,0,0,0,0,0,0)");
                 req.setInt(1, db_id);
                 req.executeUpdate();
                 req.close();
@@ -114,16 +114,26 @@ abstract public class PObject {
                 // execution de la requete
                 req.executeUpdate();
                 req.close();
-
-                // recuperation de la date serveur pour garder la date de sync
-                req = sync.srv.prepareStatement("SELECT now();");
-                ResultSet r = req.executeQuery();
-                r.next();
-                last_sync = r.getTimestamp(1);
+                
+                update_date_sync(sync);
             }
             catch (SQLException err) {
-                System.out.println("sql exception:\n"+err);
+                System.out.println("PObject.syncSet():\n"+err);
             }
+        }
+        
+    }
+    
+    /// recuperation de la date serveur pour garder la date de sync
+    void update_date_sync(Sync sync) {
+        try {
+            PreparedStatement req = sync.srv.prepareStatement("SELECT now();");
+            ResultSet r = req.executeQuery();
+            r.next();
+            last_sync = r.getTimestamp(1);
+        }
+        catch (SQLException err) {
+            System.out.println("PObject.update_date_sync():\n"+err);
         }
     }
     
