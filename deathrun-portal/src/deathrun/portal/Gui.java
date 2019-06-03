@@ -145,9 +145,9 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
         if (evt.getKeyCode() == evt.VK_E)           this.editMode = true;
         if (evt.getKeyCode() == evt.VK_P)           game.purge(); 
         if (evt.getKeyCode() == evt.VK_O)           game.purgeTraps(); 
-        if (evt.getKeyCode() == evt.VK_F1 && this.controled.traps.size() >= 1)          switch_trap(0);
-        if (evt.getKeyCode() == evt.VK_F2 && this.controled.traps.size() >= 2)          switch_trap(1);
-        if (evt.getKeyCode() == evt.VK_F3 && this.controled.traps.size() >= 3)          switch_trap(2);
+        if (evt.getKeyCode() == evt.VK_F1)          switch_trap(0);
+        if (evt.getKeyCode() == evt.VK_F2)          switch_trap(1);
+        if (evt.getKeyCode() == evt.VK_F3)          switch_trap(2);
     } 
     
     public void switch_trap(int i) {
@@ -265,7 +265,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //throw new UnsupportedOperationException("Not supported yet.");
     }
     
     public void previsualisationBloc(Vec2 pos_clicked) throws IOException, SQLException{
