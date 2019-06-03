@@ -76,7 +76,7 @@ public class Player extends PObject {
     
     
     public Player(Game game, String name, int avatar) throws SQLException {
-        super(game, availableId(game), "");  // creer en ajoutant a la fin
+        super(game, availableId(game), name);  // creer en ajoutant a la fin
         this.game = game;
         this.name = name; 
         this.avatar = avatar;
