@@ -5,12 +5,8 @@
  */
 package deathrun.portal;
 
-import static com.mysql.cj.core.io.ExportControlled.enabled;
-import static deathrun.portal.Platform.img;
-import static deathrun.portal.Saw.img;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -39,7 +35,6 @@ public class Punch extends Trap {
         
         this.initPosition = position;
         collision_box = new Box(0,0 , 1,1);
-        //setPosition(initPosition);
         
         
     }
