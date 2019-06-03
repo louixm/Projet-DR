@@ -26,7 +26,7 @@ public class Acid extends Trap {
     static Image im;
     int typePlateforme;
     int step;
-    int div;
+    double div=4;
     static final String db_type = "acid";
     
     
@@ -36,7 +36,7 @@ public class Acid extends Trap {
             img = ImageIO.read(new File("./images/Acid_1.png")); //Acid
         }
         
-        div = 3;
+        //div = 3;
         this.collision_box = new Box(0, 0, img.getWidth(null)/(div*36f), img.getHeight(null)/(div*36f)).translate(position);
         setPosition(position);
         
@@ -60,7 +60,7 @@ public class Acid extends Trap {
             Vec2 p2 = p.getCollisionBox().p2 ; //point inférieur droit
             Vec2 p3 = new Vec2(p1.x, p2.y) ; // point inférieur gauche
             Vec2 p4 = new Vec2(p2.x , p1.y) ; // point supérieur droit
-            if (p3.x<(collision_box.p2.x - im.getHeight(null)/div) && p2.x>(collision_box.p1.x + im.getHeight(null)/div) && p2.y == collision_box.p1.y){
+            if ((p2.x<(collision_box.p2.x - im.getHeight(null)/(div*36f)) && p3.x>(collision_box.p1.x + im.getHeight(null)/(div*36f))) && p2.y == collision_box.p1.y){
                 p.setDead(true);
                     // Player Killed
             }else{
