@@ -26,7 +26,7 @@ public class SelectionBloc extends javax.swing.JDialog {
         jButton1.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/patterns/Tile (15).png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
         jButton2.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/Saw.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
         jButton3.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/laser.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
-        jButton4.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/patterns/Acid (1).png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
+        jButton4.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/punch0_0.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
         jButton5.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/portail.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
         jButton6.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/Barrel (1).png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
         jButton7.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/Barrel (1).png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
@@ -161,12 +161,6 @@ public class SelectionBloc extends javax.swing.JDialog {
         this.dispose();
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // TODO add your handling code here:
-        this.blocAPoser = 6;
-        this.dispose();
-    }//GEN-LAST:event_jButton6ActionPerformed
-
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
         this.blocAPoser = 4;
@@ -184,6 +178,12 @@ public class SelectionBloc extends javax.swing.JDialog {
         this.blocAPoser = 7;
         this.dispose();
     }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:
+        this.blocAPoser = 6;
+        this.dispose();
+    }//GEN-LAST:event_jButton6ActionPerformed
 
     /**
      * @param args the command line arguments

@@ -99,6 +99,12 @@ public class Punch extends Trap {
     }
     
     
+    void enable(boolean enable, boolean withsync) {
+        if (step == 0)  {
+            if (enable) super.enable(enable, withsync);
+            else        super.enable(enable, false);
+        }
+    }
     
     //-------------------Interface d'affichage--------------------------------
     

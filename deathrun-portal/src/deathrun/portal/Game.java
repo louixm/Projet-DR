@@ -284,9 +284,7 @@ public class Game {
                     
                     Trap trap = (Trap) map.objects.get(trapid);
                     Timestamp server_sync = rtraps.getTimestamp("date_sync");
-                    System.out.println("here is "+trap.last_sync+"  sync is "+server_sync);
                     if (trap.last_sync == null || server_sync.compareTo(trap.last_sync) > 0) {
-                        System.out.println("trap "+trapid+" has been sync");
                         
                         int ownerindex = -ownerid-1;
                         Player owner;
