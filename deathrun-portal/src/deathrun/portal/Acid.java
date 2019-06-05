@@ -21,9 +21,7 @@ import javax.imageio.ImageIO;
  * @author kbenie
  */
 public class Acid extends Trap {
-    //Box collision_box;
     static Image img;
-    //static Image imi;
     static Image im;
     static Image im0;
     static Image im1;
