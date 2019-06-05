@@ -5,6 +5,7 @@
  */
 package deathrun.portal;
 
+import static deathrun.portal.Saw.img;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -22,7 +23,6 @@ import java.util.ArrayList;
  * @author pdemiche
  */
 public class Laser extends Trap {
-    //Box collision_box;
     static Image img;
     float angle ;
     int typePlateforme;
@@ -37,9 +37,7 @@ public class Laser extends Trap {
         this.angle = angle;
 
         this.vectir = new Vec2(Math.cos(angle),Math.sin(angle));
-        this.normal = new Vec2(Math.sin(angle),Math.cos(angle));
-        setPosition(position);
-        
+        setPosition(position);        
         
         if (img == null) {         
             img = ImageIO.read(new File("./images/laser2.png")); //Laser
@@ -47,23 +45,11 @@ public class Laser extends Trap {
     
     }
     
-    /*
-    @Override
-    public void setPosition(Vec2 pos) {
-        super.setPosition(pos);
-        collision_box = collision_box.translateToPosition(pos);
-    }
-    
-    */
     //--------------- interface de gestion des collisions -----------------
     @Override
     public int collisionable(PObject other)  { 
         return (other instanceof Player)?1:0;
     }
-    /*
-    @Override
-    public Box getCollisionBox()       { return collision_box; }
-    */
     
     public static int sign(double nombre){
         if(nombre < 0)  return -1;
@@ -103,23 +89,29 @@ public class Laser extends Trap {
     @Override
     public void render(Graphics2D canvas, float scale) {
         canvas.setColor(Color.red);
+        Vec2 c = collision_box.center();    // centre le l'objet
+        
         if (enabled) {
+            final float length = 1000;
             canvas.drawLine(
-                    (int) (collision_box.center().x*scale),
-                    (int) (collision_box.center().y*scale),
-                    (int) ((collision_box.center().x*scale+vectir.mul(1000).x)*scale),
-                    (int) ((collision_box.center().y*scale+vectir.mul(1000).y)*scale)
+                    (int) (c.x*scale),
+                    (int) (c.y*scale),
+                    (int) ((c.x+vectir.x*length)*scale),
+                    (int) ((c.y+vectir.y*length)*scale)
             );
         }
         
+        AffineTransform transform = new AffineTransform();
+        transform.translate(c.x*scale, c.y*scale);
+        transform.scale(
+                scale*collision_box.getWidth()/img.getWidth(null),
+                scale*collision_box.getHeight()/img.getHeight(null)
+        );
+        transform.rotate(angle, img.getWidth(null)/2,img.getHeight(null)/2);
+        // affichage de l'image tournée
         canvas.drawImage(img, 
-                (int) (collision_box.p1.x*scale), 
-                (int) (collision_box.p1.y*scale), 
-                (int) (collision_box.p2.x*scale), 
-                (int) (collision_box.p2.y*scale), 
-                0, 0,
-                img.getWidth(null), img.getHeight(null),
-                null);
+            transform,
+            null);
         //System.out.println(collision_box.center().y);
         super.render(canvas, scale);
         
