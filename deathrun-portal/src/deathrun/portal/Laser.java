@@ -42,7 +42,7 @@ public class Laser extends Trap {
         
         
         if (img == null) {         
-            img = ImageIO.read(new File("./images/laser.png")); //Laser
+            img = ImageIO.read(new File("./images/laser2.png")); //Laser
         }
     
     }

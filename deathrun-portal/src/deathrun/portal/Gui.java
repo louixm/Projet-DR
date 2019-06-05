@@ -238,7 +238,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
                         this.game.map.objects.add(new Saw(this.game, pos_clicked));
                         break;
                     case 3: //Laser
-                        float angle = 360/orientationBloc;
+                        float angle = (float) ((Math.PI/8)*(orientationBloc+1));
                         this.game.map.objects.add(new Laser(this.game, pos_clicked, angle));
                         break;
                     case 4: //Punch
@@ -288,7 +288,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
                             saw.render(this.bufferContext, scale);
                             break;
                         case 3: //Laser
-                            float angle = 360 - 360/(orientationBloc+1);
+                            float angle = (float) ((Math.PI/8)*(orientationBloc+1));
                             Laser laser = new Laser(this.game, pos_clicked, angle);
                             laser.render(this.bufferContext, scale);
                             break;
