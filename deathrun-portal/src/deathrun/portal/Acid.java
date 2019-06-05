@@ -23,6 +23,7 @@ import javax.imageio.ImageIO;
 public class Acid extends Trap {
     //Box collision_box;
     static Image img;
+    //static Image imi;
     static Image im;
     static Image im0;
     static Image im1;
@@ -41,13 +42,14 @@ public class Acid extends Trap {
     public Acid(Game game, Vec2 position) throws IOException, SQLException {
         super(game, db_type);
         if (img == null) {
-            img = ImageIO.read(new File("./images/Acid_1.png")); //Acid
+            img = ImageIO.read(new File("./images/Acid_i.png")); //Acid
         }
         this.position = position;
         //div = 3;
         this.collision_box = new Box(0, 0, img.getWidth(null)/(div*36f), img.getHeight(null)/(div*36f)).translate(position);
         setPosition(position);
         
+        //imi = ImageIO.read(new File("./images/Acid_i.png"));
         im = ImageIO.read(new File("./images/Tile_10.png"));
         im0 = ImageIO.read(new File("./images/Acid_0.png"));
         im1 = ImageIO.read(new File("./images/Acid_1.png"));
@@ -90,54 +92,42 @@ public class Acid extends Trap {
           // -----------------MAJ de l'image---------------------------
             
         long ac_time = System.nanoTime();
-        if (ac_time > time_next_image)  {    
-            
-            // si le piège n'est pas activé on met l'image "punch0"
-            if (!enabled){   
-                img = im0;
-                step=0;
-            } 
-            
-            // si le piège est activé
-            else {  
+        if (ac_time > time_next_image)  {   
                 
                 // incrementer le compteur de frame
-                step ++;
+            step ++;
                 
                 // évolution du numéro de l'immage
-                int fourMulticator = (int)step/4;
-                int numImage;
-                if (fourMulticator % 2 == 0){
-                    numImage = step-(4*fourMulticator);
-                }else{
-                    numImage = 3-(step-(4*fourMulticator));
-                }
-                if (numImage==0){
-                    img = im0;
-                }
-                if (numImage==1){
-                    img = im1;
-                }
-                if (numImage==2){
-                    img = im2;
-                }
-                if (numImage==3){
-                    img = im3;
-                }
+            int fourMulticator = (int)step/4;
+            int numImage;
+            if (fourMulticator % 2 == 0){
+                numImage = step-(4*fourMulticator);
+            }else{
+                numImage = 3-(step-(4*fourMulticator));
+            }
+            if (numImage==0){
+                img = im0;
+            }
+            if (numImage==1){
+                img = im1;
+            }
+            if (numImage==2){
+                img = im2;
+            }
+            if (numImage==3){
+                img = im3;
+            }
                 
-            }
-            
-            
-            
+        } 
             // Redimensionnement de la box de collision
-            collision_box = new Box(0,0 , (img.getWidth(null)-decalage)/scale,(img.getHeight(null)-decalage)/scale); //la dimension de la box est celle de l'image sans vapeur
-            collision_box = collision_box.translateToPosition(position);
-            }
-            time_next_image = ac_time + image_duration;
+        //collision_box = new Box(0,0 , imi.getWidth(null)/(div*scale),(imi.getHeight(null))/(div*scale)); //la dimension de la box est celle de l'image sans vapeur
+        //collision_box = collision_box.translateToPosition(position);
+            
+        time_next_image = ac_time + image_duration;
         // ---------------affichage de PObject ----------------------      
         canvas.drawImage(img, 
                     (int) (collision_box.p1.x*scale), 
-                    (int) ((collision_box.p1.y*scale)-decalage), 
+                    (int) ((collision_box.p1.y*scale)-(decalage/div)), 
                     (int) (collision_box.p2.x*scale),   
                     (int) (collision_box.p2.y*scale),  
                     0, 0,
