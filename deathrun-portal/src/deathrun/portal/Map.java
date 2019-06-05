@@ -49,8 +49,19 @@ public class Map {
             m.objects.add(m.exit);
         }
         else if (mapNumber == 4){
+            //portails
+            Portal port = new Portal(g,new Vec2(13, 1), new boolean[] {false,true});
+            Portal port2 = new Portal(g,new Vec2(13,16), new boolean[] {false,true});
+            port.otherPortal = port2;
+            port2.otherPortal = port;
+            m.objects.add(port);
+            m.objects.add(port2);
             
-            m.objects.add(new Platform(g, new Vec2(1,b.getHeight()-1),10,b.getWidth(),1));
+            //pieges
+            m.objects.add(new Saw(g, g.map.size.center().sub(new Vec2(1, 1))));
+            //m.objects.add(new Laser(g,new Vec2(0, 11),0));
+            //m.objects.add(new Punch(g,2,new Vec2(21,16)));
+            m.objects.add(new Acid(g, new Vec2(6,13)));
             
             //Croix centrale
             m.objects.add(new Platform(g, new Vec2(-1+b.getWidth()/2,b.getHeight()/4),1,b.getHeight()/2,6));
@@ -71,6 +82,7 @@ public class Map {
             //cote gauche
             m.objects.add(new Platform(g, new Vec2(0,b.getHeight()/2),5,1,1));
             m.objects.add(new Platform(g, new Vec2(2,b.getHeight()-1),10,1,1));
+            m.objects.add(new Platform(g, new Vec2(1,b.getHeight()-1),10,b.getWidth(),1));
             
             //cote droit
             m.objects.add(new Platform(g, new Vec2(5+b.getWidth()/2,5),5,1,1));
