@@ -67,32 +67,24 @@ public class Punch extends Trap {
                 if ((collision_box.p1.x <= p4.x && p1.x<=collision_box.p2.x) && p1.y == collision_box.p2.y){  
                     p.setDead(true);
                     // Player Killed
-                }else{
-                    p.setDead(false);
                 }
             }
             if (sens == 1){ // gauche
                 if ((collision_box.p1.y <= p2.y && p4.y<=collision_box.p2.y) && p2.x == collision_box.p1.x){  
                     p.setDead(true);
                     // Player Killed
-                }else{
-                    p.setDead(false);
                 }
             }
             if (sens == 2){ // haut
                 if ((collision_box.p1.x <= p4.x && p1.x<=collision_box.p2.x) && p2.y == collision_box.p1.y){  
                     p.setDead(true);
                     // Player Killed
-                }else{
-                    p.setDead(false);
                 }
             }
             if (sens == 3){ // droit
                 if ((collision_box.p1.y <= p2.y && p4.y<=collision_box.p2.y) && p1.x == collision_box.p2.x){  
                     p.setDead(true);
                     // Player Killed
-                }else{
-                    p.setDead(false);
                 }
             }
         }

@@ -6,6 +6,7 @@
 package deathrun.portal;
 
 import static deathrun.portal.Acid.db_type;
+import static deathrun.portal.Punch.img;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.io.File;
@@ -17,34 +18,33 @@ import javax.imageio.ImageIO;
  *
  * @author kbenie
  */
-public class Spikes extends Trap {
-    
+public class Spikes extends PObject {
+    Box collision_box;
     static Image img;
-    int typePlateforme;
-    double div=4;
+    double div=1;
     double sens;
     static final String db_type = "spikes";
     
     public Spikes(Game game,double sens, Vec2 position) throws IOException, SQLException {
         super(game, db_type);
-        
-        if (img == null) {
-            if(sens==0){
-                img = ImageIO.read(new File("./images/Spikes_0.png")); //spikes vers le bas
-            }
-            if(sens==1){
-                img = ImageIO.read(new File("./images/Spikes_1.png")); //spikes vers la gauche
-            }
-            if(sens == 2){
-                img = ImageIO.read(new File("./images/Spikes_2.png")); //spikes vers le haut
-            }
-            if(sens == 3){
-                img = ImageIO.read(new File("./images/Spikes_3.png")); //spikes vers la droite
-            }
+        this.position = position;
+        this.sens = sens;
+        if(sens==0){
+            img = ImageIO.read(new File("./images/Spikes_0.png")); //spikes vers le bas
         }
+        if(sens==1){
+            img = ImageIO.read(new File("./images/Spikes_1.png")); //spikes vers la gauche
+        }
+        if(sens == 2){
+            img = ImageIO.read(new File("./images/Spikes_2.png")); //spikes vers le haut
+        }
+        if(sens == 3){
+            img = ImageIO.read(new File("./images/Spikes_3.png")); //spikes vers la droite
+        }
+        collision_box = new Box(0,0 , img.getWidth(null)/36f,img.getHeight(null)/36f); //la dimension de la box est celle de l'image
+        collision_box = collision_box.translateToPosition(position);
         
-        this.collision_box = new Box(0, 0, img.getWidth(null)/(div*36f), img.getHeight(null)/(div*36f)).translate(position);
-        setPosition(position);
+        
     }
     
     //--------------- interface de gestion des collisions -----------------
@@ -52,6 +52,9 @@ public class Spikes extends Trap {
         return (other instanceof Player)?1:0;
     }
     //--------------- interface de gestion des collisions -----------------*/
+    
+    @Override
+    public Box getCollisionBox()  { return collision_box; }
     
     
     
@@ -67,32 +70,24 @@ public class Spikes extends Trap {
                 if ((collision_box.p1.x <= p4.x && p1.x<=collision_box.p2.x) && p1.y == collision_box.p2.y){  
                     p.setDead(true);
                     // Player Killed
-                }else{
-                    p.setDead(false);
                 }
             }
             if (sens == 1){ // gauche
                 if ((collision_box.p1.y <= p2.y && p4.y<=collision_box.p2.y) && p2.x == collision_box.p1.x){  
                     p.setDead(true);
                     // Player Killed
-                }else{
-                    p.setDead(false);
                 }
             }
             if (sens == 2){ // haut
                 if ((collision_box.p1.x <= p4.x && p1.x<=collision_box.p2.x) && p2.y == collision_box.p1.y){  
                     p.setDead(true);
                     // Player Killed
-                }else{
-                    p.setDead(false);
                 }
             }
             if (sens == 3){ // droit
                 if ((collision_box.p1.y <= p2.y && p4.y<=collision_box.p2.y) && p1.x == collision_box.p2.x){  
                     p.setDead(true);
                     // Player Killed
-                }else{
-                    p.setDead(false);
                 }
             }
         }
@@ -104,8 +99,7 @@ public class Spikes extends Trap {
     
     @Override
     public void render(Graphics2D canvas, float scale) {
-        
-        
+         
         // ---------------affichage de PObject ----------------------      
         canvas.drawImage(img, 
                     (int) (collision_box.p1.x*scale), 
