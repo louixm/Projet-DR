@@ -26,7 +26,7 @@ abstract public class PObject {
     
     long prev_time; // (ns) instant de dernier pas physique
     long next_sync; // (ns) instant de prochaine synchronisation prévue de l'etat du jeu avec la BDD
-    Timestamp last_sync;
+    long last_sync; // numero de version (pour situer son etat de mise a jour par rapport aux données serveur)
     
     boolean local_changed;
     
@@ -39,7 +39,6 @@ abstract public class PObject {
         this.position = new Vec2();
         this.velocity = new Vec2();
         this.acceleration = new Vec2();
-        this.last_sync = null;      // initialisation du jeu: pas de derniere sync en date
         
         // ajout dans la table des objets de Game
         if (db_id < 0) {
@@ -51,9 +50,12 @@ abstract public class PObject {
         }
         else
             this.db_id = db_id;
+        
         game.objects.put(this.db_id, this);
         
         if (game.sync != null) {
+            this.last_sync = 0;      // initialisation du jeu: pas de derniere sync en date
+            
             PreparedStatement req = game.sync.srv.prepareStatement("SELECT EXISTS(SELECT id FROM pobjects WHERE id = ?)");
             req.setInt(1, this.db_id);
             ResultSet r = req.executeQuery();
@@ -115,22 +117,26 @@ abstract public class PObject {
             next_sync = ac_time + sync.sync_interval;
             local_changed = false;
             
+            // numeros de version
+            sync.latest ++;
+            last_sync = sync.latest;
+            
             //System.out.println("sync set "+db_id);
             
             try {
-                PreparedStatement req = sync.srv.prepareStatement("UPDATE pobjects SET x=?, y=?, vx=?, vy=?, date_sync=NOW() WHERE id = ?");
+                PreparedStatement req = sync.srv.prepareStatement("UPDATE pobjects SET x=?, y=?, vx=?, vy=?, version=? WHERE id = ?");
                 req.setInt(1, (int) (position.x*1000));
                 req.setInt(2, (int) (position.y*1000));
                 req.setDouble(3, velocity.x);
                 req.setDouble(4, velocity.y);
+                // le numero de version
+                req.setLong(5, last_sync);
                 // id de l'objet a modifier
-                req.setInt(5, db_id);
+                req.setInt(6, db_id);
                 
                 // execution de la requete
                 req.executeUpdate();
                 req.close();
-                
-                last_sync = sync.now();
             }
             catch (SQLException err) {
                 System.out.println("PObject.syncSet():\n"+err);

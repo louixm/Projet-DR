@@ -30,7 +30,7 @@ public class Game {
     
     long prev_time; // (ns) instant de dernier pas physique
     long next_sync; // (ns) instant de prochaine synchronisation prévue de l'etat du jeu avec la BDD
-    Timestamp db_last_sync;
+    long db_last_sync;
     
     public final double gravity = 9.81;
     
@@ -46,7 +46,7 @@ public class Game {
                         "deathrun2", 
                         "5V8HVbDZMtkOHwaX"
                     ));
-                db_last_sync = new Timestamp(0);
+                db_last_sync = 0;
                 System.out.println("connected to database");
             }
             catch (SQLException err) {
@@ -218,10 +218,10 @@ public class Game {
             if (sync == null)   return;
             //System.out.println("objects: "+objects);
             // sinon essai de connexion
-            try {
-                // recuperer la date serveur
-                Timestamp db_time = sync.now();
-                
+            try {    
+                // numero de derniere mise a jour
+                long last_update = db_last_sync;
+                        
                 // synchronisation de la table des joueurs
                 PreparedStatement reqplayers = sync.srv.prepareStatement("SELECT id,state,movement FROM players");
                 
@@ -242,8 +242,8 @@ public class Game {
                 rplayers.close();
                 
                 // synchronisation de la table des pieges
-                PreparedStatement reqtraps = sync.srv.prepareStatement("SELECT id,owner,enabled,date_sync FROM traps");
-                //reqtraps.setTimestamp(1, db_last_sync);
+                PreparedStatement reqtraps = sync.srv.prepareStatement("SELECT id,owner,enabled,version FROM traps WHERE version > ?");
+                reqtraps.setLong(1, db_last_sync);
                 ResultSet rtraps = reqtraps.executeQuery();
                 while (rtraps.next()) {
                     int trapid = rtraps.getInt("id");
@@ -256,11 +256,10 @@ public class Game {
                     }
                     
                     Trap trap = (Trap) objects.get(trapid);
-                    Timestamp server_sync = rtraps.getTimestamp("date_sync");
-                    System.out.println("have trap "+trapid);
-                    if (trap.last_trap_sync == null || server_sync.compareTo(trap.last_trap_sync) > 0) {
+                    long update = rtraps.getLong("version");
+                    System.out.println("get trap "+trapid+" version "+update+"  here is "+trap.last_trap_sync);
+                    if (update > trap.last_trap_sync) {
                         
-                        System.out.print("get for trap "+trapid);
                         Player owner;
                         if (ownerid >= 0)
                             owner = (Player) objects.get(ownerid);
@@ -270,14 +269,15 @@ public class Game {
                         // assignation
                         trap.setControl(owner, false);
                         trap.enable(enabled, false);
-                        trap.last_trap_sync = (Timestamp) server_sync;
+                        trap.last_trap_sync = update;
+                        if (update < last_update)  last_update = update;
                     }
                 }
                 
                 // synchronisation des objets physiques
                 // recupérer les infos du serveur plus récentes que la derniere reception
-                PreparedStatement reqobjects = sync.srv.prepareStatement("SELECT id,x,y,vx,vy,date_sync FROM pobjects WHERE date_sync > ? ");
-                reqobjects.setTimestamp(1, db_last_sync);
+                PreparedStatement reqobjects = sync.srv.prepareStatement("SELECT id,x,y,vx,vy,version FROM pobjects WHERE version > ? ");
+                reqobjects.setLong(1, db_last_sync);
                 
                 ResultSet robjects = reqobjects.executeQuery();
                 while (robjects.next()) {
@@ -291,19 +291,22 @@ public class Game {
                         continue;
                     }
                     
-                    Timestamp server_sync = robjects.getTimestamp("date_sync");
-                    if (obj.last_sync == null || server_sync.compareTo(obj.last_sync) > 0) {
+                    long update = robjects.getLong("version");
+                    if (update > obj.last_sync) {
                         obj.setPosition(new Vec2(robjects.getInt("x")/1000f, robjects.getInt("y")/1000f));
                         obj.velocity.x = robjects.getDouble("vx");
                         obj.velocity.y = robjects.getDouble("vy");
                         //System.out.println("updated object "+id);
+                        
+                        obj.last_sync = update;
+                        if (update < last_update)  last_update = update;
                     }
                 }
                 robjects.close();
                 
                 
                 // set last sync time
-                db_last_sync = db_time;
+                db_last_sync = last_update;
             }
             catch (SQLException err) {
                 System.out.println("syncUpdate: "+err);

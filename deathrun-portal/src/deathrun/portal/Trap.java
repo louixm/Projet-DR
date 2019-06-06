@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  */
 public class Trap extends PObject {
     // a utiliser dans les classes dérivées
-    public boolean enabled;    // etat d'activation du piege
+    public boolean enabled;    /// etat d'activation du piege
     
     Box collision_box;
     
@@ -30,7 +30,7 @@ public class Trap extends PObject {
     final long take_time = 2000;
     Game game;
     
-    Timestamp last_trap_sync;
+    long last_trap_sync;    /// numero de version (pour situer son etat de mise a jour par rapport aux données serveur)
     
     
     
@@ -41,7 +41,9 @@ public class Trap extends PObject {
         this.game = game;
         this.enabled = false;
         
-        if (game.sync != null) {
+        if (game.sync != null) {      
+            last_trap_sync = 0;
+                
             // inserer dans la base de donnée
             PreparedStatement req = game.sync.srv.prepareStatement("SELECT EXISTS(SELECT id FROM traps WHERE id = ?)");
             req.setInt(1, db_id);
@@ -50,13 +52,11 @@ public class Trap extends PObject {
             if (!r.getBoolean(1)) {
                 req.close();
                 System.out.println("trap "+db_id+" is added");
-                req = game.sync.srv.prepareStatement("INSERT INTO traps VALUE (?, ?, false, NOW())");
+                req = game.sync.srv.prepareStatement("INSERT INTO traps VALUE (?, ?, false, 0)");
                 req.setInt(1, db_id);
                 req.setInt(2, -1);
                 req.executeUpdate();
                 req.close();
-                
-                last_trap_sync = game.sync.now();
             }
         }
     }
@@ -64,17 +64,18 @@ public class Trap extends PObject {
     void enable(boolean enable, boolean withsync) {
         System.out.println("trap "+db_id+" is set "+enable);
         
-        if (withsync) {
+        if (withsync && game.sync != null) {
+            last_trap_sync = game.sync.latest ++;
+            
             try {
                 System.out.println("trap "+db_id+" has been sent");
                 // noter le joueur comme pilote du piege dans la base de donnée
-                PreparedStatement req = game.sync.srv.prepareStatement("UPDATE traps SET enabled=?, date_sync=NOW() WHERE id = ?");
+                PreparedStatement req = game.sync.srv.prepareStatement("UPDATE traps SET enabled=?, version=? WHERE id = ?");
                 req.setBoolean(1, enable);
-                req.setInt(2, db_id);
+                req.setLong(2, last_trap_sync);
+                req.setInt(3, db_id);
                 req.executeUpdate();
                 req.close();
-                
-                last_trap_sync = game.sync.now();
                 
             } catch (SQLException err) {
                 System.out.println("Trap.enable: "+err);
@@ -92,17 +93,17 @@ public class Trap extends PObject {
     void setControl(Player user, boolean withsync) {
         System.out.println("trap "+db_id+" control taken");
         
-        if (withsync) {
+        if (withsync && game.sync != null) {
+            last_trap_sync = game.sync.latest ++;
             try {
                 // noter le joueur comme pilote du piege dans la base de donnée
-                PreparedStatement req = game.sync.srv.prepareStatement("UPDATE traps SET owner=?, date_sync=NOW() WHERE id = ?");
+                PreparedStatement req = game.sync.srv.prepareStatement("UPDATE traps SET owner=?, version=? WHERE id = ?");
                 int userid = (user != null)? user.db_id:0;
                 req.setInt(1, userid);
-                req.setInt(2, db_id);
+                req.setLong(2, last_trap_sync);
+                req.setInt(3, db_id);
                 req.executeUpdate();
                 req.close();
-                
-                last_trap_sync = game.sync.now();
                 
             } catch (SQLException err) {
                 System.out.println("Trap.setControl: "+err);
