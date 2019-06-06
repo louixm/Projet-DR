@@ -71,7 +71,8 @@ public class Spikes extends PObject {
             if (sens == 0){ // bas
                 if ((collision_box.p1.x <= p4.x && p1.x<=collision_box.p2.x) && p1.y == collision_box.p2.y){  
                      if (!p.dead){
-                        spiked.play();
+                        System.out.println("Player " + p.name + " wasnt dead "+p.dead+"    "+sens);
+                         spiked.play();
                         p.setDead(true);
                      }
                     
@@ -81,6 +82,7 @@ public class Spikes extends PObject {
             if (sens == 1){ // gauche
                 if ((collision_box.p1.y <= p2.y && p4.y<=collision_box.p2.y) && p2.x == collision_box.p1.x){  
                     if (!p.dead){
+                        System.out.println("Player " + p.name + " wasnt dead "+p.dead+"    "+sens);
                         spiked.play();
                         p.setDead(true);
                     }
@@ -90,6 +92,7 @@ public class Spikes extends PObject {
             if (sens == 2){ // haut
                 if ((collision_box.p1.x <= p4.x && p1.x<=collision_box.p2.x) && p2.y == collision_box.p1.y){  
                        if (!p.dead){
+                        System.out.println("Player " + p.name + " wasnt dead "+p.dead+"    "+sens);
                         spiked.play();
                         p.setDead(true);
                     }                    
@@ -99,6 +102,7 @@ public class Spikes extends PObject {
             if (sens == 3){ // droit
                 if ((collision_box.p1.y <= p2.y && p4.y<=collision_box.p2.y) && p1.x == collision_box.p2.x){  
                        if (!p.dead){
+                        System.out.println("Player " + p.name + " wasnt dead "+p.dead+"    "+sens);
                         spiked.play();
                         p.setDead(true);
                     }
