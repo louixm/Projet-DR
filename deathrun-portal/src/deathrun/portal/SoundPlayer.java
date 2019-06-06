@@ -26,7 +26,7 @@ public class SoundPlayer {
     }
 
     public void play(){
-        inputStream = this.getClass().getResourceAsStream("./sons/"+name);
+        inputStream = this.getClass().getResourceAsStream("/audio/"+name);
         try {
             totalSongLength = inputStream.available();
         } catch (IOException ex) {
@@ -48,7 +48,7 @@ public class SoundPlayer {
                         play();
                     }
                 } catch (JavaLayerException ex) {
-                    System.err.println("There was an error to play /resources/audio/"+name);
+                    System.err.println("There was an error to play /audio/"+name);
                 }
             }
         }.start();
@@ -57,7 +57,7 @@ public class SoundPlayer {
     public void resume(){
         try {
             paused = false;
-            inputStream = this.getClass().getResourceAsStream("/resources/audio/"+name);
+            inputStream = this.getClass().getResourceAsStream("/audio/"+name);
             try {
                 inputStream.skip(totalSongLength - pauseLocation);
             } catch (IOException ex) {
@@ -70,7 +70,7 @@ public class SoundPlayer {
                     try {
                         player.play();
                     } catch (JavaLayerException ex) {
-                        System.err.println("::: there was an error to play " + "/resources/audio/"+name);
+                        System.err.println("::: there was an error to play " + "/auido/"+name);
                     }
                 }
             }.start();
