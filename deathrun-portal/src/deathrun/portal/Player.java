@@ -57,6 +57,8 @@ public class Player extends PObject {
     //int lignedevue_death = 1;
     BufferedImage current_image;
     
+    static SoundPlayer death;
+    
     public static int availableId(Game game) {
         int id = -1;
         boolean id_found = true;
@@ -85,6 +87,10 @@ public class Player extends PObject {
         collision_box = new Box(-0.2, 0, 0.2, 1.7);
         visual_box = new Box(-0.5, 0, 0.5, 1.8);
         traps = new ArrayList<>();
+        
+        if (death == null) {
+            death = new SoundPlayer("wasted.mp3", false);
+        }
         if (avatars == null) {
             this.avatars = new BufferedImage[4][];
             try {
@@ -364,6 +370,7 @@ public class Player extends PObject {
     public void setDead(boolean dead, boolean syncAndEndRound) {
         if (!this.dead && controled) {
             this.dead = dead;
+            death.play();
             if (dead) {
                 avatar = 3;
                 if(syncAndEndRound){
