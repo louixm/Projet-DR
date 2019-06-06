@@ -74,16 +74,17 @@ public class Player extends PObject {
         return id;
     }
     
-    
-    public Player(Game game, String name, int avatar) throws SQLException {
-        super(game, availableId(game), name);  // creer en ajoutant a la fin
+    public Player(Game game, String name, int avatar) throws SQLException { this(game, name, avatar, -1); }
+    public Player(Game game, String name, int avatar, int db_id) throws SQLException {
+        super(game, "player", db_id);
+        //super(game, name, availableId(game));  // creer en ajoutant a la fin
         this.game = game;
         this.name = name; 
         this.avatar = avatar;
         
         collision_box = new Box(-0.2, 0, 0.2, 1.7);
         visual_box = new Box(-0.5, 0, 0.5, 1.8);
-        traps = new ArrayList<Trap>();
+        traps = new ArrayList<>();
         if (avatars == null) {
             this.avatars = new BufferedImage[4][];
             try {
@@ -129,17 +130,6 @@ public class Player extends PObject {
                     ImageIO.read(new File("./images/robotdeath4v2.png")),
                     ImageIO.read(new File("./images/robotdeath5v2.png")),
                 };
-                //this.avatars[3] = new BufferedImageImageIO.read(new File("./images/robotDead.png"));
-                
-                //this.avatars[2] = ImageIO.read(new File("./images/robotOrange.png"));
-                //this.robotBase = ImageIO.read(new File("robotbase.png"));    // rajouté par louis animation
-                //this.robotDr = ImageIO.read(new File("robotdroite.png"));    // rajouté par louis animation
-                //this.robotDrEx = ImageIO.read(new File("robotdroitee.png"));    // rajouté par louis animation
-                //this.robotSaut = ImageIO.read(new File("robotsaut.png"));    // rajouté par louis animation
-                //this.robotBasegauche = ImageIO.read(new File("robotbasegauche.png"));    // rajouté par louis animation
-                //this.robotgauche = ImageIO.read(new File("robotgauche.png"));    // rajouté par louis animation
-                //this.robotgaucheex = ImageIO.read(new File("robotdgaucheex.png"));    // rajouté par louis animation
-                //this.robotsautgauche = ImageIO.read(new File("robotsautgauche.png"));    // rajouté par louis animation
             } catch (IOException ex) {
                 Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -163,9 +153,9 @@ public class Player extends PObject {
             if (!r.getBoolean(1)) {
                 req.close();
                 req = game.sync.srv.prepareStatement("INSERT INTO players VALUES (?, ?, 0, 0, ?, 0, 0, 0)"); //TODO
-                req.setInt(1, db_id);
-                req.setString(2, name);
-                req.setInt(3, avatar);
+                req.setInt(1, this.db_id);
+                req.setString(2, this.name);
+                req.setInt(3, this.avatar);
                 req.executeUpdate();
                 req.close();
                 System.out.println("ok");
@@ -182,7 +172,10 @@ public class Player extends PObject {
             // effacement de la table des objets
             boolean allDisconnected = true;
             for (Player p: game.players){
-                if (!p.disconnected)  {allDisconnected = false; break;}
+                if (!p.disconnected)  {
+                    allDisconnected = false; 
+                    break;
+                }
             }
             if (allDisconnected) game.purge();
             else {
@@ -339,15 +332,15 @@ public class Player extends PObject {
     }
 
     public Color getPlayerColor(){
-        switch(this.db_id){
-            case(-1): return Color.BLUE;
-            case(-2): return Color.ORANGE;
-            case(-3): return Color.GREEN;
-            case(-4): return Color.PINK;
-            case(-5): return Color.CYAN;
-            case(-6): return Color.RED;
-            case(-7): return Color.YELLOW;
-            case(-8): return Color.MAGENTA; 
+        switch(this.game.players.indexOf(this)){
+            case(0): return Color.BLUE;
+            case(1): return Color.ORANGE;
+            case(2): return Color.GREEN;
+            case(3): return Color.PINK;
+            case(4): return Color.CYAN;
+            case(5): return Color.RED;
+            case(6): return Color.YELLOW;
+            case(7): return Color.MAGENTA; 
             default: return Color.WHITE;
         }
     }
@@ -369,7 +362,7 @@ public class Player extends PObject {
     
     public void setDead(boolean dead) { setDead(dead, controled); }
     public void setDead(boolean dead, boolean syncAndEndRound) {
-        if (!this.dead) {
+        if (!this.dead && controled) {
             this.dead = dead;
             if (dead) {
                 avatar = 3;
@@ -444,7 +437,7 @@ public class Player extends PObject {
     public boolean isControled(){ return this.controled; }
     
     public void syncMovement(int move){
-        if (game.sync != null){
+        if (game.sync != null && controled) {
             try {
                 PreparedStatement req = game.sync.srv.prepareStatement("UPDATE players SET movement=? WHERE id = ?");
                 req.setInt(1, move); 
@@ -463,20 +456,24 @@ public class Player extends PObject {
     
     public void setState(int state){
         switch(state){
-            default: {this.setDead(false, false); this.hasReachedExitDoor = false; this.disconnected = false; break;}
+            case 0: {this.setDead(false, false); this.hasReachedExitDoor = false; this.disconnected = false; break;}
             case 1: {this.setDead(true, false); this.hasReachedExitDoor = false; this.disconnected = false; break;}
             case 2: {this.setDead(false, false); this.hasReachedExitDoor = true; this.disconnected = false; break;}
             case 3: {this.setDead(false, false); this.hasReachedExitDoor = false; this.disconnected = true; break;}
             case 4: {this.setDead(true, false); this.hasReachedExitDoor = false; this.disconnected = true; break;}
+            default:
+                System.out.println("unknown player state "+state);
         }
     }
     
     public void setMovement(int movement){
         switch(movement){
-            default: {this.setLeft(false); this.setRight(false); this.setJump(false); break;}
+            case 0: {this.setLeft(false); this.setRight(false); this.setJump(false); break;}
             case 1: {this.setLeft(true); this.setRight(false); this.setJump(false); break;}
             case 2: {this.setLeft(false); this.setRight(true); this.setJump(false); break;}
             case 3: {this.setLeft(false); this.setRight(false); this.setJump(true); break;}    
+            default:
+                System.out.println("unknown player movemen "+movement);
         }
     }
     

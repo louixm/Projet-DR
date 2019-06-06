@@ -22,9 +22,10 @@ public class Portal extends PObject{
     final double size = 3;  // diametre de la porte
     final double csize = 1; // largeur hauteur de la boite de collisions
     public Portal otherPortal;
+    static final String db_type = "portal";
     
     public Portal(Game game, Vec2 position, boolean sens[]) throws IOException, SQLException {
-        super(game);
+        super(game, db_type);
         this.position = position;
         this.box = new Box(position.x, position.y, position.x+size, position.y+size);
         this.collision_box = new Box(position.x+(size-csize)/2, position.y+(size-csize)/2, position.x+(size+csize)/2, position.y+(size+csize)/2);

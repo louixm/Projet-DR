@@ -26,31 +26,45 @@ abstract public class PObject {
     
     long prev_time; // (ns) instant de dernier pas physique
     long next_sync; // (ns) instant de prochaine synchronisation prévue de l'etat du jeu avec la BDD
-    Timestamp last_sync;
+    long last_sync; // numero de version (pour situer son etat de mise a jour par rapport aux données serveur)
     
     boolean local_changed;
     
     static boolean drawHitBox = false;
     
-    PObject(Game game) throws SQLException { this(game, game.map.objects.size(), ""); }
-    PObject(Game game, String db_type) throws SQLException { this(game, game.map.objects.size(), db_type); }
-    PObject(Game game, int db_id, String db_type) throws SQLException 	{ 
-        this.db_id = db_id; 
+    PObject(Game game) throws SQLException { this(game, ""); }
+    PObject(Game game, String db_type) throws SQLException 	{ this(game, db_type, -1); }
+    PObject(Game game, String db_type, int db_id) throws SQLException 	{ 
+        this.db_type = db_type;
         this.position = new Vec2();
         this.velocity = new Vec2();
         this.acceleration = new Vec2();
-        this.db_type = db_type;
-        this.last_sync = null;      // initialisation du jeu: pas de derniere sync en date
+        
+        // ajout dans la table des objets de Game
+        if (db_id < 0) {
+            int max_id = 0;
+            for (int key: game.objects.keySet()) {
+                if (key > max_id)   max_id = key;
+            }
+            this.db_id = max_id + 1;
+        }
+        else
+            this.db_id = db_id;
+        
+        game.objects.put(this.db_id, this);
         
         if (game.sync != null) {
+            this.last_sync = 0;      // initialisation du jeu: pas de derniere sync en date
+            
             PreparedStatement req = game.sync.srv.prepareStatement("SELECT EXISTS(SELECT id FROM pobjects WHERE id = ?)");
-            req.setInt(1, db_id);
+            req.setInt(1, this.db_id);
             ResultSet r = req.executeQuery();
             r.next();
             if (!r.getBoolean(1)) {
+                System.out.println("add pobject "+this.db_id);
                 req = game.sync.srv.prepareStatement("INSERT INTO pobjects VALUES (?,0,0,0,0,0,?)");
-                req.setInt(1, db_id);
-                req.setString(2, db_type);
+                req.setInt(1, this.db_id);
+                req.setString(2, this.db_type);
                 req.executeUpdate();
                 req.close();
             }
@@ -103,22 +117,26 @@ abstract public class PObject {
             next_sync = ac_time + sync.sync_interval;
             local_changed = false;
             
+            // numeros de version
+            sync.latest ++;
+            last_sync = sync.latest;
+            
             //System.out.println("sync set "+db_id);
             
             try {
-                PreparedStatement req = sync.srv.prepareStatement("UPDATE pobjects SET x=?, y=?, vx=?, vy=?, date_sync=NOW() WHERE id = ?");
+                PreparedStatement req = sync.srv.prepareStatement("UPDATE pobjects SET x=?, y=?, vx=?, vy=?, version=? WHERE id = ?");
                 req.setInt(1, (int) (position.x*1000));
                 req.setInt(2, (int) (position.y*1000));
                 req.setDouble(3, velocity.x);
                 req.setDouble(4, velocity.y);
+                // le numero de version
+                req.setLong(5, last_sync);
                 // id de l'objet a modifier
-                req.setInt(5, db_id);
+                req.setInt(6, db_id);
                 
                 // execution de la requete
                 req.executeUpdate();
                 req.close();
-                
-                update_date_sync(sync);
             }
             catch (SQLException err) {
                 System.out.println("PObject.syncSet():\n"+err);
@@ -127,18 +145,6 @@ abstract public class PObject {
         
     }
     
-    /// recuperation de la date serveur pour garder la date de sync
-    void update_date_sync(Sync sync) {
-        try {
-            PreparedStatement req = sync.srv.prepareStatement("SELECT now();");
-            ResultSet r = req.executeQuery();
-            r.next();
-            last_sync = r.getTimestamp(1);
-        }
-        catch (SQLException err) {
-            System.out.println("PObject.update_date_sync():\n"+err);
-        }
-    }
     
     /// appellé a chaque iteration de la boucle principale du jeu
     public void onGameStep(Game g, float dt) {}

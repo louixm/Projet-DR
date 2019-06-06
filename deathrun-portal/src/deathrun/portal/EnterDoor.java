@@ -17,11 +17,11 @@ public class EnterDoor extends PObject{
     Box box;
     static Image img;
     final double size =3;
-    
+    static final String db_type = "enter";
     
     
     public EnterDoor(Game game, Vec2 position) throws IOException, SQLException {
-        super(game);
+        super(game, db_type);
         this.box = new Box(position.x, position.y, position.x+size, position.y+size);
         this.position = position;
         

@@ -31,7 +31,7 @@ public class Platform extends PObject {
         this.typePlateforme = typePlateforme;
         
         if (img == null) {
-            img = new Image[7];
+            img = new Image[10];
             img[0] = ImageIO.read(new File("./images/patterns/Tile (5).png")); //plateforme 1x1
             img[1] = ImageIO.read(new File("./images/patterns/Tile (16).png")); //plateforme 1x3
             img[2] = ImageIO.read(new File("./images/patterns/Tile (13).png")); //plateforme 1/2x1
@@ -39,7 +39,9 @@ public class Platform extends PObject {
             img[4] = ImageIO.read(new File("./images/Barrel_1_3.png"));
             img[5] = ImageIO.read(new File("./images/Barrel_2_4.png"));
             img[6] = ImageIO.read(new File("./images/patterns/Tile (18).png")); //mur hauteur 3
-            //img[6] = ImageIO.read(new File("./images/p.png"));
+            img[7] = ImageIO.read(new File("./images/Tile_10.png"));
+            img[8] = ImageIO.read(new File("./images/Tile_11.png"));
+            img[9] = ImageIO.read(new File("./images/Tile_12.png"));
         }
     }
     public Platform rotation(Platform p0, double angle){  //la rotation de this autours de p0 d'un angle "angle"; [p0,this] est vertical par rapport à leur centre
