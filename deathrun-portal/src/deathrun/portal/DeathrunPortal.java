@@ -33,9 +33,9 @@ public class DeathrunPortal {
             //int choixMap = rand.nextInt(4)+1;
             game.init(4);// choix de la map 1, 2, 3, 4	// connecte au serveur et construit tous les objets tels que dans la base de donnnées
             //TODO: check dans la db players et ajouter au jeu tous ceux deja existants
-            game.map.objects.add(new Punch(game,1,new Vec2(21,16)));
+//            game.map.objects.add(new Punch(game,1,new Vec2(21,16)));
             game.map.objects.add(new Acid(game, new Vec2(6,13)));
-            game.map.objects.add(new Spikes(game,3,new Vec2(5,15)));
+            game.map.objects.add(new Spikes(game,0,new Vec2(5,15)));
             
 
             controled = new Player(game, menu.pseudo, menu.avatar);
