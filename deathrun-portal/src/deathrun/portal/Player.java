@@ -370,7 +370,7 @@ public class Player extends PObject {
     public void setDead(boolean dead) { setDead(dead, controled); }
     public void setDead(boolean dead, boolean withSyncAndTryEndRound) {
         this.dead = dead;
-        if (dead) avatar = 3;
+        if (dead) {avatar = 3; death.play();}
         else avatar = baseAvatar;
         if(withSyncAndTryEndRound){
             System.out.println("player "+name+" is dead");
