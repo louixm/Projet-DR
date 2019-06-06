@@ -130,7 +130,7 @@ abstract public class PObject {
                 req.executeUpdate();
                 req.close();
                 
-                update_date_sync(sync);
+                last_sync = sync.now();
             }
             catch (SQLException err) {
                 System.out.println("PObject.syncSet():\n"+err);
@@ -139,18 +139,6 @@ abstract public class PObject {
         
     }
     
-    /// recuperation de la date serveur pour garder la date de sync
-    void update_date_sync(Sync sync) {
-        try {
-            PreparedStatement req = sync.srv.prepareStatement("SELECT now();");
-            ResultSet r = req.executeQuery();
-            r.next();
-            last_sync = r.getTimestamp(1);
-        }
-        catch (SQLException err) {
-            System.out.println("PObject.update_date_sync():\n"+err);
-        }
-    }
     
     /// appellé a chaque iteration de la boucle principale du jeu
     public void onGameStep(Game g, float dt) {}

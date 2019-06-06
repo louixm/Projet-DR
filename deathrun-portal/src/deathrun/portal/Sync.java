@@ -6,6 +6,10 @@
 package deathrun.portal;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 
 /**
  *
@@ -20,9 +24,22 @@ public class Sync {
     */
     
     public Connection srv;
-    public long sync_interval = 50000000; // (ns) temps minimum entre chaque synchronisation avec la BDD
+    public long sync_interval = 100000000; // (ns) temps minimum entre chaque synchronisation avec la BDD
     
     public Sync(Connection srv) {
         this.srv = srv;
+    }
+    
+    public Timestamp now() {
+        try {
+            PreparedStatement req = srv.prepareStatement("SELECT now();");
+            ResultSet r = req.executeQuery();
+            r.next();
+            return r.getTimestamp(1);
+        }
+        catch (SQLException err) {
+            System.out.println("PObject.update_date_sync():\n"+err);
+            return null;
+        }
     }
 }
