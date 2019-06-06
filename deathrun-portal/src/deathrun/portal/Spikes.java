@@ -24,11 +24,13 @@ public class Spikes extends PObject {
     double div=1;
     double sens;
     static final String db_type = "spikes";
+    static SoundPlayer spiked;
     
     public Spikes(Game game,double sens, Vec2 position) throws IOException, SQLException {
         super(game, db_type);
         this.position = position;
         this.sens = sens;
+        spiked = new SoundPlayer("Pics.mp3", false);
         if(sens==0){
             img = ImageIO.read(new File("./images/Spikes_0.png")); //spikes vers le bas
         }
@@ -68,27 +70,39 @@ public class Spikes extends PObject {
             Vec2 p4 = new Vec2(p2.x , p1.y) ; // point supérieur droit
             if (sens == 0){ // bas
                 if ((collision_box.p1.x <= p4.x && p1.x<=collision_box.p2.x) && p1.y == collision_box.p2.y){  
-                    p.setDead(true);
+                     if (!p.dead){
+                        spiked.play();
+                        p.setDead(true);
+                     }
+                    
                     // Player Killed
                 }
             }
             if (sens == 1){ // gauche
                 if ((collision_box.p1.y <= p2.y && p4.y<=collision_box.p2.y) && p2.x == collision_box.p1.x){  
-                    p.setDead(true);
+                    if (!p.dead){
+                        spiked.play();
+                        p.setDead(true);
+                    }
                     // Player Killed
                 }
             }
             if (sens == 2){ // haut
                 if ((collision_box.p1.x <= p4.x && p1.x<=collision_box.p2.x) && p2.y == collision_box.p1.y){  
-                    p.setDead(true);
+                       if (!p.dead){
+                        spiked.play();
+                        p.setDead(true);
+                    }                    
                     // Player Killed
                 }
             }
             if (sens == 3){ // droit
                 if ((collision_box.p1.y <= p2.y && p4.y<=collision_box.p2.y) && p1.x == collision_box.p2.x){  
-                    p.setDead(true);
-                    // Player Killed
-                }
+                       if (!p.dead){
+                        spiked.play();
+                        p.setDead(true);
+                    }
+                }// Player Killed
             }
         }
     }
