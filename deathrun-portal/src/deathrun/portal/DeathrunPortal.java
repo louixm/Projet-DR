@@ -37,6 +37,7 @@ public class DeathrunPortal {
             controled.setControled(true);
 
             controled.setPosition(game.map.enter.position.add(new Vec2((game.map.enter.box.getWidth() - controled.collision_box.getWidth())/2, game.map.enter.box.getHeight() ))); //- controled.collision_box.getHeight()
+
             
 //            //portails
 //            Portal port = new Portal(game,new Vec2(13, 1), new boolean[] {false,true});
@@ -49,9 +50,10 @@ public class DeathrunPortal {
 //            //pieges
 //            game.map.objects.add(new Saw(game, game.map.size.center().sub(new Vec2(1, 1))));
 //            game.map.objects.add(new Laser(game,new Vec2(0, 11),0));
-//            game.map.objects.add(new Punch(game,2,new Vec2(21,16)));
-//            game.map.objects.add(new Acid(game, new Vec2(6,13)));
-//            
+            game.map.objects.add(new Punch(game,1,new Vec2(21,16)));
+            game.map.objects.add(new Acid(game, new Vec2(6,13)));
+            
+            game.map.objects.add(new Spikes(game,3,new Vec2(5,15)));
             controled.acceleration.y = -1; // valeur différente de 0 pour forcer l'update de physicstep initiale
             //TODO: faire plus prore que ca
             

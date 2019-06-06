@@ -20,10 +20,13 @@ import javax.imageio.ImageIO;
  *
  * @author kbenie
  */
-public class Acid extends Trap {
-    //Box collision_box;
+public class Acid extends PObject {
+    Box collision_box;
+    Platform platform_g;
+    Platform platform_m1;
+    Platform platform_m2;
+    Platform platform_d;
     static Image img;
-    //static Image imi;
     static Image im;
     static Image im0;
     static Image im1;
@@ -33,10 +36,10 @@ public class Acid extends Trap {
     int step;
     double div=4;
     double decalage = 50; // décalage en pixel entre la box de collision et l'image avec la vapeur
-    Vec2 position;
+    //Vec2 position;
     static final String db_type = "acid";
     long time_next_image;
-    long image_duration = 20000000;
+    long image_duration = 35350000;
     
     
     public Acid(Game game, Vec2 position) throws IOException, SQLException {
@@ -44,26 +47,34 @@ public class Acid extends Trap {
         if (img == null) {
             img = ImageIO.read(new File("./images/Acid_i.png")); //Acid
         }
-        this.position = position;
-        //div = 3;
-        this.collision_box = new Box(0, 0, img.getWidth(null)/(div*36f), img.getHeight(null)/(div*36f)).translate(position);
-        setPosition(position);
+        this.collision_box = new Box(0, 0, img.getWidth(null)/(div*36f), img.getHeight(null)/(div*36f)).translateToPosition(position);
+        //setPosition(position);
         
-        //imi = ImageIO.read(new File("./images/Acid_i.png"));
         im = ImageIO.read(new File("./images/Tile_10.png"));
         im0 = ImageIO.read(new File("./images/Acid_0.png"));
         im1 = ImageIO.read(new File("./images/Acid_1.png"));
         im2 = ImageIO.read(new File("./images/Acid_2.png"));
         im3 = ImageIO.read(new File("./images/Acid_3.png"));
+        
+        Vec2 positionG = position;
+        Vec2 positionM1 = new Vec2(position.x,position.y+im.getWidth(null)/(div*36f));
+        Vec2 positionM2 = new Vec2(position.x+im.getWidth(null),position.y+im.getWidth(null)/(div*36f));
+        Vec2 positionD = new Vec2(position.x+(im.getWidth(null)+im.getHeight(null))/(div*36f),position.y);
+        
+        this.platform_g = new Platform(game,positionG, im.getHeight(null)/(div*36f), im.getWidth(null)/(div*36f),9); // 36 == scale
+        this.platform_m1 = new Platform(game,positionM1, im.getWidth(null)/(div*36f), im.getHeight(null)/(div*36f),7);
+        this.platform_m2 = new Platform(game,positionM2, im.getWidth(null)/(div*36f), im.getHeight(null)/(div*36f),7);
+        this.platform_d = new Platform(game,positionD, im.getHeight(null)/(div*36f), im.getWidth(null)/(div*36f),8);
     }
     
     //--------------- interface de gestion des collisions -----------------
     public int collisionable(PObject other)  { 
-        return (other instanceof Player)?1:0;
+        return (other instanceof Player)?2:0;
     }
     //--------------- interface de gestion des collisions -----------------*/
     
-    
+    @Override
+    public Box getCollisionBox()  { return collision_box; }
     
     
     @Override
@@ -73,7 +84,7 @@ public class Acid extends Trap {
             Vec2 p2 = p.getCollisionBox().p2 ; //point inférieur droit
             Vec2 p3 = new Vec2(p1.x, p2.y) ; // point inférieur gauche
             Vec2 p4 = new Vec2(p2.x , p1.y) ; // point supérieur droit
-            if ((p2.x<(collision_box.p2.x - im.getHeight(null)/(div*36f)) && p3.x>(collision_box.p1.x + im.getHeight(null)/(div*36f))) && p2.y == collision_box.p1.y){
+            if ((p3.x<(platform_d.position.x /(div*36f)) && p2.x>(platform_g.position.x + im.getHeight(null)/(div*36f))) && p2.y == platform_g.position.y){
                 p.setDead(true);
                     // Player Killed
             }else{
@@ -119,9 +130,6 @@ public class Acid extends Trap {
             }
                 
         } 
-            // Redimensionnement de la box de collision
-        //collision_box = new Box(0,0 , imi.getWidth(null)/(div*scale),(imi.getHeight(null))/(div*scale)); //la dimension de la box est celle de l'image sans vapeur
-        //collision_box = collision_box.translateToPosition(position);
             
         time_next_image = ac_time + image_duration;
         // ---------------affichage de PObject ----------------------      
