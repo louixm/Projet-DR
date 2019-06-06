@@ -44,7 +44,7 @@ public class DeathrunPortal {
             controled.setPosition(game.map.enter.position.add(new Vec2((game.map.enter.box.getWidth() - controled.collision_box.getWidth())/2, game.map.enter.box.getHeight() ))); //- controled.collision_box.getHeight()
             
             //audio continue
-            SoundPlayer sound = new SoundPlayer("wasted.mp3", false);
+            SoundPlayer sound = new SoundPlayer("scieContinue.mp3", true);
             sound.play();
             
 //            //portails
