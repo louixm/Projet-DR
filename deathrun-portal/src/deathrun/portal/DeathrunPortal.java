@@ -29,16 +29,6 @@ public class DeathrunPortal {
             //game.purgeTraps();
             Player controled;
             //try {
-            //Random rand = new Random();
-            //int choixMap = rand.nextInt(4)+1;
-            game.init(4);// choix de la map 1, 2, 3, 4	// connecte au serveur et construit tous les objets tels que dans la base de donnnées
-            //TODO: check dans la db players et ajouter au jeu tous ceux deja existants
-            controled = new Player(game, menu.pseudo, menu.avatar);
-            controled.setControled(true);
-
-            controled.setPosition(game.map.enter.position.add(new Vec2((game.map.enter.box.getWidth() - controled.collision_box.getWidth())/2, game.map.enter.box.getHeight() ))); //- controled.collision_box.getHeight()
-
-            
 //            //portails
 //            Portal port = new Portal(game,new Vec2(13, 1), new boolean[] {false,true});
 //            Portal port2 = new Portal(game,new Vec2(13,16), new boolean[] {false,true});
@@ -50,10 +40,18 @@ public class DeathrunPortal {
 //            //pieges
 //            game.map.objects.add(new Saw(game, game.map.size.center().sub(new Vec2(1, 1))));
 //            game.map.objects.add(new Laser(game,new Vec2(0, 11),0));
-            game.map.objects.add(new Punch(game,1,new Vec2(21,16)));
-            game.map.objects.add(new Acid(game, new Vec2(6,13)));
-            game.map.objects.add(new Spikes(game,3,new Vec2(5,15)));
+            new Punch(game,1,new Vec2(21,16));
+            new Acid(game, new Vec2(6,13));
+            new Spikes(game,3,new Vec2(5,15));
             
+            //Random rand = new Random();
+            //int choixMap = rand.nextInt(4)+1;
+            game.init(4);// choix de la map 1, 2, 3, 4	// connecte au serveur et construit tous les objets tels que dans la base de donnnées
+            
+            //TODO: check dans la db players et ajouter au jeu tous ceux deja existants
+            controled = new Player(game, menu.pseudo, menu.avatar);
+            controled.setControled(true);
+            controled.setPosition(game.map.enter.position.add(new Vec2((game.map.enter.box.getWidth() - controled.collision_box.getWidth())/2, game.map.enter.box.getHeight() ))); //- controled.collision_box.getHeight()   
             controled.acceleration.y = -1; // valeur différente de 0 pour forcer l'update de physicstep initiale
             //TODO: faire plus prore que ca
             

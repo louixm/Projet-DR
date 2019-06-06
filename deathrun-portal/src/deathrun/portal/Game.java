@@ -179,6 +179,8 @@ public class Game {
         map = new Map(new Box(0, 0, 40, 20));
         this.map = this.map.MapInitialization(this, i);
         
+        syncUpdate();
+        /*
         if (this.sync != null) {
             //Players initialization
             try {                
@@ -198,6 +200,7 @@ public class Game {
                 System.out.println("init players: "+err);
             }
         }
+        */
     }
     
     
@@ -213,14 +216,11 @@ public class Game {
             
             // si sync n'est pas instancié, fonctionnement hors ligne
             if (sync == null)   return;
+            //System.out.println("objects: "+objects);
             // sinon essai de connexion
             try {
                 // recuperer la date serveur
-                PreparedStatement reqtime = sync.srv.prepareStatement("SELECT now();");
-                ResultSet rtime = reqtime.executeQuery();
-                rtime.next();
-                Timestamp db_time = rtime.getTimestamp(1);
-                rtime.close();
+                Timestamp db_time = sync.now();
                 
                 // synchronisation de la table des joueurs
                 PreparedStatement reqplayers = sync.srv.prepareStatement("SELECT id,state,movement FROM players");
@@ -241,6 +241,38 @@ public class Game {
                 }
                 rplayers.close();
                 
+                // synchronisation de la table des pieges
+                PreparedStatement reqtraps = sync.srv.prepareStatement("SELECT id,owner,enabled,date_sync FROM traps");
+                //reqtraps.setTimestamp(1, db_last_sync);
+                ResultSet rtraps = reqtraps.executeQuery();
+                while (rtraps.next()) {
+                    int trapid = rtraps.getInt("id");
+                    int ownerid = rtraps.getInt("owner");
+                    boolean enabled = rtraps.getBoolean("enabled");
+                    
+                    if (!objects.containsKey(trapid))    {
+                        System.out.println("there is no local instance for trap "+trapid);
+                        continue;
+                    }
+                    
+                    Trap trap = (Trap) objects.get(trapid);
+                    Timestamp server_sync = rtraps.getTimestamp("date_sync");
+                    System.out.println("have trap "+trapid);
+                    if (trap.last_trap_sync == null || server_sync.compareTo(trap.last_trap_sync) > 0) {
+                        
+                        System.out.print("get for trap "+trapid);
+                        Player owner;
+                        if (ownerid >= 0)
+                            owner = (Player) objects.get(ownerid);
+                        else
+                            owner = null;
+                        
+                        // assignation
+                        trap.setControl(owner, false);
+                        trap.enable(enabled, false);
+                        trap.last_trap_sync = (Timestamp) server_sync;
+                    }
+                }
                 
                 // synchronisation des objets physiques
                 // recupérer les infos du serveur plus récentes que la derniere reception
@@ -268,37 +300,7 @@ public class Game {
                     }
                 }
                 robjects.close();
-                                
-                // synchronisation de la table des pieges
-                PreparedStatement reqtraps = sync.srv.prepareStatement("SELECT id,owner,enabled,date_sync FROM traps WHERE date_sync > ?");
-                reqtraps.setTimestamp(1, db_last_sync);
-                ResultSet rtraps = reqtraps.executeQuery();
-                while (rtraps.next()) {
-                    int trapid = rtraps.getInt("id");
-                    int ownerid = rtraps.getInt("owner");
-                    boolean enabled = rtraps.getBoolean("enabled");
-                    
-                    if (!objects.containsKey(trapid))    {
-                        System.out.println("there is no local instance for trap "+trapid);
-                        continue;
-                    }
-                    
-                    Trap trap = (Trap) objects.get(trapid);
-                    Timestamp server_sync = rtraps.getTimestamp("date_sync");
-                    if (trap.last_sync == null || server_sync.compareTo(trap.last_sync) > 0) {
-                        
-                        Player owner;
-                        if (ownerid >= 0)
-                            owner = (Player) objects.get(ownerid);
-                        else
-                            owner = null;
-                        
-                        // assignation
-                        trap.setControl(owner, false);
-                        trap.enable(enabled, false);
-                        trap.last_sync = (Timestamp) server_sync;
-                    }
-                }
+                
                 
                 // set last sync time
                 db_last_sync = db_time;

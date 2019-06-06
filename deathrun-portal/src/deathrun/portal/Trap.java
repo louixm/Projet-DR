@@ -30,6 +30,8 @@ public class Trap extends PObject {
     final long take_time = 2000;
     Game game;
     
+    Timestamp last_trap_sync;
+    
     
     
     
@@ -54,7 +56,7 @@ public class Trap extends PObject {
                 req.executeUpdate();
                 req.close();
                 
-                update_date_sync(game.sync);
+                last_trap_sync = game.sync.now();
             }
         }
     }
@@ -72,7 +74,7 @@ public class Trap extends PObject {
                 req.executeUpdate();
                 req.close();
                 
-                update_date_sync(game.sync);
+                last_trap_sync = game.sync.now();
                 
             } catch (SQLException err) {
                 System.out.println("Trap.enable: "+err);
@@ -100,7 +102,7 @@ public class Trap extends PObject {
                 req.executeUpdate();
                 req.close();
                 
-                update_date_sync(game.sync);
+                last_trap_sync = game.sync.now();
                 
             } catch (SQLException err) {
                 System.out.println("Trap.setControl: "+err);
