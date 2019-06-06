@@ -24,8 +24,9 @@ public class Platform extends PObject {
     static Image img[];
     int typePlateforme;
     
-    public Platform(Game game, Vec2 position, Box box, int typePlateforme) throws IOException, SQLException {
-        super(game, String.valueOf(typePlateforme));
+    public Platform(Game game, Vec2 position, Box box, int typePlateforme) throws IOException, SQLException {this(game, position, box, typePlateforme, -1);}
+    public Platform(Game game, Vec2 position, Box box, int typePlateforme, int db_id) throws IOException, SQLException {
+        super(game, String.valueOf(typePlateforme), db_id);
         this.collision_box = box;
         setPosition(position);
         this.typePlateforme = typePlateforme;
@@ -66,6 +67,7 @@ public class Platform extends PObject {
     }
      
     //--------------- interface de gestion des collisions -----------------
+    @Override
     public int collisionable(PObject other)  { 
         if (other instanceof Player)    return 1;
         else                            return 0;

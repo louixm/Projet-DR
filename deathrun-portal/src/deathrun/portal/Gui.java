@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -95,7 +96,11 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
         this.timer = new Timer(20, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                game.step();
+                try {
+                    game.step();
+                } catch (IOException ex) {
+                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 render(bufferContext);
                 jLabel1.repaint();
                 try {              
@@ -166,14 +171,16 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
 
     public void render(Graphics2D g) {
         g.drawImage(this.background, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, null);
-        for (PObject object : game.map.objects) {
-            if (! object.foreground())	object.render(g, scale);
-        }
-        for (Player player : game.players)		
-            player.render(g, scale);
-        for (PObject object : game.map.objects) {
-            if (object.foreground())	object.render(g, scale);
-        }
+//        for (PObject object : game.map.objects) {
+//            if (! object.foreground())	object.render(g, scale);
+//        }
+//        for (Player player : game.players)		
+//            player.render(g, scale);
+//        for (PObject object : game.map.objects) {
+//            if (object.foreground())	object.render(g, scale);
+//        }
+         for (HashMap.Entry<Integer,PObject> p : game.objects.entrySet()) if (!p.getValue().foreground()) p.getValue().render(g, scale);
+         for (HashMap.Entry<Integer,PObject> p : game.objects.entrySet()) if (p.getValue().foreground()) p.getValue().render(g, scale);
     }
   
     @Override
@@ -229,34 +236,49 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
     }
     
     public void poserObjet(Vec2 pos_clicked, int orientationBloc) throws SQLException, IOException{
+        PObject obj;
         switch (this.selectionBloc.blocAPoser) {
                     //Tests pour savoir quel bloc a été choisi dans la fenetre SelectBloc
                     case 1: //Plateforme
-                        this.game.map.objects.add(new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0)); //Ajout du bloc aux coordonnées du clic
+                        obj = new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0);
+                        obj.last_sync = game.sync.latest++; //Ajout du bloc aux coordonnées du clic
+                        obj.syncSet(game.sync, true);
                         break;
                     case 2: //Scie circulaire
-                        this.game.map.objects.add(new Saw(this.game, pos_clicked));
+                        obj = new Saw(this.game, pos_clicked);
+                        obj.last_sync = game.sync.latest++;
+                        obj.syncSet(game.sync, true);
                         break;
                     case 3: //Laser
                         float angle = (float) ((Math.PI/8)*(orientationBloc+1));
-                        this.game.map.objects.add(new Laser(this.game, pos_clicked, angle));
+                        obj = new Laser(this.game, pos_clicked, angle);
+                        obj.last_sync = game.sync.latest++;
+                        obj.syncSet(game.sync, true);
                         break;
                     case 4: //Punch
                         int orientation = orientationBloc;
                         if(orientation >= 4){orientation = orientation - 4;};
-                        this.game.map.objects.add(new Punch(this.game, orientation, pos_clicked));
+                        obj = new Punch(this.game, orientation, pos_clicked);
+                        obj.last_sync = game.sync.latest++;
+                        obj.syncSet(game.sync, true);
                         break;
                     case 5: //Portail
                         //this.game.map.objects.add(new Portal(this.game, pos_clicked));
                         break;
                     case 6: //
-                        this.game.map.objects.add(new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0));
+                        obj = new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0);
+                        obj.last_sync = game.sync.latest++;
+                        obj.syncSet(game.sync, true);
                         break;
                     case 7: //
-                        this.game.map.objects.add(new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0));
+                        obj = new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0);
+                        obj.last_sync = game.sync.latest++;
+                        obj.syncSet(game.sync, true);
                         break;
                     case 8: //
-                        this.game.map.objects.add(new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0));
+                        obj = new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0);
+                        obj.last_sync = game.sync.latest++;
+                        obj.syncSet(game.sync, true);
                         break;
                     }
         this.selectionBloc.blocAPoser = 0;
@@ -282,21 +304,25 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
                         case 1: //Plateforme
                             Platform platform = new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0);
                             platform.render(this.bufferContext, scale);
+                            game.objects.remove(platform.db_id);
                             break;
                         case 2: //Scie circulaire
                             Saw saw = new Saw(this.game, pos_clicked);
                             saw.render(this.bufferContext, scale);
+                            game.objects.remove(saw.db_id);
                             break;
                         case 3: //Laser
                             float angle = (float) ((Math.PI/8)*(orientationBloc+1));
                             Laser laser = new Laser(this.game, pos_clicked, angle);
                             laser.render(this.bufferContext, scale);
+                            game.objects.remove(laser.db_id);
                             break;
                         case 4: //Punch
                             int orientation = orientationBloc;
                             if(orientation >= 4){orientation = orientation - 4;};
                             Punch punch = new Punch(this.game, orientation, pos_clicked);
                             punch.render(this.bufferContext, scale);//portal.render(this.bufferContext, scale);
+                            game.objects.remove(punch.db_id);
                             break;
                         case 5: //Portail
                             

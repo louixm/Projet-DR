@@ -26,7 +26,7 @@ public class Saw extends PObject {
     static Image img;
     int typePlateforme;
     int step;
-    static final String db_type = "spikes";
+    static final String db_type = "saw";
     
     public Saw(Game game, Vec2 position) throws IOException, SQLException {
         super(game, db_type);
@@ -48,6 +48,7 @@ public class Saw extends PObject {
     }
     
     //--------------- interface de gestion des collisions -----------------
+    @Override
     public int collisionable(PObject other)  { 
         return (other instanceof Player)?2:0;
     }

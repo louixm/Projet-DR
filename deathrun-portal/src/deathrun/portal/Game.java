@@ -71,12 +71,13 @@ public class Game {
     
     
     
-    void step() {
+    void step() throws IOException {
         long ac_time = System.nanoTime();
         float dt = ((float)(ac_time - prev_time))/1e9f;
         
-        for (PObject p: map.objects)    p.onGameStep(this, dt);
-        for (PObject p: players)        p.onGameStep(this, dt);
+        //for (PObject p: map.objects)    p.onGameStep(this, dt);
+        for (HashMap.Entry<Integer,PObject> p : objects.entrySet()) p.getValue().onGameStep(this, dt);
+//        for (PObject p: players)        p.onGameStep(this, dt);
         if (sync != null) syncUpdate();
         physicStep(dt);
         
@@ -205,8 +206,8 @@ public class Game {
     
     
     /// met a jour l'etat local du jeu avec les dernieres modifications du serveur
-    void syncUpdate()       { syncUpdate(false); }
-    void syncUpdate(boolean force) {
+    void syncUpdate() throws IOException       { syncUpdate(false); }
+    void syncUpdate(boolean force) throws IOException {
         // recuperer la date
         long ac_time = System.nanoTime();
         if (force || ac_time > next_sync) {
@@ -257,7 +258,7 @@ public class Game {
                     
                     Trap trap = (Trap) objects.get(trapid);
                     long update = rtraps.getLong("version");
-                    System.out.println("get trap "+trapid+" version "+update+"  here is "+trap.last_trap_sync);
+//                    System.out.println("get trap "+trapid+" version "+update+"  here is "+trap.last_trap_sync);
                     if (update > trap.last_trap_sync) {
                         
                         Player owner;
@@ -320,7 +321,7 @@ public class Game {
         PObject obj;
         if (this.sync != null) {
             try {
-                System.out.println("prep id = " + db_id);
+                System.out.println("prep player id = " + db_id);
                 PreparedStatement req = this.sync.srv.prepareStatement("SELECT * FROM players WHERE id = ?");
                 req.setInt(1, db_id);
                 ResultSet r = req.executeQuery();
@@ -342,8 +343,38 @@ public class Game {
         return null;
     }
     
-    public PObject syncNewObject(int db_id) {
-        System.out.println("todo: implement syncNewObject");
+    public PObject syncNewObject(int db_id) throws IOException {
+        PObject obj;
+        if (this.sync != null) {
+            try {
+                System.out.println("prep obj id = " + db_id);
+                PreparedStatement req = this.sync.srv.prepareStatement("SELECT * FROM pobjects WHERE id = ?");
+                req.setInt(1, db_id);
+                ResultSet r = req.executeQuery();
+                r.next();
+                String type = r.getString("type");
+                Vec2 position = new Vec2(r.getInt("x")/1000f, r.getInt("y")/1000f);
+                double vx = r.getDouble("vx");
+                double vy = r.getDouble("vy");
+                switch(type){
+                    case("saw"): obj = new Saw(this, position); break;
+                    case("spikes"): obj = new Spikes(this, 2, position); break;
+                    default: try{
+                        int platformType = Integer.valueOf(type);
+                        obj = new Platform(this, position, new Box (0,0,2,1.5), platformType, db_id);
+                    } catch(NumberFormatException e) {
+                        System.out.println("Unknown object tried to be added");
+                        obj = null;
+                    }
+                }
+                System.out.println("added object " + db_id);
+                r.close();
+                return obj;
+                
+            } catch (SQLException err) {
+                System.out.println("syncNewObject: "+err);
+            }
+        }
         return null;
     }
     
