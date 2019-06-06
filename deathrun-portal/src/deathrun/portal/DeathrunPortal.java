@@ -25,7 +25,7 @@ public class DeathrunPortal {
         while (menu.alive)  Thread.sleep(100);
         
         if (menu.start) {
-            Game game = new Game(false);
+            Game game = new Game(true);
             //game.purgeTraps();
             Player controled;
             //try {
