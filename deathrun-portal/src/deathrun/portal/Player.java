@@ -332,15 +332,15 @@ public class Player extends PObject {
     }
 
     public Color getPlayerColor(){
-        switch(this.db_id){
-            case(-1): return Color.BLUE;
-            case(-2): return Color.ORANGE;
-            case(-3): return Color.GREEN;
-            case(-4): return Color.PINK;
-            case(-5): return Color.CYAN;
-            case(-6): return Color.RED;
-            case(-7): return Color.YELLOW;
-            case(-8): return Color.MAGENTA; 
+        switch(this.game.players.indexOf(this)){
+            case(0): return Color.BLUE;
+            case(1): return Color.ORANGE;
+            case(2): return Color.GREEN;
+            case(3): return Color.PINK;
+            case(4): return Color.CYAN;
+            case(5): return Color.RED;
+            case(6): return Color.YELLOW;
+            case(7): return Color.MAGENTA; 
             default: return Color.WHITE;
         }
     }
