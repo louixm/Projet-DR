@@ -121,7 +121,9 @@ public class Game {
             player.setCollisionDirection(new ArrayList<String>());
             
             // collisions avec les objets
-            for (PObject object: map.objects) {
+            for (HashMap.Entry<Integer,PObject> p : objects.entrySet()) {
+                PObject object = p.getValue();
+                if (object instanceof Player) continue;
                 int obj_collisionable = object.collisionable(player);
                 int pl_collisionable = player.collisionable(object);
                 if (pl_collisionable != 0 && obj_collisionable != 0) {
