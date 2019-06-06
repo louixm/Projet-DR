@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,6 +25,8 @@ public class Game {
     public Map map;
     public ArrayList<Player> players;
     public  Sync sync;
+    
+    public HashMap<Integer,PObject> objects;
     
     long prev_time; // (ns) instant de dernier pas physique
     long next_sync; // (ns) instant de prochaine synchronisation prévue de l'etat du jeu avec la BDD
@@ -53,6 +56,7 @@ public class Game {
         
         prev_time = System.nanoTime();
 	players = new ArrayList<>();
+        objects = new HashMap<>();
     }
     
     public void disconnect() {
@@ -184,7 +188,8 @@ public class Game {
                     String name = r.getString("name");
                     int avatar = r.getInt("avatar");
                     int state = r.getInt("state");
-                    Player player = new Player(this, name, avatar);
+                    int id = r.getInt("id");
+                    Player player = new Player(this, name, avatar, id);
                     player.setState(state);
                     System.out.println("initialized player " + name + " with skin #" + avatar);
                 }
@@ -217,37 +222,6 @@ public class Game {
                 Timestamp db_time = rtime.getTimestamp(1);
                 rtime.close();
                 
-                // synchronisation des objets physiques
-                // recupérer les infos du serveur plus récentes que la derniere reception
-                PreparedStatement reqobjects = sync.srv.prepareStatement("SELECT id,x,y,vx,vy,date_sync FROM pobjects WHERE date_sync > ? ");
-                reqobjects.setTimestamp(1, db_last_sync);
-                
-                ResultSet robjects = reqobjects.executeQuery();
-                while (robjects.next()) {
-                    int id = robjects.getInt("id");
-                    PObject obj; 
-                    
-                    if (id < 0) {
-                        try {
-                            obj = players.get(-id-1);
-                        }
-                        catch (IndexOutOfBoundsException e){
-                            obj = syncNewPlayer(id);                      
-                        }
-                    }
-                    else       
-                        obj = map.objects.get(id);
-                    
-                    Timestamp server_sync = robjects.getTimestamp("date_sync");
-                    if (obj.last_sync == null || server_sync.compareTo(obj.last_sync) > 0) {
-                        obj.setPosition(new Vec2(robjects.getInt("x")/1000f, robjects.getInt("y")/1000f));
-                        obj.velocity.x = robjects.getDouble("vx");
-                        obj.velocity.y = robjects.getDouble("vy");
-                        //System.out.println("updated object "+id);
-                    }
-                }
-                robjects.close();
-                
                 // synchronisation de la table des joueurs
                 PreparedStatement reqplayers = sync.srv.prepareStatement("SELECT id,state,movement FROM players");
                 
@@ -258,12 +232,8 @@ public class Game {
                     int movement = rplayers.getInt("movement");
                     
                     Player p;
-                    try {
-                            p = players.get(-id-1);
-                        }
-                        catch (IndexOutOfBoundsException e){
-                            p = (Player) syncNewPlayer(id);                      
-                        }
+                    if (objects.containsKey(id))    p = (Player) objects.get(id);
+                    else                            { p = (Player) syncNewPlayer(id); System.out.println("spawn a player "+id); }
                     if (!p.isControled()){
                         p.setState(state);
                         p.setMovement(movement);
@@ -271,31 +241,62 @@ public class Game {
                 }
                 rplayers.close();
                 
+                
+                // synchronisation des objets physiques
+                // recupérer les infos du serveur plus récentes que la derniere reception
+                PreparedStatement reqobjects = sync.srv.prepareStatement("SELECT id,x,y,vx,vy,date_sync FROM pobjects WHERE date_sync > ? ");
+                reqobjects.setTimestamp(1, db_last_sync);
+                
+                ResultSet robjects = reqobjects.executeQuery();
+                while (robjects.next()) {
+                    int id = robjects.getInt("id");                    
+                    PObject obj;
+                    if (objects.containsKey(id))    obj = objects.get(id);
+                    else                            obj = syncNewObject(id); 
+                    
+                    if (obj == null) {
+                        System.out.println("object "+id+" not found");
+                        continue;
+                    }
+                    
+                    Timestamp server_sync = robjects.getTimestamp("date_sync");
+                    if (obj.last_sync == null || server_sync.compareTo(obj.last_sync) > 0) {
+                        obj.setPosition(new Vec2(robjects.getInt("x")/1000f, robjects.getInt("y")/1000f));
+                        obj.velocity.x = robjects.getDouble("vx");
+                        obj.velocity.y = robjects.getDouble("vy");
+                        //System.out.println("updated object "+id);
+                    }
+                }
+                robjects.close();
+                                
                 // synchronisation de la table des pieges
-                PreparedStatement reqtraps = sync.srv.prepareStatement("SELECT id,owner,enabled,date_sync FROM traps");
-                //reqtraps.setTimestamp(1, db_last_sync);
+                PreparedStatement reqtraps = sync.srv.prepareStatement("SELECT id,owner,enabled,date_sync FROM traps WHERE date_sync > ?");
+                reqtraps.setTimestamp(1, db_last_sync);
                 ResultSet rtraps = reqtraps.executeQuery();
                 while (rtraps.next()) {
                     int trapid = rtraps.getInt("id");
                     int ownerid = rtraps.getInt("owner");
                     boolean enabled = rtraps.getBoolean("enabled");
                     
-                    if (trapid >= map.objects.size())    continue;
+                    if (!objects.containsKey(trapid))    {
+                        System.out.println("there is no local instance for trap "+trapid);
+                        continue;
+                    }
                     
-                    Trap trap = (Trap) map.objects.get(trapid);
+                    Trap trap = (Trap) objects.get(trapid);
                     Timestamp server_sync = rtraps.getTimestamp("date_sync");
                     if (trap.last_sync == null || server_sync.compareTo(trap.last_sync) > 0) {
                         
-                        int ownerindex = -ownerid-1;
                         Player owner;
-                        if (ownerindex >= 0 && ownerindex < players.size())
-                            owner = players.get(ownerindex);
+                        if (ownerid >= 0)
+                            owner = (Player) objects.get(ownerid);
                         else
                             owner = null;
+                        
                         // assignation
                         trap.setControl(owner, false);
                         trap.enable(enabled, false);
-                        trap.last_sync = (Timestamp) server_sync.clone();
+                        trap.last_sync = (Timestamp) server_sync;
                     }
                 }
                 
@@ -322,18 +323,25 @@ public class Game {
                 String name = r.getString("name");
                 int avatar = r.getInt("avatar");
                 int state = r.getInt("state");
-                Player p = new Player(this, name, avatar);
+                Player p = new Player(this, name, avatar, db_id);
                 p.setState(state);
                 obj = (PObject) p;
                 System.out.println("added player " + name + " with skin #" + avatar);
                 r.close();
                 return obj;
+                
             } catch (SQLException err) {
                 System.out.println("syncNewPlayer: "+err);
             }
         }
         return null;
     }
+    
+    public PObject syncNewObject(int db_id) {
+        System.out.println("todo: implement syncNewObject");
+        return null;
+    }
+    
   
     public void tryEndRound(){
         if (roundEnded) return;
