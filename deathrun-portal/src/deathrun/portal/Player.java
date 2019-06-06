@@ -28,7 +28,7 @@ import javax.imageio.ImageIO;
  */
 public class Player extends PObject {
     public String name; // pseudo du joueur
-    public int avatar;  // numéro d'avatar choisi
+    public int avatar, baseAvatar;  // numéro d'avatar choisi
     public boolean controled = false;   // vrai si le joueur est le joueur actuellement controlé par ce client
     ArrayList<Trap> traps;  // pieges actuellement controlés par le joueur
     
@@ -83,6 +83,7 @@ public class Player extends PObject {
         this.game = game;
         this.name = name; 
         this.avatar = avatar;
+        this.baseAvatar = avatar;
         
         collision_box = new Box(-0.2, 0, 0.2, 1.7);
         visual_box = new Box(-0.5, 0, 0.5, 1.8);
@@ -367,30 +368,26 @@ public class Player extends PObject {
     }
     
     public void setDead(boolean dead) { setDead(dead, controled); }
-    public void setDead(boolean dead, boolean syncAndEndRound) {
-        if (!this.dead && controled) {
-            this.dead = dead;
-            death.play();
-            if (dead) {
-                avatar = 3;
-                if(syncAndEndRound){
-                    System.out.println("player "+name+" is dead");
-                    try {
-                        PreparedStatement req = game.sync.srv.prepareStatement("UPDATE players SET state=? WHERE id = ?");
-                        req.setInt(1, 1); //state = 0 (en vie), 1 (dead), 2 (exit door)
-                        // id de l'objet a modifier
-                        req.setInt(2, db_id);
+    public void setDead(boolean dead, boolean withSyncAndTryEndRound) {
+        this.dead = dead;
+        if (dead) {avatar = 3; death.play();}
+        else avatar = baseAvatar;
+        if(withSyncAndTryEndRound){
+            System.out.println("player "+name+" is dead");
+            try {
+                PreparedStatement req = game.sync.srv.prepareStatement("UPDATE players SET state=? WHERE id = ?");
+                req.setInt(1, 1); //state = 0 (en vie), 1 (dead), 2 (exit door)
+                // id de l'objet a modifier
+                req.setInt(2, db_id);
 
-                        // execution de la requete
-                        req.executeUpdate();
-                        req.close();
-                    }
-                    catch (SQLException err) {
-                        System.out.println("sql exception:\n"+err);
-                    }
-                    game.tryEndRound();
-                }
+                // execution de la requete
+                req.executeUpdate();
+                req.close();
             }
+            catch (SQLException err) {
+                System.out.println("sql exception:\n"+err);
+            }
+            game.tryEndRound();
         }
     }
     

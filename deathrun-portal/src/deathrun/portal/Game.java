@@ -232,7 +232,7 @@ public class Game {
                     int movement = rplayers.getInt("movement");
                     
                     Player p;
-                    if (objects.containsKey(id))    p = (Player) objects.get(id);
+                    if (objects.containsKey(id))    p = getPlayerWithId(id);
                     else                            { p = (Player) syncNewPlayer(id); System.out.println("spawn a player "+id); }
                     if (!p.isControled()){
                         p.setState(state);
@@ -392,5 +392,10 @@ public class Game {
         catch (SQLException err) {
             System.out.println("purgeTraps(): "+err);
         }
+    }
+    
+    public Player getPlayerWithId(int id){
+        for (Player p : players) if (p.db_id == id) return p;
+        return null;
     }
 }
