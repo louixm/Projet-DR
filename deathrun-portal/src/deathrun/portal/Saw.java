@@ -26,9 +26,10 @@ public class Saw extends PObject {
     static Image img;
     int typePlateforme;
     int step;
+    static final String db_type = "spikes";
     
     public Saw(Game game, Vec2 position) throws IOException, SQLException {
-        super(game);
+        super(game, db_type);
         this.collision_box = new Box(-1, -1, 1, 1).translate(position);
         setPosition(position);
         

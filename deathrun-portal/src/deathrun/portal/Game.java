@@ -362,8 +362,11 @@ public class Game {
         try {
             PreparedStatement req;
                 // effacement de la table des objets
-                req = this.sync.srv.prepareStatement("DELETE FROM pobjects WHERE id < 0");
-                req.executeUpdate();
+                for (Player p: players){
+                    req = this.sync.srv.prepareStatement("DELETE FROM pobjects WHERE id = ?");
+                    req.setInt(1, p.db_id);
+                    req.executeUpdate();
+                }
                 // effacement de la table de joueurs
                 req = this.sync.srv.prepareStatement("DELETE FROM players");
                 req.executeUpdate();
