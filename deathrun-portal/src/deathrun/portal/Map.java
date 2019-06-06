@@ -20,11 +20,17 @@ public class Map {
     public ExitDoor exit;
     public EnterDoor enter;
     
+    public int next_id = 0;
+    
     Map(Box size) { 
         this.size = size; 
         this.objects = new ArrayList<PObject>();
     }
     
+    
+    public int new_id() {
+        return next_id++;
+    }
     
     public static Map MapInitialization(Game g, int mapNumber) throws IOException, SQLException{
         Box b = new Box(0,0,30,20);
@@ -58,11 +64,12 @@ public class Map {
             m.objects.add(port2);
             
             //pieges
-            //m.objects.add(new Saw(g, g.map.size.center().sub(new Vec2(1, 1))));
-            //m.objects.add(new Laser(g,new Vec2(0, 11),0));
-            //m.objects.add(new Punch(g,2,new Vec2(21,16)));
-            //m.objects.add(new Acid(g, new Vec2(6,13)));
-            //m.objects.add(new Spikes(g,2,new Vec2(21,16)));
+
+            m.objects.add(new Saw(g, g.map.size.center().sub(new Vec2(1, 1))));
+            m.objects.add(new Laser(g,new Vec2(0, 11),0));
+            m.objects.add(new Punch(g,2,new Vec2(21,16)));
+            m.objects.add(new Acid(g, new Vec2(6,13)));
+
             
             //Croix centrale
             m.objects.add(new Platform(g, new Vec2(-1+b.getWidth()/2,b.getHeight()/4),1,b.getHeight()/2,6));
