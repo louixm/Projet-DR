@@ -40,7 +40,7 @@ public class Acid extends PObject {
     long image_duration = 400000000;
     
     
-    public Acid(Game game, Vec2 position) throws IOException, SQLException {
+    public Acid(Game game, double taille, Vec2 position) throws IOException, SQLException {
         super(game, db_type);
         if (img == null) {
             img = ImageIO.read(new File("./images/Acid_i.png")); //Acid
@@ -53,7 +53,7 @@ public class Acid extends PObject {
             ImageIO.read(new File("./images/Acid_2.png")),
             ImageIO.read(new File("./images/Acid_3.png"))
         };
-        double largeur = 1.5;
+        double largeur = taille;
         double hauteur = largeur*3/4;
         
         
