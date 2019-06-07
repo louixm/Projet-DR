@@ -330,6 +330,10 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
             case 14: //Acid
                 Acid acid = new Acid(this.game, pos_clicked);
                 acid.render(this.bufferContext, scale);
+                game.objects.remove(acid.platform_d.db_id);
+                game.objects.remove(acid.platform_g.db_id);
+                game.objects.remove(acid.platform_m1.db_id);
+                game.objects.remove(acid.platform_m2.db_id);
                 game.objects.remove(acid.db_id);
                 break;
 //            default: System.out.println("nothing to prev");

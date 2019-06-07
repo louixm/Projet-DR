@@ -19,12 +19,12 @@ import javax.imageio.ImageIO;
  * @author kbenie
  */
 public class Punch extends Trap {
-    static Image img;
-    static Image im0;
-    static Image im1;
-    static Image im2;
-    static Image im3;
-    static Image im4;
+    private Image img;
+    private Image im0;
+    private Image im1;
+    private Image im2;
+    private Image im3;
+    private Image im4;
     int typePlateforme;
     int step;
 //    int orientation;  // 0 = tue en descente; 1 = tue à gauche, 2 tue en haut, 3 tue à droite

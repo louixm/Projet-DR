@@ -6,7 +6,6 @@
 package deathrun.portal;
 
 import static deathrun.portal.Acid.db_type;
-import static deathrun.portal.Punch.img;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.io.File;
@@ -20,7 +19,7 @@ import javax.imageio.ImageIO;
  */
 public class Spikes extends PObject {
     Box collision_box;
-    static Image img;
+    private Image img;
     double div=1;
 //    double orientation;
     static final String db_type = "spikes";
