@@ -520,4 +520,8 @@ public class Game {
             }
         }
     }
+    
+    public void addScoreUponTrapKill(Trap trap, Player player){
+        if (trap.currentcontrol != null && trap.currentcontrol.isControled() && !player.dead && !player.equals(trap.currentcontrol)) this.addScore(trap.currentcontrol, 1, 5);
+    }
 }

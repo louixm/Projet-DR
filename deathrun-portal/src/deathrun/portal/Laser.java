@@ -76,12 +76,13 @@ public class Laser extends Trap {
                 double scal4 = p4.sub(collision_box.center()).dot(this.vectir) ;
 
                 if (sign(proj1) != sign(proj2) && scal1>0 && scal2>0){
+                    game.addScoreUponTrapKill(this, p);
                     p.setDead(true);
-                    if (this.currentcontrol != null && this.currentcontrol.isControled()) game.addScore(this.currentcontrol, 1, 5);
+                    
                     // Player Killed
                 }else if(sign(proj3) != sign(proj4) && scal3>0 && scal4>0){
                     p.setDead(true);
-                    if (this.currentcontrol != null && this.currentcontrol.isControled()) game.addScore(this.currentcontrol, 1, 5);
+                    game.addScoreUponTrapKill(this, p);
                     // Player Killed
                 }
             }
