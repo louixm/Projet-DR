@@ -21,6 +21,7 @@ public class ExitDoor extends PObject{
     final double size = 3;  // diametre de la porte
     final double csize = 1; // largeur hauteur de la boite de collisions
     static final String db_type = "exit";
+    boolean enJeu = true;
     
     public ExitDoor(Game game, Vec2 position) throws IOException, SQLException {
         super(game, db_type);
@@ -75,9 +76,10 @@ public class ExitDoor extends PObject{
                         System.out.println("sql exception:\n"+err);
                     }
                 player.hasReachedExitDoor = true;
-                if (player.isControled()){
+                if (player.isControled() && enJeu == true){
                     SoundPlayer yeahBoi = new SoundPlayer("yeah-boy-shooting-stars.mp3", false);
                     yeahBoi.play();
+                    enJeu=false;
                 }
                 g.tryEndRound();
             }
