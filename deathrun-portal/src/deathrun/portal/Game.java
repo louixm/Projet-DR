@@ -217,6 +217,9 @@ public class Game {
                     this.editionMode = (mode == 0);
                     System.out.println("edition mode = " + this.editionMode);
                     r.close();         
+                    req = this.sync.srv.prepareStatement("DELETE FROM scores");
+                    req.executeQuery();
+                    req.close();
                 } catch (SQLException err) {
                     System.out.println("init: "+err);
                 }
@@ -407,6 +410,7 @@ public class Game {
         for (Player player : this.players){
             if (!(player.dead || player.hasReachedExitDoor || player.disconnected)) return;
         }
+        setEndRoundScores();
         roundEnded = true;
         switchToEditionMode(true);
         ScoreFrame scoreFrame = new ScoreFrame(this, new javax.swing.JFrame(), true);
@@ -476,5 +480,38 @@ public class Game {
             System.out.println("game init:\n"+err);
         }
         this.editionMode = edition;
+    }
+
+    private void setEndRoundScores() {
+        ArrayList<Player> hasReached = new ArrayList<Player>();
+        ArrayList<Player> hasDied = new ArrayList<Player>();
+        for (Player player : this.players){
+            if (!player.disconnected){
+                if (player.dead) hasDied.add(player);
+                if (player.hasReachedExitDoor) hasReached.add(player);
+            }
+        }
+        if (!hasDied.isEmpty()){ // on ajoute les scores que pour le joueur contrôlé
+            for (Player p : hasReached){
+                if (p.isControled()) addScore(p, 0, 10);
+            }
+            if (hasReached.size() == 1 && hasReached.get(0).isControled()) addScore(hasReached.get(0), 2, 5);
+        }
+//        System.out.println(hasReached.get(0).name + hasReached.get(0).isControled());
+    }
+
+    public void addScore(Player player, int type, int amount) {
+        if (this.sync != null) {
+            try {
+                PreparedStatement req = this.sync.srv.prepareStatement("INSERT INTO scores VALUES (?,?,?)");
+                req.setInt(1, player.db_id);
+                req.setInt(2, type);
+                req.setInt(3, amount);
+                req.executeUpdate();
+                req.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 }
