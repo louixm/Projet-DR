@@ -98,6 +98,7 @@ public class ScoreFrame extends javax.swing.JDialog {
                     if (game.sync != null) {
 
                         try {
+                            int cumulAmount = 0;
                             PreparedStatement req = game.sync.srv.prepareStatement("SELECT * FROM scores WHERE player = ?");
                             req.setInt(1, player.db_id);
                             ResultSet r = req.executeQuery();
@@ -107,11 +108,21 @@ public class ScoreFrame extends javax.swing.JDialog {
                                 JPanel score = new JPanel();
                                 if (type == 0) score.setBackground(player.getPlayerColor());
                                 else if (type == 1) score.setBackground(Color.DARK_GRAY);
-                                else score.setBackground(Color.RED);
+                                else score.setBackground(Color.LIGHT_GRAY);
                                 getContentPane().add(score);
-                                score.setBounds(nextLocation, 50*i, amount*2, 20);
-                                nextLocation += amount*2;
-                            }    
+                                score.setBounds(nextLocation, 50*i, amount*3, 20);
+                                nextLocation += amount*3;
+                                cumulAmount += amount;
+                            }
+                            if (cumulAmount > 100){
+                                javax.swing.JLabel victory = new javax.swing.JLabel();
+                                victory.setFont(new java.awt.Font("Trebuchet MS", 1, 26));
+                                victory.setForeground(Color.BLACK);
+                                victory.setText(player.name + " won!");
+                                getContentPane().add(victory);
+                                victory.setBounds(80, 125, 300, 18);
+                                
+                            }
                         } catch (SQLException ex) {
                             Logger.getLogger(ScoreFrame.class.getName()).log(Level.SEVERE, null, ex);
                         }

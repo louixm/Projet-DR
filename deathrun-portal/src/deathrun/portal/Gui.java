@@ -203,7 +203,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
         }
         
         if (editMode || game.editionMode) {
-            if (e.getButton()==1 && this.selectionBloc.blocAPoser == -1) { //Si un clic gauche a été effectué et qu'on a pas encore choisi de bloc, alors la fenetre de selection de bloc s'ouvre
+            if (editMode && (e.getButton()==1 && this.selectionBloc.blocAPoser == -1)) { //Si un clic gauche a été effectué et qu'on a pas encore choisi de bloc, alors la fenetre de selection de bloc s'ouvre
                 selectionBloc.setVisible(true);
                 selectionBloc.addWindowListener(new java.awt.event.WindowAdapter() { //Attente de la fermeture de la fenetre de selection de bloc
                     @Override

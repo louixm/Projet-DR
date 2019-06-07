@@ -69,24 +69,28 @@ public class Punch extends Trap {
             
             if (orientation == 0){ // bas
                 if ((collision_box.p1.x <= p4.x && p1.x<=collision_box.p2.x) && p1.y == collision_box.p2.y){  
-                    p.setDead(true);
+                    game.addScoreUponTrapKill(this, p);
+                    p.setDead(true);                 
                     // Player Killed
                 }
             }
             if (orientation == 1){ // gauche
                 if ((collision_box.p1.y <= p2.y && p4.y<=collision_box.p2.y) && p2.x == collision_box.p1.x){  
+                    game.addScoreUponTrapKill(this, p);
                     p.setDead(true);
                     // Player Killed
                 }
             }
             if (orientation == 2){ // haut
                 if ((collision_box.p1.x <= p4.x && p1.x<=collision_box.p2.x) && p2.y == collision_box.p1.y){  
+                    game.addScoreUponTrapKill(this, p);
                     p.setDead(true);
                     // Player Killed
                 }
             }
             if (orientation == 3){ // droit
                 if ((collision_box.p1.y <= p2.y && p4.y<=collision_box.p2.y) && p1.x == collision_box.p2.x){  
+                    game.addScoreUponTrapKill(this, p);
                     p.setDead(true);
                     // Player Killed
                 }
@@ -108,7 +112,7 @@ public class Punch extends Trap {
     public void render(Graphics2D canvas, float scale) {
         
         // -----------------Audio---------------------------
-        SoundPlayer crush = new SoundPlayer("laser.mp3", false);
+        SoundPlayer crush = new SoundPlayer("crush.mp3", false);
         if (enabled && dejaJoue == false) {
             dejaJoue = true;
             crush.play();

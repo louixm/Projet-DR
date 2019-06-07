@@ -78,23 +78,23 @@ public class Map {
             //entree
             m.enter.setPosition(new Vec2(0, 0));
             m.objects.add(m.enter);
-            m.objects.add(new Platform(g, new Vec2(0,m.enter.size),10,1,1));
+            m.objects.add(new Platform(g, new Vec2(0,m.enter.size),10,1,3));
             
             //sortie
             m.exit.setPosition(new Vec2(b.getWidth()-3, 10));
             m.objects.add(m.exit);
-            m.objects.add(new Platform(g, new Vec2(b.getWidth()-5,10-m.exit.size/2),5,1,1));
-            m.objects.add(new Platform(g, new Vec2(b.getWidth()-3,10+m.exit.size),3,1,1));
             m.objects.add(new Platform(g, new Vec2(b.getWidth()-5,10-m.exit.size/2),1,m.exit.size,6));
+            m.objects.add(new Platform(g, new Vec2(b.getWidth()-5,10-m.exit.size/2),5,1,3));
+            m.objects.add(new Platform(g, new Vec2(b.getWidth()-3,10+m.exit.size),3,1,3));
+            
             
             //cote gauche
-            m.objects.add(new Platform(g, new Vec2(0,b.getHeight()/2),5,1,1));
-            m.objects.add(new Platform(g, new Vec2(2,b.getHeight()-1),10,1,1));
-            m.objects.add(new Platform(g, new Vec2(1,b.getHeight()-1),10,b.getWidth(),1));
+            m.objects.add(new Platform(g, new Vec2(0,b.getHeight()/2),5,1,3));
+            m.objects.add(new Platform(g, new Vec2(1,b.getHeight()-1),b.getWidth()/3,1,3));
             
             //cote droit
-            m.objects.add(new Platform(g, new Vec2(5+b.getWidth()/2,5),5,1,1));
-            m.objects.add(new Platform(g, new Vec2(b.getWidth()-13,b.getHeight()-1),10,1,1));
+            m.objects.add(new Platform(g, new Vec2(5+b.getWidth()/2,5),5,1,3));
+            m.objects.add(new Platform(g, new Vec2(b.getWidth()-13,b.getHeight()-1),10,1,3));
                                      
         }
         
