@@ -34,10 +34,14 @@ public class DeathrunPortal {
             game.init(4);// choix de la map 1, 2, 3, 4	// connecte au serveur et construit tous les objets tels que dans la base de donnnées
             //TODO: check dans la db players et ajouter au jeu tous ceux deja existants
 //            game.map.objects.add(new Punch(game,1,new Vec2(21,16)));
-            game.map.objects.add(new Acid(game, new Vec2(6,13)));
-            game.map.objects.add(new Spikes(game, 2, new Vec2(5,15)));
+                                    //audio continue
             
-
+            SoundPlayer[] backgroundSound = { new SoundPlayer("sabaton-primo-victoria-8-bit.mp3", true), new SoundPlayer("sabaton-the-art-of-war-8-bit.mp3", true),
+                new SoundPlayer("sabaton-coat-of-arms-8-bit.mp3", true),new SoundPlayer("square-hammer-8-bit-tribute-to-ghost-8-bit-universe.mp3", true)};
+            Random rand = new Random();
+            int track = rand.nextInt(4)+1;
+            backgroundSound[track].play();
+            
             controled = new Player(game, menu.pseudo, menu.avatar);
             controled.setControled(true);
 

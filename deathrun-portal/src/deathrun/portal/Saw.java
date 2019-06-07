@@ -36,9 +36,7 @@ public class Saw extends PObject {
         if (img == null) {
             img = ImageIO.read(new File("./images/saw.png")); //scie circulaire
         }
-                        //audio continue
-    SoundPlayer saw1 = new SoundPlayer("scieContinue.wav", true);
-    saw1.play();
+
     }
     
     @Override
