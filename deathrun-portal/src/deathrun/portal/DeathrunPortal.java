@@ -39,7 +39,7 @@ public class DeathrunPortal {
             SoundPlayer[] backgroundSound = { new SoundPlayer("sabaton-primo-victoria-8-bit.mp3", true), new SoundPlayer("sabaton-the-art-of-war-8-bit.mp3", true),
                 new SoundPlayer("sabaton-coat-of-arms-8-bit.mp3", true),new SoundPlayer("square-hammer-8-bit-tribute-to-ghost-8-bit-universe.mp3", true)};
             Random rand = new Random();
-            int track = rand.nextInt(4)+1;
+            int track = rand.nextInt(4);
             backgroundSound[track].play();
             
             controled = new Player(game, menu.pseudo, menu.avatar);
