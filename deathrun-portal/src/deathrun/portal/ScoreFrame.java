@@ -18,14 +18,14 @@ import javax.swing.UIManager;
  *
  * @author bsoares
  */
-public class ScoreFrame extends javax.swing.JFrame {
+public class ScoreFrame extends javax.swing.JDialog {
 
     /**
      * Creates new form ScoreFrame
      */
 
-    public ScoreFrame(Game game) {
-        
+    public ScoreFrame(Game game, java.awt.Frame parent, boolean modal) {
+        super(parent, modal);
         initComponents();
         initProgressBars(game);
         //TODO: initialise background manually after the progress bars.
@@ -50,7 +50,6 @@ public class ScoreFrame extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JSeparator();
         background = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMaximumSize(new java.awt.Dimension(500, 350));
         setMinimumSize(new java.awt.Dimension(500, 350));
         setResizable(false);
@@ -135,7 +134,13 @@ public class ScoreFrame extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ScoreFrame scoreframe = new ScoreFrame(null);
+                ScoreFrame scoreframe = new ScoreFrame(null, new javax.swing.JFrame(), true);
+                scoreframe.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
 //                scoreframe.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
                 scoreframe.setVisible(true);
             }

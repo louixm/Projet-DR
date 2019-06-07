@@ -34,7 +34,7 @@ public class Player extends PObject {
     
     // status du joueur dans la partie
     public boolean dead = false, hasReachedExitDoor = false, disconnected = false;
-    
+    public boolean readyToGo = false;
     // variables internes de déplacement
     boolean left, right, jump, leftAndRightWithPriorityOnRight; //, hasJumped;
     ArrayList<String> collisionDirection;
@@ -75,6 +75,7 @@ public class Player extends PObject {
         System.out.println("id = " + id);
         return id;
     }
+    
     
     public Player(Game game, String name, int avatar) throws SQLException { this(game, name, avatar, -1); }
     public Player(Game game, String name, int avatar, int db_id) throws SQLException {
@@ -392,8 +393,9 @@ public class Player extends PObject {
             catch (SQLException err) {
                 System.out.println("sql exception:\n"+err);
             }
-            game.tryEndRound();
+            
         }
+        game.tryEndRound();
     }
     
     @Override
@@ -498,6 +500,25 @@ public class Player extends PObject {
         g.setFont(font);
         // Draw the String
         g.drawString(text, x, y);
+    }
+    
+    public void syncReady(boolean ready){
+        if (game.sync != null && controled) {
+            try {
+                PreparedStatement req = game.sync.srv.prepareStatement("UPDATE players SET state=? WHERE id = ?");
+                if (ready) req.setInt(1, 0); 
+                else req.setInt(1, -1); 
+                // id de l'objet a modifier
+                req.setInt(2, db_id);
+
+                // execution de la requete
+                req.executeUpdate();
+                req.close();
+            }
+            catch (SQLException err) {
+                System.out.println("sql exception:\n"+err);
+            }
+        }
     }
     
 }

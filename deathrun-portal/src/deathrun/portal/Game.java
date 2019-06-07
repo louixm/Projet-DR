@@ -35,6 +35,7 @@ public class Game {
     public final double gravity = 9.81;
     
     public boolean roundEnded = false;
+    public boolean editionMode = true;
     
     
     Game() { this(false); }
@@ -204,6 +205,23 @@ public class Game {
             }
         }
         */
+        if (this.sync != null) {
+            if (this.players.isEmpty()){
+                switchToEditionMode(true);
+            } else{    
+                try {          
+                    PreparedStatement req = this.sync.srv.prepareStatement("SELECT * FROM server");
+                    ResultSet r = req.executeQuery();
+                    r.next();
+                    int mode = r.getInt("mode");
+                    this.editionMode = (mode == 0);
+                    System.out.println("edition mode = " + this.editionMode);
+                    r.close();         
+                } catch (SQLException err) {
+                    System.out.println("init: "+err);
+                }
+            }
+        }
     }
     
     
@@ -390,7 +408,8 @@ public class Game {
             if (!(player.dead || player.hasReachedExitDoor || player.disconnected)) return;
         }
         roundEnded = true;
-        ScoreFrame scoreFrame = new ScoreFrame(this);
+        switchToEditionMode(true);
+        ScoreFrame scoreFrame = new ScoreFrame(this, new javax.swing.JFrame(), true);
         scoreFrame.show();
     }
           
@@ -433,5 +452,29 @@ public class Game {
     public Player getPlayerWithId(int id){
         for (Player p : players) if (p.db_id == id) return p;
         return null;
+    }
+
+    public void switchToEditionMode(boolean edition) {
+        try {
+            PreparedStatement req = this.sync.srv.prepareStatement("UPDATE server SET mode=?");
+            if (edition) req.setInt(1, 0);
+            else req.setInt(1, 1);
+            req.executeUpdate();
+            req.close();
+            for (Player p: this.players) {
+                if (!edition) {
+                    p.setPosition(this.map.enter.position.add(new Vec2((this.map.enter.box.getWidth() - p.collision_box.getWidth())/2, 0 )));
+                    p.acceleration.y = 0; p.acceleration.x = 0;
+                    p.velocity.y = 0; p.velocity.x = 0;
+                    roundEnded = false;
+                }
+//                p.syncReady(!edition);
+//                    System.out.println("Player " + p.name + " now at pos " + p.position);
+            }      
+        }
+        catch (SQLException err) {
+            System.out.println("game init:\n"+err);
+        }
+        this.editionMode = edition;
     }
 }

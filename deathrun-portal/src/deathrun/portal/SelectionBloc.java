@@ -6,6 +6,7 @@
 package deathrun.portal;
 
 import java.awt.Image;
+import javax.swing.JButton;
 
 /**
  *
@@ -13,7 +14,8 @@ import java.awt.Image;
  */
 public class SelectionBloc extends javax.swing.JDialog {
 
-    public int blocAPoser = 0; //Entier permettant de savoir quel bloc a été choisi par le joueur
+    public int blocAPoser = -1; //Entier permettant de savoir quel bloc a été choisi par le joueur
+    public int[] objectsToPlace;
     
     /**
      * Creates new form SelectionBloc
@@ -26,11 +28,11 @@ public class SelectionBloc extends javax.swing.JDialog {
         jButton1.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/patterns/Tile (15).png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
         jButton2.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/Saw.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
         jButton3.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/laser2.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
-        jButton4.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/punch0_0.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
-        jButton5.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/portail.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
-        jButton6.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/Barrel (1).png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
-        jButton7.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/Barrel (1).png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
-        jButton8.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/Barrel (1).png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
+//        jButton4.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/punch0_0.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
+//        jButton5.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/portail.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
+//        jButton6.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/Barrel (1).png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
+//        jButton7.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/Barrel (1).png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
+//        jButton8.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/Barrel (1).png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
     }
 
     /**
@@ -48,19 +50,14 @@ public class SelectionBloc extends javax.swing.JDialog {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(600, 400));
+        setMinimumSize(new java.awt.Dimension(450, 250));
         getContentPane().setLayout(null);
 
         jLabel1.setText("Mode édition : choisissez votre bloc ...");
         getContentPane().add(jLabel1);
-        jLabel1.setBounds(170, 30, 220, 20);
+        jLabel1.setBounds(120, 30, 220, 20);
 
         buttonGroup1.add(jButton1);
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -89,101 +86,26 @@ public class SelectionBloc extends javax.swing.JDialog {
         getContentPane().add(jButton3);
         jButton3.setBounds(280, 80, 80, 80);
 
-        buttonGroup1.add(jButton4);
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton4);
-        jButton4.setBounds(40, 190, 80, 80);
-
-        buttonGroup1.add(jButton5);
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton5);
-        jButton5.setBounds(160, 190, 80, 80);
-
-        buttonGroup1.add(jButton6);
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton6);
-        jButton6.setBounds(400, 80, 80, 80);
-
-        buttonGroup1.add(jButton7);
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton7);
-        jButton7.setBounds(400, 190, 80, 80);
-
-        buttonGroup1.add(jButton8);
-        jButton8.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton8ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton8);
-        jButton8.setBounds(280, 190, 80, 80);
-
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        this.blocAPoser = 1;
+        this.blocAPoser = objectsToPlace[0];
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        // TODO add your handling code here:
-        this.blocAPoser = 8;
-        this.dispose();
-    }//GEN-LAST:event_jButton8ActionPerformed
-
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        this.blocAPoser = 2;
+        this.blocAPoser = objectsToPlace[1];
         this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        this.blocAPoser = 3;
+        this.blocAPoser = objectsToPlace[2];
         this.dispose();
     }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
-        this.blocAPoser = 4;
-        this.dispose();
-    }//GEN-LAST:event_jButton4ActionPerformed
-
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // TODO add your handling code here:
-        this.blocAPoser = 5;
-        this.dispose();
-    }//GEN-LAST:event_jButton5ActionPerformed
-
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        // TODO add your handling code here:
-        this.blocAPoser = 7;
-        this.dispose();
-    }//GEN-LAST:event_jButton7ActionPerformed
-
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // TODO add your handling code here:
-        this.blocAPoser = 6;
-        this.dispose();
-    }//GEN-LAST:event_jButton6ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -232,12 +154,33 @@ public class SelectionBloc extends javax.swing.JDialog {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
+
+    public void setIcons() {
+        setIconOnButton(jButton1, objectsToPlace[0]);
+        setIconOnButton(jButton2, objectsToPlace[1]);
+        setIconOnButton(jButton3, objectsToPlace[2]);
+    }
+
+    private void setIconOnButton(JButton jButton, int i) {
+        switch(i){
+            case 0: jButton.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/patterns/Tile (5).png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT))); break;
+            case 1: jButton.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/patterns/Tile (16).png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT))); break;
+            case 2: jButton.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/patterns/Tile (13).png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT))); break;
+            case 3: jButton.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/patterns/Tile (17).png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT))); break;
+            case 4: jButton.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/Barrel_1_3.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT))); break;
+            case 5: jButton.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/Barrel_2_4.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT))); break;
+            case 6: jButton.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/patterns/Tile (18).png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT))); break;
+            case 7: jButton.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/Tile_10.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT))); break;
+            case 8: jButton.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/Tile_11.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT))); break;
+            case 9: jButton.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/Tile_12.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT))); break;
+            case 10: jButton.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/Saw.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT))); break;
+            case 11: jButton.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/laser2.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT))); break;
+            case 12: jButton.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/punch0_0.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT))); break;
+            case 13: jButton.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/Spikes_2.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT))); break;
+            case 14: jButton.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/Acid_0.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT))); break;
+        }
+    }
 }
