@@ -29,7 +29,7 @@ public class Laser extends Trap {
     int step;
     Vec2 normal ;
     Vec2 vectir; 
-    
+    boolean dejaJoue = false;
     
     public Laser(Game game, Vec2 position, int orientation) throws IOException, SQLException {
         super(game, "laser");
@@ -91,7 +91,16 @@ public class Laser extends Trap {
     public void render(Graphics2D canvas, float scale) {
         canvas.setColor(Color.red);
         Vec2 c = collision_box.center();    // centre le l'objet
+        SoundPlayer starwars = new SoundPlayer("laser.mp3", false);
         
+        
+        if (enabled && dejaJoue == false) {
+            dejaJoue = true;
+            starwars.play();
+        }
+        if (!enabled){
+            dejaJoue = false;
+        }
         if (enabled) {
             final float length = 1000;
             canvas.drawLine(
