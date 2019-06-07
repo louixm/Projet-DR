@@ -107,7 +107,7 @@ public class ScoreFrame extends javax.swing.JDialog {
                                 JPanel score = new JPanel();
                                 if (type == 0) score.setBackground(player.getPlayerColor());
                                 else if (type == 1) score.setBackground(Color.DARK_GRAY);
-                                else score.setBackground(Color.RED);
+                                else score.setBackground(Color.LIGHT_GRAY);
                                 getContentPane().add(score);
                                 score.setBounds(nextLocation, 50*i, amount*2, 20);
                                 nextLocation += amount*2;

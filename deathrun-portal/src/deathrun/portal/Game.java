@@ -421,16 +421,18 @@ public class Game {
         try {
             PreparedStatement req;
                 // effacement de la table des objets
-                for (Player p: players){
-                    req = this.sync.srv.prepareStatement("DELETE FROM pobjects WHERE id = ?");
-                    req.setInt(1, p.db_id);
-                    req.executeUpdate();
-                }
-                // effacement de la table de joueurs
-                req = this.sync.srv.prepareStatement("DELETE FROM players");
-                req.executeUpdate();
+//                for (Player p: players){
+//                    req = this.sync.srv.prepareStatement("DELETE FROM pobjects WHERE id = ?");
+//                    req.setInt(1, p.db_id);
+//                    req.executeUpdate();
+//                }
+            req = this.sync.srv.prepareStatement("DELETE FROM pobjects");
+            req.executeUpdate();
+            // effacement de la table de joueurs
+            req = this.sync.srv.prepareStatement("DELETE FROM players");
+            req.executeUpdate();
 
-                System.out.println("Purged players from db");
+            System.out.println("Purged everything from db");
             req.close();
             
             PreparedStatement reqScores = this.sync.srv.prepareStatement("DELETE FROM scores");
