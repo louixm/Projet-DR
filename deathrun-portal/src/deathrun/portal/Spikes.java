@@ -20,7 +20,8 @@ import javax.imageio.ImageIO;
 public class Spikes extends PObject {
     Box collision_box;
     private Image img;
-    double div=1;
+    double taille=3f;
+    double ratio=1f/3f;
 //    double orientation;
     static final String db_type = "spikes";
     static SoundPlayer spiked;
@@ -32,18 +33,26 @@ public class Spikes extends PObject {
         spiked = new SoundPlayer("Pics.mp3", false);
         if(orientation==0){
             img = ImageIO.read(new File("./images/Spikes_0.png")); //spikes vers le bas
+            collision_box = new Box(0,0 , this.taille,this.taille*this.ratio); 
+            collision_box = collision_box.translateToPosition(position);
         }
         if(orientation==1){
             img = ImageIO.read(new File("./images/Spikes_1.png")); //spikes vers la gauche
+            collision_box = new Box(0,0 , this.taille*this.ratio,this.taille); 
+            collision_box = collision_box.translateToPosition(position);
         }
         if(orientation == 2){
             img = ImageIO.read(new File("./images/Spikes_2.png")); //spikes vers le haut
+            collision_box = new Box(0,0 , this.taille,this.taille*this.ratio); 
+            collision_box = collision_box.translateToPosition(position);
         }
         if(orientation == 3){
             img = ImageIO.read(new File("./images/Spikes_3.png")); //spikes vers la droite
+            collision_box = new Box(0,0 , this.taille*this.ratio,this.taille); 
+            collision_box = collision_box.translateToPosition(position);
         }
-        collision_box = new Box(0,0 , img.getWidth(null)/36f,img.getHeight(null)/36f); //la dimension de la box est celle de l'image
-        collision_box = collision_box.translateToPosition(position);
+        
+        
         
         
     }
