@@ -35,7 +35,7 @@ public class DeathrunPortal {
             //TODO: check dans la db players et ajouter au jeu tous ceux deja existants
 //            game.map.objects.add(new Punch(game,1,new Vec2(21,16)));
             game.map.objects.add(new Acid(game, new Vec2(6,13)));
-            game.map.objects.add(new Spikes(game,2,new Vec2(5,15)));
+            game.map.objects.add(new Spikes(game, 2, new Vec2(5,15)));
             
 
             controled = new Player(game, menu.pseudo, menu.avatar);

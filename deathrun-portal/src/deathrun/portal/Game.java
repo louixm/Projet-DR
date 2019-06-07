@@ -254,8 +254,8 @@ public class Game {
                     boolean enabled = rtraps.getBoolean("enabled");
                     
                     if (!objects.containsKey(trapid))    {
-                        System.out.println("there is no local instance for trap "+trapid);
-                        continue;
+//                        System.out.println("there is no local instance for trap "+trapid);
+                        if (syncNewObject(trapid) == null) continue;
                     }
                     
                     Trap trap = (Trap) objects.get(trapid);
@@ -358,9 +358,12 @@ public class Game {
                 Vec2 position = new Vec2(r.getInt("x")/1000f, r.getInt("y")/1000f);
                 double vx = r.getDouble("vx");
                 double vy = r.getDouble("vy");
+                int orientation = r.getInt("orientation");
                 switch(type){
                     case("saw"): obj = new Saw(this, position); break;
-                    case("spikes"): obj = new Spikes(this, 2, position); break;
+                    case("spikes"): obj = new Spikes(this, orientation, position); break;
+                    case("laser"): obj = new Laser(this, position, orientation); break;
+                    case("punch"): obj = new Punch(this, orientation, position); break;
                     default: try{
                         int platformType = Integer.valueOf(type);
                         obj = new Platform(this, position, new Box (0,0,2,1.5), platformType, db_id);

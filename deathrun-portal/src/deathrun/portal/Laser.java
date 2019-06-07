@@ -31,10 +31,11 @@ public class Laser extends Trap {
     Vec2 vectir; 
     
     
-    public Laser(Game game, Vec2 position, float angle) throws IOException, SQLException {
+    public Laser(Game game, Vec2 position, int orientation) throws IOException, SQLException {
         super(game, "laser");
         this.collision_box = new Box(0, 0, 1, 1).translate(position);
-        this.angle = angle;
+        this.orientation = orientation;
+        this.angle = (float) ((Math.PI/4)*(orientation));
 
         this.vectir = new Vec2(Math.cos(angle),Math.sin(angle));
         setPosition(position);        

@@ -23,6 +23,7 @@ abstract public class PObject {
     public Vec2 velocity;
     public Vec2 acceleration;
     public String db_type;
+    public int orientation = 0;
     
     long prev_time; // (ns) instant de dernier pas physique
     long next_sync; // (ns) instant de prochaine synchronisation prévue de l'etat du jeu avec la BDD
@@ -62,7 +63,7 @@ abstract public class PObject {
             r.next();
             if (!r.getBoolean(1)) {
                 System.out.println("add pobject "+this.db_id);
-                req = game.sync.srv.prepareStatement("INSERT INTO pobjects VALUES (?,0,0,0,0,0,?)");
+                req = game.sync.srv.prepareStatement("INSERT INTO pobjects VALUES (?,0,0,0,0,0,?,0)");
                 req.setInt(1, this.db_id);
                 req.setString(2, this.db_type);
                 req.executeUpdate();
@@ -124,15 +125,17 @@ abstract public class PObject {
             //System.out.println("sync set "+db_id);
             
             try {
-                PreparedStatement req = sync.srv.prepareStatement("UPDATE pobjects SET x=?, y=?, vx=?, vy=?, version=? WHERE id = ?");
+                PreparedStatement req = sync.srv.prepareStatement("UPDATE pobjects SET x=?, y=?, vx=?, vy=?, version=?, type=?, orientation=? WHERE id = ?");
                 req.setInt(1, (int) (position.x*1000));
                 req.setInt(2, (int) (position.y*1000));
                 req.setDouble(3, velocity.x);
                 req.setDouble(4, velocity.y);
                 // le numero de version
                 req.setLong(5, last_sync);
+                req.setString(6, db_type);
+                req.setInt(7, orientation);
                 // id de l'objet a modifier
-                req.setInt(6, db_id);
+                req.setInt(8, db_id);
                 
                 // execution de la requete
                 req.executeUpdate();

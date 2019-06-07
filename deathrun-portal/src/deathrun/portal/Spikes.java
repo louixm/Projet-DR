@@ -22,25 +22,25 @@ public class Spikes extends PObject {
     Box collision_box;
     static Image img;
     double div=1;
-    double sens;
+//    double orientation;
     static final String db_type = "spikes";
     static SoundPlayer spiked;
     
-    public Spikes(Game game,double sens, Vec2 position) throws IOException, SQLException {
+    public Spikes(Game game, int orientation, Vec2 position) throws IOException, SQLException {
         super(game, db_type);
         this.position = position;
-        this.sens = sens;
+        this.orientation = orientation;
         spiked = new SoundPlayer("Pics.mp3", false);
-        if(sens==0){
+        if(orientation==0){
             img = ImageIO.read(new File("./images/Spikes_0.png")); //spikes vers le bas
         }
-        if(sens==1){
+        if(orientation==1){
             img = ImageIO.read(new File("./images/Spikes_1.png")); //spikes vers la gauche
         }
-        if(sens == 2){
+        if(orientation == 2){
             img = ImageIO.read(new File("./images/Spikes_2.png")); //spikes vers le haut
         }
-        if(sens == 3){
+        if(orientation == 3){
             img = ImageIO.read(new File("./images/Spikes_3.png")); //spikes vers la droite
         }
         collision_box = new Box(0,0 , img.getWidth(null)/36f,img.getHeight(null)/36f); //la dimension de la box est celle de l'image
@@ -68,10 +68,10 @@ public class Spikes extends PObject {
             Vec2 p2 = p.getCollisionBox().p2 ; //point inférieur droit
             Vec2 p3 = new Vec2(p1.x, p2.y) ; // point inférieur gauche
             Vec2 p4 = new Vec2(p2.x , p1.y) ; // point supérieur droit
-            if (sens == 0){ // bas
+            if (orientation == 0){ // bas
                 if ((collision_box.p1.x <= p4.x && p1.x<=collision_box.p2.x) && p1.y == collision_box.p2.y){  
                      if (!p.dead){
-                        System.out.println("Player " + p.name + " wasnt dead "+p.dead+"    "+sens);
+                        System.out.println("Player " + p.name + " wasnt dead "+p.dead+"    "+orientation);
                          spiked.play();
                         p.setDead(true);
                      }
@@ -79,30 +79,30 @@ public class Spikes extends PObject {
                     // Player Killed
                 }
             }
-            if (sens == 1){ // gauche
+            if (orientation == 1){ // gauche
                 if ((collision_box.p1.y <= p2.y && p4.y<=collision_box.p2.y) && p2.x == collision_box.p1.x){  
                     if (!p.dead){
-                        System.out.println("Player " + p.name + " wasnt dead "+p.dead+"    "+sens);
+                        System.out.println("Player " + p.name + " wasnt dead "+p.dead+"    "+orientation);
                         spiked.play();
                         p.setDead(true);
                     }
                     // Player Killed
                 }
             }
-            if (sens == 2){ // haut
+            if (orientation == 2){ // haut
                 if ((collision_box.p1.x <= p4.x && p1.x<=collision_box.p2.x) && p2.y == collision_box.p1.y){  
                        if (!p.dead){
-                        System.out.println("Player " + p.name + " wasnt dead "+p.dead+"    "+sens);
+                        System.out.println("Player " + p.name + " wasnt dead "+p.dead+"    "+orientation);
                         spiked.play();
                         p.setDead(true);
                     }                    
                     // Player Killed
                 }
             }
-            if (sens == 3){ // droit
+            if (orientation == 3){ // droit
                 if ((collision_box.p1.y <= p2.y && p4.y<=collision_box.p2.y) && p1.x == collision_box.p2.x){  
                        if (!p.dead){
-                        System.out.println("Player " + p.name + " wasnt dead "+p.dead+"    "+sens);
+                        System.out.println("Player " + p.name + " wasnt dead "+p.dead+"    "+orientation);
                         spiked.play();
                         p.setDead(true);
                     }

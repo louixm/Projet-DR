@@ -188,7 +188,8 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
         Vec2 pos_clicked = new Vec2(e.getX()/(float)scale, (e.getY()-window_header_size)/(float)scale);
         // prise de controle des pieges
         if (e.getButton() == 1) {   // clic gauche
-            for (PObject object : game.map.objects) {
+            for (HashMap.Entry<Integer,PObject> p : game.objects.entrySet()) {
+                PObject object = p.getValue();
                 if (object instanceof Trap && ((Trap)object).collision_box.contains(pos_clicked))
                     ((Trap)object).takeControl(controled);
             }
@@ -240,7 +241,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
         switch (this.selectionBloc.blocAPoser) {
                     //Tests pour savoir quel bloc a été choisi dans la fenetre SelectBloc
                     case 1: //Plateforme
-                        obj = new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0);
+                        obj = new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), orientationBloc);
                         obj.last_sync = game.sync.latest++; //Ajout du bloc aux coordonnées du clic
                         obj.syncSet(game.sync, true);
                         break;
@@ -249,15 +250,14 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
                         obj.last_sync = game.sync.latest++;
                         obj.syncSet(game.sync, true);
                         break;
-                    case 3: //Laser
-                        float angle = (float) ((Math.PI/8)*(orientationBloc+1));
-                        obj = new Laser(this.game, pos_clicked, angle);
+                    case 3: //Laser                       
+                        obj = new Laser(this.game, pos_clicked, orientationBloc);
                         obj.last_sync = game.sync.latest++;
                         obj.syncSet(game.sync, true);
                         break;
                     case 4: //Punch
                         int orientation = orientationBloc;
-                        if(orientation >= 4){orientation = orientation - 4;};
+                        if(orientation >= 4) orientation -= 4;
                         obj = new Punch(this.game, orientation, pos_clicked);
                         obj.last_sync = game.sync.latest++;
                         obj.syncSet(game.sync, true);
@@ -302,7 +302,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
     public void previsualisationBloc(Vec2 pos_clicked, int orientationBloc) throws IOException, SQLException{
         switch (this.selectionBloc.blocAPoser) {
                         case 1: //Plateforme
-                            Platform platform = new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), 0);
+                            Platform platform = new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), orientationBloc);
                             platform.render(this.bufferContext, scale);
                             game.objects.remove(platform.db_id);
                             break;
@@ -312,14 +312,13 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
                             game.objects.remove(saw.db_id);
                             break;
                         case 3: //Laser
-                            float angle = (float) ((Math.PI/8)*(orientationBloc+1));
-                            Laser laser = new Laser(this.game, pos_clicked, angle);
+                            Laser laser = new Laser(this.game, pos_clicked, orientationBloc);
                             laser.render(this.bufferContext, scale);
                             game.objects.remove(laser.db_id);
                             break;
                         case 4: //Punch
                             int orientation = orientationBloc;
-                            if(orientation >= 4){orientation = orientation - 4;};
+                            if(orientation >= 4) orientation -= 4;
                             Punch punch = new Punch(this.game, orientation, pos_clicked);
                             punch.render(this.bufferContext, scale);//portal.render(this.bufferContext, scale);
                             game.objects.remove(punch.db_id);
