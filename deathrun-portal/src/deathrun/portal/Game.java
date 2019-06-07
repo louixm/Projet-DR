@@ -384,7 +384,7 @@ public class Game {
                     case("punch"): obj = new Punch(this, orientation, position); break;
                     default: try{
                         int platformType = Integer.valueOf(type);
-                        obj = new Platform(this, position, new Box (0,0,2,1.5), platformType, db_id);
+                        obj = new Platform(this, position, Platform.standardBoxes[platformType], platformType, db_id);
                     } catch(NumberFormatException e) {
                         System.out.println("Unknown object tried to be added");
                         obj = null;

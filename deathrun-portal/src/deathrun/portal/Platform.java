@@ -23,7 +23,7 @@ public class Platform extends PObject {
     Box collision_box;
     static Image img[];
     int typePlateforme;
-    public static Box[] standardBoxes = {new Box(0,0,1,1), new Box(0,0,3,1), new Box(0,0,1,0.5), new Box(0,0,3,0.5), new Box(0,0,1.5,6), new Box(0,0,4,3), new Box(0,0,1,3), new Box(0,0,2,1), new Box(0,0,1,2), new Box(0,0,1,2)};
+    public static Box[] standardBoxes = {new Box(0,0,1,1), new Box(0,0,3,1), new Box(0,0,1,0.5), new Box(0,0,3,0.5), new Box(0,0,1.5,6), new Box(0,0,3,4), new Box(0,0,1,3), new Box(0,0,2,1), new Box(0,0,1,2), new Box(0,0,1,2)};
     
     public Platform(Game game, Vec2 position, Box box, int typePlateforme) throws IOException, SQLException {this(game, position, box, typePlateforme, -1);}
     public Platform(Game game, Vec2 position, Box box, int typePlateforme, int db_id) throws IOException, SQLException {
