@@ -108,7 +108,7 @@ public class Punch extends Trap {
     public void render(Graphics2D canvas, float scale) {
         
         // -----------------Audio---------------------------
-        SoundPlayer crush = new SoundPlayer("laser.mp3", false);
+        SoundPlayer crush = new SoundPlayer("crush.mp3", false);
         if (enabled && dejaJoue == false) {
             dejaJoue = true;
             crush.play();
