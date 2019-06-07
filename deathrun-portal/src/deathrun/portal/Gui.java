@@ -254,7 +254,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
         switch (this.selectionBloc.blocAPoser) {
                     //Tests pour savoir quel bloc a été choisi dans la fenetre SelectBloc
                     case 0:case 1:case 2:case 3:case 4:case 5:case 6:case 7:case 8:case 9: //Plateforme
-                        obj = new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), this.selectionBloc.blocAPoser);
+                        obj = new Platform(this.game, pos_clicked, Platform.standardBoxes[this.selectionBloc.blocAPoser], this.selectionBloc.blocAPoser);
                         break;
                     case 10: //Scie circulaire
                         obj = new Saw(this.game, pos_clicked);
@@ -270,9 +270,10 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
                         if(orientation >= 4) orientation -= 4;
                         obj = new Spikes(this.game, orientation, pos_clicked);
                         break;
-                    case 14: //
-                        obj = new Acid(this.game, pos_clicked);
-                        break;
+//                    case 14: //Acid
+//                        Acid acid = new Acid(this.game, pos_clicked);
+//                        obj = (PObject) acid;
+//                        break;
                     }
         if (obj != null){
             obj.last_sync = game.sync.latest++;
@@ -301,7 +302,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
         int orientation = orientationBloc;
         switch (this.selectionBloc.blocAPoser) {
             case 0:case 1:case 2:case 3:case 4:case 5:case 6:case 7:case 8:case 9: //Plateforme
-                platform = new Platform(this.game, pos_clicked, new Box (0,0,2,1.5), this.selectionBloc.blocAPoser); //peut etre faire differentes tailles de box (dans un tableau)
+                platform = new Platform(this.game, pos_clicked, Platform.standardBoxes[this.selectionBloc.blocAPoser], this.selectionBloc.blocAPoser); //peut etre faire differentes tailles de box (dans un tableau)
                 platform.render(this.bufferContext, scale);
                 game.objects.remove(platform.db_id);
                 break;
@@ -327,15 +328,15 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
                 spikes.render(this.bufferContext, scale);
                 game.objects.remove(spikes.db_id);
                 break;
-            case 14: //Acid
-                Acid acid = new Acid(this.game, pos_clicked);
-                acid.render(this.bufferContext, scale);
-                game.objects.remove(acid.platform_d.db_id);
-                game.objects.remove(acid.platform_g.db_id);
-                game.objects.remove(acid.platform_m1.db_id);
-                game.objects.remove(acid.platform_m2.db_id);
-                game.objects.remove(acid.db_id);
-                break;
+//            case 14: //Acid
+//                Acid acid = new Acid(this.game, pos_clicked);
+//                acid.render(this.bufferContext, scale);
+//                game.objects.remove(acid.platform_d.db_id);
+//                game.objects.remove(acid.platform_g.db_id);
+//                game.objects.remove(acid.platform_m1.db_id);
+//                game.objects.remove(acid.platform_m2.db_id);
+//                game.objects.remove(acid.db_id);
+//                break;
 //            default: System.out.println("nothing to prev");
         }
     }
@@ -376,7 +377,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
         Random ran = new Random();
         for (int i = 0; i < 3; i++){
             if (ran.nextFloat() < ratio){
-                objectsToPlace[i] = 10 + ran.nextInt(5); //place a trap
+                objectsToPlace[i] = 10 + ran.nextInt(4); //place a trap
             } else {
                 objectsToPlace[i] = ran.nextInt(10); //place a platform
             }
