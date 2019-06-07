@@ -8,10 +8,14 @@ package deathrun.portal;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.JPanel;
 import javax.swing.UIManager;
 
 /**
@@ -75,28 +79,59 @@ public class ScoreFrame extends javax.swing.JDialog {
 
     private void initProgressBars(Game game){
         
-        progressBars = new ArrayList<javax.swing.JProgressBar>();
+//        progressBars = new ArrayList<javax.swing.JPanel>();
         
         if (game != null) {
+            int i = 0;
             for (Player player : game.players){
-                javax.swing.JLabel playerName = new javax.swing.JLabel();
-                playerName.setFont(new java.awt.Font("Trebuchet MS", 1, 16));
-                playerName.setForeground(player.getPlayerColor());
-                playerName.setText(player.name);
-                getContentPane().add(playerName);
-                playerName.setBounds(15, 50*(1+progressBars.size()), 120, 18);
-        
-                javax.swing.JProgressBar progressBar = new javax.swing.JProgressBar();
-                progressBar.setForeground(player.getPlayerColor());
-        //        UIManager.put("progressBar.foreground", Color.YELLOW);
-                progressBar.setValue(100); //score
-                progressBar.setBorderPainted(false);
-                getContentPane().add(progressBar);
-                progressBar.setBounds(140, 50*(1+progressBars.size()), 330, 20);
+                if (!player.disconnected){
+                    i++;
+                    ArrayList<JPanel> progress = new ArrayList<JPanel>();
+                    int nextLocation = 140;
+                    javax.swing.JLabel playerName = new javax.swing.JLabel();
+                    playerName.setFont(new java.awt.Font("Trebuchet MS", 1, 16));
+                    playerName.setForeground(player.getPlayerColor());
+                    playerName.setText(player.name);
+                    getContentPane().add(playerName);
+                    playerName.setBounds(15, 50*i, 120, 18);
+                    
+                    if (game.sync != null) {
 
-                progressBars.add(progressBar);
+                        try {
+                            PreparedStatement req = game.sync.srv.prepareStatement("SELECT * FROM scores WHERE player = ?");
+                            req.setInt(1, player.db_id);
+                            ResultSet r = req.executeQuery();
+                            while(r.next()){
+                                int amount = r.getInt("amount");
+                                int type = r.getInt("type");
+                                JPanel score = new JPanel();
+                                if (type == 0) score.setBackground(player.getPlayerColor());
+                                else if (type == 1) score.setBackground(Color.DARK_GRAY);
+                                else score.setBackground(Color.RED);
+                                getContentPane().add(score);
+                                score.setBounds(nextLocation, 50*i, amount*2, 20);
+                                nextLocation += amount*2;
+                            }    
+                        } catch (SQLException ex) {
+                            Logger.getLogger(ScoreFrame.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
             }
         }
+                
+        
+//                javax.swing.JPanel progressBar = new javax.swing.JPanel();
+//                progressBar.setBackground(player.getPlayerColor());
+//        //        UIManager.put("progressBar.foreground", Color.YELLOW);
+////                progressBar.setValue(100); //score
+////                progressBar.setBorderPainted(false);
+//                getContentPane().add(progressBar);
+//                progressBar.setBounds(140, 50*(1+progressBars.size()), 20, 20);
+//
+//                progressBars.add(progressBar);
+            
+        
     }
     
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -154,5 +189,5 @@ public class ScoreFrame extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
     
     //progress bars declaration
-    private ArrayList<javax.swing.JProgressBar> progressBars;
+    private ArrayList<javax.swing.JPanel> progressBars;
 }
