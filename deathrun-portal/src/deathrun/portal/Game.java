@@ -217,9 +217,9 @@ public class Game {
                     this.editionMode = (mode == 0);
                     System.out.println("edition mode = " + this.editionMode);
                     r.close();         
-                    req = this.sync.srv.prepareStatement("DELETE FROM scores");
-                    req.executeQuery();
-                    req.close();
+                    PreparedStatement reqScores = this.sync.srv.prepareStatement("DELETE FROM scores");
+                    reqScores.executeUpdate();
+                    reqScores.close();
                 } catch (SQLException err) {
                     System.out.println("init: "+err);
                 }
@@ -432,6 +432,10 @@ public class Game {
 
                 System.out.println("Purged players from db");
             req.close();
+            
+            PreparedStatement reqScores = this.sync.srv.prepareStatement("DELETE FROM scores");
+            reqScores.executeUpdate();
+            reqScores.close();
         }
         catch (SQLException err) {
             System.out.println("purge(): "+err);
