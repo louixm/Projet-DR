@@ -116,11 +116,11 @@ public class ScoreFrame extends javax.swing.JDialog {
                             }
                             if (cumulAmount > 100){
                                 javax.swing.JLabel victory = new javax.swing.JLabel();
-                                victory.setFont(new java.awt.Font("Trebuchet MS", 1, 24));
+                                victory.setFont(new java.awt.Font("Trebuchet MS", 1, 26));
                                 victory.setForeground(Color.BLACK);
                                 victory.setText(player.name + " won!");
                                 getContentPane().add(victory);
-                                victory.setBounds(30, 125, 300, 18);
+                                victory.setBounds(80, 125, 300, 18);
                                 
                             }
                         } catch (SQLException ex) {
