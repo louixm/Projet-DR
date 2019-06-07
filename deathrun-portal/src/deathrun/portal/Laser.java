@@ -30,6 +30,7 @@ public class Laser extends Trap {
     Vec2 normal ;
     Vec2 vectir; 
     boolean dejaJoue = false;
+    int counter =0;
     
     public Laser(Game game, Vec2 position, int orientation) throws IOException, SQLException {
         super(game, "laser");
@@ -100,8 +101,10 @@ public class Laser extends Trap {
         }
         if (!enabled){
             dejaJoue = false;
+            counter=0;
         }
         if (enabled) {
+            counter++;
             final float length = 1000;
             canvas.drawLine(
                     (int) (c.x*scale),
@@ -109,6 +112,9 @@ public class Laser extends Trap {
                     (int) ((c.x+vectir.x*length)*scale),
                     (int) ((c.y+vectir.y*length)*scale)
             );
+        }
+        if (counter>100) {
+            enabled=false;
         }
         
         AffineTransform transform = new AffineTransform();
