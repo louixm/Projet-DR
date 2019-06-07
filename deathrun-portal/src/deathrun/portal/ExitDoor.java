@@ -75,6 +75,10 @@ public class ExitDoor extends PObject{
                         System.out.println("sql exception:\n"+err);
                     }
                 player.hasReachedExitDoor = true;
+                if (player.isControled()){
+                    SoundPlayer yeahBoi = new SoundPlayer("yeah-boy-shooting-stars.mp3", false);
+                    yeahBoi.play();
+                }
                 g.tryEndRound();
             }
         }
