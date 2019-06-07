@@ -33,6 +33,8 @@ public class Punch extends Trap {
     long time_next_image;
     long image_duration = 20000000;
     
+    boolean dejaJoue = false;
+    
     public Punch(Game game, int orientation, Vec2 position) throws IOException, SQLException {
         super(game, "punch");
         this.orientation = orientation;
@@ -105,6 +107,15 @@ public class Punch extends Trap {
     @Override
     public void render(Graphics2D canvas, float scale) {
         
+        // -----------------Audio---------------------------
+        SoundPlayer crush = new SoundPlayer("laser.mp3", false);
+        if (enabled && dejaJoue == false) {
+            dejaJoue = true;
+            crush.play();
+        }
+        if (!enabled){
+            dejaJoue = false;
+        }
             // -----------------MAJ de l'image---------------------------
             
         long ac_time = System.nanoTime();
