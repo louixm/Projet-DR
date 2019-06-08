@@ -156,4 +156,6 @@ abstract public class PObject {
     public void onGameStep(Game g, float dt) {}
     /// appellé en cas de collision detectée
     public void onCollision(Game g, PObject other) {}
+
+    void setOrientation(int orientationBloc) {}
 }

@@ -6,6 +6,10 @@
 package deathrun.portal;
 
 import java.awt.Image;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 
 /**
@@ -16,13 +20,16 @@ public class SelectionBloc extends javax.swing.JDialog {
 
     public int blocAPoser = -1; //Entier permettant de savoir quel bloc a été choisi par le joueur
     public int[] objectsToPlace;
+    public PObject objectToPlace;
+    public Game game;
     
     /**
      * Creates new form SelectionBloc
      */
-    public SelectionBloc(java.awt.Frame parent, boolean modal) {
+    public SelectionBloc(Game game, java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        this.game = game;
         
         // Affichage des images des blocs sur les boutons après redimensionnement
         jButton1.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/patterns/Tile (15).png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
@@ -90,20 +97,38 @@ public class SelectionBloc extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        this.blocAPoser = objectsToPlace[0];
+        try {
+            this.blocAPoser = objectsToPlace[0];
+            this.objectToPlace = createObjectToPlace(objectsToPlace[0]);
+        } catch (IOException ex) {
+            Logger.getLogger(SelectionBloc.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(SelectionBloc.class.getName()).log(Level.SEVERE, null, ex);
+        }
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-        this.blocAPoser = objectsToPlace[1];
+        try {
+            this.blocAPoser = objectsToPlace[1];
+            this.objectToPlace = createObjectToPlace(objectsToPlace[1]);
+        } catch (IOException ex) {
+            Logger.getLogger(SelectionBloc.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(SelectionBloc.class.getName()).log(Level.SEVERE, null, ex);
+        }
         this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-        this.blocAPoser = objectsToPlace[2];
+        try {
+            this.blocAPoser = objectsToPlace[2];
+            this.objectToPlace = createObjectToPlace(objectsToPlace[2]);
+        } catch (IOException ex) {
+            Logger.getLogger(SelectionBloc.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(SelectionBloc.class.getName()).log(Level.SEVERE, null, ex);
+        }
         this.dispose();
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -137,7 +162,7 @@ public class SelectionBloc extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                SelectionBloc dialog = new SelectionBloc(new javax.swing.JFrame(), true);
+                SelectionBloc dialog = new SelectionBloc(null, new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -183,5 +208,24 @@ public class SelectionBloc extends javax.swing.JDialog {
             case 14: jButton.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/Spikes_2.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT))); break;
             case 15: jButton.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/Acid_0.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT))); break;
         }
+    }
+
+    private PObject createObjectToPlace(int i) throws IOException, SQLException {
+        switch (i) {
+            //Tests pour savoir quel bloc a été choisi dans la fenetre SelectBloc
+            case 0:case 1:case 2:case 3:case 4:case 5:case 6:case 7:case 8:case 9: //Plateforme
+                return new Platform(this.game, new Vec2(0,0), Platform.standardBoxes[i], i);
+            case 10: //Bombe
+                return new Bomb(this.game, new Vec2(0,0)); 
+            case 11: //Scie circulaire
+                return new Saw(this.game, new Vec2(0,0));
+            case 12: //Laser                       
+                return new Laser(this.game, new Vec2(0,0), 0);
+            case 13: //Punch  
+                return new Punch(this.game, 0, new Vec2(0,0));
+            case 14: //Spikes
+                return new Spikes(this.game, 0, new Vec2(0,0));
+        }
+        return null;
     }
 }
