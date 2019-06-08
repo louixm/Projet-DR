@@ -80,7 +80,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
         this.controled = controled;
         this.game = game;
         
-        this.selectionBloc = new SelectionBloc(game, new javax.swing.JFrame(), true);
+        this.selectionBloc = new SelectionBloc(game, new javax.swing.JFrame(), false);
         
         try {
             this.background = ImageIO.read(new File("images/fond_1.png"));

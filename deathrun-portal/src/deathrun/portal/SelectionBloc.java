@@ -162,7 +162,7 @@ public class SelectionBloc extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                SelectionBloc dialog = new SelectionBloc(null, new javax.swing.JFrame(), true);
+                SelectionBloc dialog = new SelectionBloc(null, new javax.swing.JFrame(), false);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
