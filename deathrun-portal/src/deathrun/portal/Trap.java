@@ -35,9 +35,9 @@ public class Trap extends PObject {
     
     
     
-
-    public Trap(Game game, String db_type) throws SQLException {
-        super(game, db_type);
+    public Trap(Game game, String db_type) throws SQLException {this(game,db_type,-1);}
+    public Trap(Game game, String db_type, int db_id) throws SQLException {
+        super(game, db_type, db_id);
         this.game = game;
         this.enabled = false;
         

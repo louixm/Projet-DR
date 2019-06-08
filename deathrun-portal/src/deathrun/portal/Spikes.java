@@ -27,10 +27,10 @@ public class Spikes extends PObject {
     static final String db_type = "spikes";
     static SoundPlayer spiked;
     
-    public Spikes(Game game, int orientation, Vec2 position) throws IOException, SQLException {
-        super(game, db_type);
+    public Spikes(Game game, int orientation, Vec2 position) throws IOException, SQLException {this(game,orientation,position,-1);}
+    public Spikes(Game game, int orientation, Vec2 position, int db_id) throws IOException, SQLException {
+        super(game, db_type, db_id);
         this.position = position;
-        this.orientation = orientation;
         spiked = new SoundPlayer("Pics.mp3", false);
         
         im = new Image[] {
@@ -63,25 +63,27 @@ public class Spikes extends PObject {
     public void setOrientation(int orientation){
         this.orientation = orientation;
         if(this.orientation >= 4) this.orientation -= 4;
-        if(orientation==0){
-            img = im[0]; //spikes vers le bas
-            collision_box = new Box(0,0 , this.taille,this.taille*this.ratio); 
-            collision_box = collision_box.translateToPosition(position);
-        }
-        if(orientation==1){
-            img = im[1]; //spikes vers la gauche
-            collision_box = new Box(0,0 , this.taille*this.ratio,this.taille); 
-            collision_box = collision_box.translateToPosition(position);
-        }
-        if(orientation == 2){
-            img = im[2]; //spikes vers le haut
-            collision_box = new Box(0,0 , this.taille,this.taille*this.ratio); 
-            collision_box = collision_box.translateToPosition(position);
-        }
-        if(orientation == 3){
-            img = im[3]; //spikes vers la droite
-            collision_box = new Box(0,0 , this.taille*this.ratio,this.taille); 
-            collision_box = collision_box.translateToPosition(position);
+        switch(this.orientation){
+            case 0:
+                img = im[0]; //spikes vers le bas
+                collision_box = new Box(0,0 , this.taille,this.taille*this.ratio); 
+                collision_box = collision_box.translateToPosition(position);
+                break;
+            case 1:
+                img = im[1]; //spikes vers la gauche
+                collision_box = new Box(0,0 , this.taille*this.ratio,this.taille); 
+                collision_box = collision_box.translateToPosition(position);
+                break;
+            case 2:
+                img = im[2]; //spikes vers le haut
+                collision_box = new Box(0,0 , this.taille,this.taille*this.ratio); 
+                collision_box = collision_box.translateToPosition(position);
+                break;
+            case 3:
+                img = im[3]; //spikes vers la droite
+                collision_box = new Box(0,0 , this.taille*this.ratio,this.taille); 
+                collision_box = collision_box.translateToPosition(position);
+                break;
         }
     }
     

@@ -69,6 +69,7 @@ public class Map {
             m.objects.add(new Laser(g,new Vec2(0, 11), 1));
             m.objects.add(new Punch(g,2,new Vec2(21,16)));
             m.objects.add(new Acid(g,1.5, new Vec2(6,13)));
+            m.objects.add(new Explosive(g, new Vec2(5,2)));
 
             
             //Croix centrale

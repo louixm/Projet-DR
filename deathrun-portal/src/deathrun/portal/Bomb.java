@@ -33,8 +33,9 @@ public class Bomb extends PObject{
     long image_duration = 100000000;
     private int step;
     
-    public Bomb(Game game, Vec2 position) throws SQLException, IOException {
-        super(game, db_type);
+    public Bomb(Game game, Vec2 position) throws SQLException, IOException {this(game,position,-1);}
+    public Bomb(Game game, Vec2 position, int db_id) throws SQLException, IOException {
+        super(game, db_type, db_id);
         this.collision_box = new Box(0,0,2,2);
         this.setPosition(position);
         
