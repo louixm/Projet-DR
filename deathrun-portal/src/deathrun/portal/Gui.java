@@ -109,14 +109,13 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
                     if (controled.readyToGo) tryToGo();
                     else enterEditionMode();
                 }
-                try {              
-                    previsualisationBloc(positionSouris, orientationBloc);
-                } catch (IOException ex) {
-                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (SQLException ex) {
-                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                if (game.editionMode){
+                    try {              
+                        previsualisationBloc(positionSouris, orientationBloc);
+                    } catch (Exception ex) {
+                        Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
-                
             }
             
         });
