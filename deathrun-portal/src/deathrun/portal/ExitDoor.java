@@ -60,7 +60,7 @@ public class ExitDoor extends PObject{
     @Override public void onCollision(Game g, PObject other) {
         if (other instanceof Player) {
             Player player = (Player) other;
-            if (!player.disconnected){
+            if (!player.disconnected && !player.dead){
                 System.out.println("player "+player.name+" reached the door");
                 try {
                         PreparedStatement req = g.sync.srv.prepareStatement("UPDATE players SET state=? WHERE id = ?");

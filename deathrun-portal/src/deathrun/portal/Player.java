@@ -370,32 +370,34 @@ public class Player extends PObject {
     
     public void setDead(boolean dead) { setDead(dead, controled); }
     public void setDead(boolean dead, boolean withSyncAndTryEndRound) {
-        if (dead) {
-            avatar = 3; 
-            if (!this.dead)  death.play();
-        }
-        else avatar = baseAvatar;
-        
-        this.dead = dead;
-        
-        if(withSyncAndTryEndRound){
-            System.out.println("player "+name+" is dead");
-            try {
-                PreparedStatement req = game.sync.srv.prepareStatement("UPDATE players SET state=? WHERE id = ?");
-                req.setInt(1, 1); //state = 0 (en vie), 1 (dead), 2 (exit door)
-                // id de l'objet a modifier
-                req.setInt(2, db_id);
+        if (!hasReachedExitDoor){
+            if (dead) {
+                avatar = 3; 
+                if (!this.dead)  death.play();
+            }
+            else avatar = baseAvatar;
 
-                // execution de la requete
-                req.executeUpdate();
-                req.close();
+            this.dead = dead;
+
+            if(withSyncAndTryEndRound){
+                System.out.println("player "+name+" is dead");
+                try {
+                    PreparedStatement req = game.sync.srv.prepareStatement("UPDATE players SET state=? WHERE id = ?");
+                    req.setInt(1, 1); //state = 0 (en vie), 1 (dead), 2 (exit door)
+                    // id de l'objet a modifier
+                    req.setInt(2, db_id);
+
+                    // execution de la requete
+                    req.executeUpdate();
+                    req.close();
+                }
+                catch (SQLException err) {
+                    System.out.println("sql exception:\n"+err);
+                }
+
             }
-            catch (SQLException err) {
-                System.out.println("sql exception:\n"+err);
-            }
-            
+            game.tryEndRound();
         }
-        game.tryEndRound();
     }
     
     @Override
@@ -502,6 +504,7 @@ public class Player extends PObject {
         g.drawString(text, x, y);
     }
     
+    //sycReady : synchronise les joueurs prêts à jouer ou non quand on est en mode édition (on utilise un état -1 pour les non prêts)
     public void syncReady(boolean ready){
         if (game.sync != null && controled) {
             try {

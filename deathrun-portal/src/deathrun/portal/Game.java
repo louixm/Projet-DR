@@ -412,8 +412,8 @@ public class Game {
         }
         setEndRoundScores();
         roundEnded = true;
-        switchToEditionMode(true);
-        ScoreFrame scoreFrame = new ScoreFrame(this, new javax.swing.JFrame(), true);
+//        switchToEditionMode(true);
+        ScoreFrame scoreFrame = new ScoreFrame(this, new javax.swing.JFrame(), false);
         scoreFrame.show();
     }
           

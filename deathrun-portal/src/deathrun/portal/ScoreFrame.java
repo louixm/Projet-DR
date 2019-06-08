@@ -27,9 +27,14 @@ public class ScoreFrame extends javax.swing.JDialog {
     /**
      * Creates new form ScoreFrame
      */
+    
+    //declarations
+    private ArrayList<javax.swing.JPanel> progressBars;
+    private Game game;
 
     public ScoreFrame(Game game, java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+        this.game = game;
         initComponents();
         initProgressBars(game);
         //TODO: initialise background manually after the progress bars.
@@ -146,7 +151,7 @@ public class ScoreFrame extends javax.swing.JDialog {
     }
     
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+        game.switchToEditionMode(true);
         dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -180,7 +185,7 @@ public class ScoreFrame extends javax.swing.JDialog {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ScoreFrame scoreframe = new ScoreFrame(null, new javax.swing.JFrame(), true);
+                ScoreFrame scoreframe = new ScoreFrame(null, new javax.swing.JFrame(), false);
                 scoreframe.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -199,6 +204,5 @@ public class ScoreFrame extends javax.swing.JDialog {
     private javax.swing.JSeparator jSeparator1;
     // End of variables declaration//GEN-END:variables
     
-    //progress bars declaration
-    private ArrayList<javax.swing.JPanel> progressBars;
+    
 }
