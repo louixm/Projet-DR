@@ -271,9 +271,13 @@ public class Game {
                     Player p;
                     if (objects.containsKey(id))    p = getPlayerWithId(id);
                     else                            { p = (Player) syncNewPlayer(id); System.out.println("spawn a player "+id); }
-                    if (!p.isControled()){
-                        p.setState(state);
-                        p.setMovement(movement);
+                    try {
+                        if (!p.isControled()){
+                            p.setState(state);
+                            p.setMovement(movement);
+                        }
+                    } catch (NullPointerException e){
+                        System.out.println("NullPointer for player with id " + id);
                     }
                 }
                 rplayers.close();
@@ -328,7 +332,10 @@ public class Game {
                             System.out.println("Removed object " + obj + " still here : " + objects.containsKey(id));
                             continue;
                         }
-                    } else obj = syncNewObject(id);
+                    } else {
+                        if (!type.equals("null")) obj = syncNewObject(id);
+                        else obj = null;
+                    }
                     
                     if (obj == null) {
                         System.out.println("object "+id+" not found");
@@ -406,6 +413,7 @@ public class Game {
                     case("bomb"): obj = new Bomb(this, position,db_id); break;
                     case("laser"): obj = new Laser(this, position, orientation, db_id); break;
                     case("punch"): obj = new Punch(this, orientation, position, db_id); break;
+                    case("explosive"): obj = new Explosive(this, position, db_id); break;
                     default: try{
                         int platformType = Integer.valueOf(type);
                         obj = new Platform(this, position, Platform.standardBoxes[platformType], platformType, db_id);

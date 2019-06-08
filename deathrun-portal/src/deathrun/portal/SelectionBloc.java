@@ -203,10 +203,10 @@ public class SelectionBloc extends javax.swing.JDialog {
             case 9: jButton.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/Tile_12.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT))); break;
             case 10: jButton.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/bomb.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT))); break;
             case 11: jButton.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/Saw.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT))); break;
-            case 12: jButton.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/laser2.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT))); break;
+            case 12: jButton.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/laser_centre.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT))); break;
             case 13: jButton.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/punch0_0.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT))); break;
             case 14: jButton.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/Spikes_2.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT))); break;
-            case 15: jButton.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/Acid_0.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT))); break;
+            case 15: jButton.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/Explosive_0.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT))); break;
         }
     }
 
@@ -225,6 +225,8 @@ public class SelectionBloc extends javax.swing.JDialog {
                 return new Punch(this.game, 0, new Vec2(0,0));
             case 14: //Spikes
                 return new Spikes(this.game, 0, new Vec2(0,0));
+            case 15: //Mine
+                return new Explosive(this.game, new Vec2(0,0));
         }
         return null;
     }
