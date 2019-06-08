@@ -66,7 +66,7 @@ public class Map {
             //pieges
 
             m.objects.add(new Saw(g, g.map.size.center().sub(new Vec2(1, 1))));
-            m.objects.add(new Laser(g,new Vec2(0, 11), 0));
+            m.objects.add(new Laser(g,new Vec2(0, 11), 1));
             m.objects.add(new Punch(g,2,new Vec2(21,16)));
             m.objects.add(new Acid(g,1.5, new Vec2(6,13)));
 

@@ -161,6 +161,11 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
         if (evt.getKeyCode() == evt.VK_F1)          switch_trap(0);
         if (evt.getKeyCode() == evt.VK_F2)          switch_trap(1);
         if (evt.getKeyCode() == evt.VK_F3)          switch_trap(2);
+        if (evt.getKeyCode() == evt.VK_F4)          switch_trap(3);
+        if (evt.getKeyCode() == evt.VK_F5)          switch_trap(4);
+        if (evt.getKeyCode() == evt.VK_F6)          switch_trap(5);
+        if (evt.getKeyCode() == evt.VK_F7)          switch_trap(6);
+        if (evt.getKeyCode() == evt.VK_F8)          switch_trap(7);
         
         if (editMode || game.editionMode){
             if (evt.getKeyCode() == evt.VK_LEFT)    {if (orientationBloc == 0) orientationBloc = 7; else orientationBloc--;}
