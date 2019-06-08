@@ -56,8 +56,8 @@ public class Map {
         }
         else if (mapNumber == 4){
             //portails
-            Portal port = new Portal(g,new Vec2(13, 1), new boolean[] {false,true});
-            Portal port2 = new Portal(g,new Vec2(13,16), new boolean[] {false,true});
+            Portal port = new Portal(g,new Vec2(13, 1), new boolean[] {true,true});
+            Portal port2 = new Portal(g,new Vec2(13,16), new boolean[] {true,true});
             port.otherPortal = port2;
             port2.otherPortal = port;
             m.objects.add(port);
