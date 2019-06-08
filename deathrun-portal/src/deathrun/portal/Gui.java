@@ -261,21 +261,24 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
                     case 0:case 1:case 2:case 3:case 4:case 5:case 6:case 7:case 8:case 9: //Plateforme
                         obj = new Platform(this.game, pos_clicked, Platform.standardBoxes[this.selectionBloc.blocAPoser], this.selectionBloc.blocAPoser);
                         break;
-                    case 10: //Scie circulaire
+                    case 10: //Bombe
+                        obj = new Bomb(this.game, pos_clicked);
+                        break;    
+                    case 11: //Scie circulaire
                         obj = new Saw(this.game, pos_clicked);
                         break;
-                    case 11: //Laser                       
+                    case 12: //Laser                       
                         obj = new Laser(this.game, pos_clicked, orientationBloc);
                         break;
-                    case 12: //Punch 
+                    case 13: //Punch 
                         if(orientation >= 4) orientation -= 4;
                         obj = new Punch(this.game, orientation, pos_clicked);
                         break;
-                    case 13: //Spikes
+                    case 14: //Spikes
                         if(orientation >= 4) orientation -= 4;
                         obj = new Spikes(this.game, orientation, pos_clicked);
                         break;
-//                    case 14: //Acid
+//                    case 15: //Acid
 //                        Acid acid = new Acid(this.game, pos_clicked);
 //                        obj = (PObject) acid;
 //                        break;
@@ -311,29 +314,34 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
                 platform.render(this.bufferContext, scale);
                 game.objects.remove(platform.db_id);
                 break;
-            case 10: //Scie circulaire
+            case 10: //Bombe
+                Bomb bomb = new Bomb(this.game, pos_clicked);
+                bomb.render(this.bufferContext, scale);
+                game.objects.remove(bomb.db_id);
+                break;    
+            case 11: //Scie circulaire
                 Saw saw = new Saw(this.game, pos_clicked);
                 saw.render(this.bufferContext, scale);
                 game.objects.remove(saw.db_id);
                 break;
-            case 11: //Laser
+            case 12: //Laser
                 Laser laser = new Laser(this.game, pos_clicked, orientationBloc);
                 laser.render(this.bufferContext, scale);
                 game.objects.remove(laser.db_id);
                 break;
-            case 12: //Punch
+            case 13: //Punch
                 if(orientation >= 4) orientation -= 4;
                 Punch punch = new Punch(this.game, orientation, pos_clicked);
                 punch.render(this.bufferContext, scale);//portal.render(this.bufferContext, scale);
                 game.objects.remove(punch.db_id);
                 break;
-            case 13: //Spikes
+            case 14: //Spikes
                 if(orientation >= 4) orientation -= 4;
                 Spikes spikes = new Spikes(this.game, orientation, pos_clicked);
                 spikes.render(this.bufferContext, scale);
                 game.objects.remove(spikes.db_id);
                 break;
-//            case 14: //Acid
+//            case 15: //Acid
 //                Acid acid = new Acid(this.game, pos_clicked);
 //                acid.render(this.bufferContext, scale);
 //                game.objects.remove(acid.platform_d.db_id);
@@ -357,7 +365,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
         try{
             ratio = (1f+nbPlayersWhoReachedDoor)/(2f+nbPlayersWhoReachedDoor+nbPlayersWhoDied);
         } catch (Exception e){
-            ratio = 0.5f;
+            ratio = 0.5f; //ne devrait jamais arriver
         }
         System.out.println("ratio = " + ratio);
         
@@ -373,19 +381,17 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
         7 = plateforme type 7
         8 = plateforme type 8
         9 = plateforme type 9
-        10 = saw
-        11 = laser
-        12 = punch
-        13 = spikes
-        14 = acid
+        10 = bomb
+        11 = saw
+        12 = laser
+        13 = punch
+        14 = spikes
+        //15 = acid
         */
         Random ran = new Random();
         for (int i = 0; i < 3; i++){
-            if (ran.nextFloat() < ratio){
-                objectsToPlace[i] = 10 + ran.nextInt(4); //place a trap
-            } else {
-                objectsToPlace[i] = ran.nextInt(10); //place a platform
-            }
+            if (ran.nextFloat() < ratio) objectsToPlace[i] = 11 + ran.nextInt(4); //place a trap
+            else objectsToPlace[i] = ran.nextInt(11); //place a platform
         }
         selectionBloc.objectsToPlace = objectsToPlace;
         selectionBloc.setIcons();
