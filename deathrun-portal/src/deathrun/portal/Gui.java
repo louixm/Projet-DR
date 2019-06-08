@@ -417,9 +417,13 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
                 Player p;
                 if (game.objects.containsKey(id))    p = game.getPlayerWithId(id);
                 else                            { p = (Player) game.syncNewPlayer(id); System.out.println("spawn a player "+id); }
-                if (!p.isControled()){
-                    p.setState(state);
-                }
+                try {
+                        if (!p.isControled()){
+                            p.setState(state);
+                        }
+                    } catch (NullPointerException e){
+                        System.out.println("NullPointer for player with id " + id);
+                    }
                 if (state == -1) go = false;
             }
             rplayers.close();
