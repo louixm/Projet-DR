@@ -183,16 +183,9 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
 
     public void render(Graphics2D g) {
         g.drawImage(this.background, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, null);
-//        for (PObject object : game.map.objects) {
-//            if (! object.foreground())	object.render(g, scale);
-//        }
-//        for (Player player : game.players)		
-//            player.render(g, scale);
-//        for (PObject object : game.map.objects) {
-//            if (object.foreground())	object.render(g, scale);
-//        }
-         for (HashMap.Entry<Integer,PObject> p : game.objects.entrySet()) if (!p.getValue().foreground()) p.getValue().render(g, scale);
-         for (HashMap.Entry<Integer,PObject> p : game.objects.entrySet()) if (p.getValue().foreground()) p.getValue().render(g, scale);
+        for (PObject p: game.objects.values()) if (!p.foreground() && !(p instanceof Player)) p.render(g, scale);
+        for (PObject p: game.objects.values()) if (p instanceof Player) p.render(g, scale);
+        for (PObject p : game.objects.values()) if (p.foreground() && !(p instanceof Player)) p.render(g, scale);
     }
   
     @Override
