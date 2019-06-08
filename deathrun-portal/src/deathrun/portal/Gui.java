@@ -80,7 +80,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
         this.controled = controled;
         this.game = game;
         
-        this.selectionBloc = new SelectionBloc(new javax.swing.JFrame(), true);
+        this.selectionBloc = new SelectionBloc(game, new javax.swing.JFrame(), true);
         
         try {
             this.background = ImageIO.read(new File("images/fond_1.png"));
@@ -109,14 +109,13 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
                     if (controled.readyToGo) tryToGo();
                     else enterEditionMode();
                 }
-                try {              
-                    previsualisationBloc(positionSouris, orientationBloc);
-                } catch (IOException ex) {
-                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (SQLException ex) {
-                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                if (game.editionMode){
+                    try {              
+                        previsualisationBloc(positionSouris, orientationBloc);
+                    } catch (Exception ex) {
+                        Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
-                
             }
             
         });
@@ -183,16 +182,9 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
 
     public void render(Graphics2D g) {
         g.drawImage(this.background, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, null);
-//        for (PObject object : game.map.objects) {
-//            if (! object.foreground())	object.render(g, scale);
-//        }
-//        for (Player player : game.players)		
-//            player.render(g, scale);
-//        for (PObject object : game.map.objects) {
-//            if (object.foreground())	object.render(g, scale);
-//        }
-         for (HashMap.Entry<Integer,PObject> p : game.objects.entrySet()) if (!p.getValue().foreground()) p.getValue().render(g, scale);
-         for (HashMap.Entry<Integer,PObject> p : game.objects.entrySet()) if (p.getValue().foreground()) p.getValue().render(g, scale);
+        for (PObject p: game.objects.values()) if (!p.foreground() && !(p instanceof Player)) p.render(g, scale);
+        for (PObject p: game.objects.values()) if (p instanceof Player) p.render(g, scale);
+        for (PObject p : game.objects.values()) if (p.foreground() && !(p instanceof Player)) p.render(g, scale);
     }
   
     @Override
@@ -255,35 +247,38 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
     
     public void poserObjet(Vec2 pos_clicked, int orientationBloc) throws SQLException, IOException{
         PObject obj = null;
-        int orientation = orientationBloc;
-        switch (this.selectionBloc.blocAPoser) {
-                    //Tests pour savoir quel bloc a été choisi dans la fenetre SelectBloc
-                    case 0:case 1:case 2:case 3:case 4:case 5:case 6:case 7:case 8:case 9: //Plateforme
-                        obj = new Platform(this.game, pos_clicked, Platform.standardBoxes[this.selectionBloc.blocAPoser], this.selectionBloc.blocAPoser);
-                        break;
-                    case 10: //Bombe
-                        obj = new Bomb(this.game, pos_clicked);
-                        break;    
-                    case 11: //Scie circulaire
-                        obj = new Saw(this.game, pos_clicked);
-                        break;
-                    case 12: //Laser                       
-                        obj = new Laser(this.game, pos_clicked, orientationBloc);
-                        break;
-                    case 13: //Punch 
-                        if(orientation >= 4) orientation -= 4;
-                        obj = new Punch(this.game, orientation, pos_clicked);
-                        break;
-                    case 14: //Spikes
-                        if(orientation >= 4) orientation -= 4;
-                        obj = new Spikes(this.game, orientation, pos_clicked);
-                        break;
-//                    case 15: //Acid
-//                        Acid acid = new Acid(this.game, pos_clicked);
-//                        obj = (PObject) acid;
+//        int orientation = orientationBloc;
+//        switch (this.selectionBloc.blocAPoser) {
+//                    //Tests pour savoir quel bloc a été choisi dans la fenetre SelectBloc
+//                    case 0:case 1:case 2:case 3:case 4:case 5:case 6:case 7:case 8:case 9: //Plateforme
+//                        obj = new Platform(this.game, pos_clicked, Platform.standardBoxes[this.selectionBloc.blocAPoser], this.selectionBloc.blocAPoser);
 //                        break;
-                    }
-        if (obj != null){
+//                    case 10: //Bombe
+//                        obj = new Bomb(this.game, pos_clicked);
+//                        break;    
+//                    case 11: //Scie circulaire
+//                        obj = new Saw(this.game, pos_clicked);
+//                        break;
+//                    case 12: //Laser                       
+//                        obj = new Laser(this.game, pos_clicked, orientationBloc);
+//                        break;
+//                    case 13: //Punch 
+//                        if(orientation >= 4) orientation -= 4;
+//                        obj = new Punch(this.game, orientation, pos_clicked);
+//                        break;
+//                    case 14: //Spikes
+//                        if(orientation >= 4) orientation -= 4;
+//                        obj = new Spikes(this.game, orientation, pos_clicked);
+//                        break;
+////                    case 15: //Acid
+////                        Acid acid = new Acid(this.game, pos_clicked);
+////                        obj = (PObject) acid;
+////                        break;
+//                    }
+            obj = selectionBloc.objectToPlace;
+            obj.setPosition(pos_clicked);
+            obj.setOrientation(orientationBloc);
+            if (obj != null){
             obj.last_sync = game.sync.latest++;
             obj.syncSet(game.sync, true);
         }
@@ -306,52 +301,55 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
     }
     
     public void previsualisationBloc(Vec2 pos_clicked, int orientationBloc) throws IOException, SQLException{
-        Platform platform;
-        int orientation = orientationBloc;
-        switch (this.selectionBloc.blocAPoser) {
-            case 0:case 1:case 2:case 3:case 4:case 5:case 6:case 7:case 8:case 9: //Plateforme
-                platform = new Platform(this.game, pos_clicked, Platform.standardBoxes[this.selectionBloc.blocAPoser], this.selectionBloc.blocAPoser); //peut etre faire differentes tailles de box (dans un tableau)
-                platform.render(this.bufferContext, scale);
-                game.objects.remove(platform.db_id);
-                break;
-            case 10: //Bombe
-                Bomb bomb = new Bomb(this.game, pos_clicked);
-                bomb.render(this.bufferContext, scale);
-                game.objects.remove(bomb.db_id);
-                break;    
-            case 11: //Scie circulaire
-                Saw saw = new Saw(this.game, pos_clicked);
-                saw.render(this.bufferContext, scale);
-                game.objects.remove(saw.db_id);
-                break;
-            case 12: //Laser
-                Laser laser = new Laser(this.game, pos_clicked, orientationBloc);
-                laser.render(this.bufferContext, scale);
-                game.objects.remove(laser.db_id);
-                break;
-            case 13: //Punch
-                if(orientation >= 4) orientation -= 4;
-                Punch punch = new Punch(this.game, orientation, pos_clicked);
-                punch.render(this.bufferContext, scale);//portal.render(this.bufferContext, scale);
-                game.objects.remove(punch.db_id);
-                break;
-            case 14: //Spikes
-                if(orientation >= 4) orientation -= 4;
-                Spikes spikes = new Spikes(this.game, orientation, pos_clicked);
-                spikes.render(this.bufferContext, scale);
-                game.objects.remove(spikes.db_id);
-                break;
-//            case 15: //Acid
-//                Acid acid = new Acid(this.game, pos_clicked);
-//                acid.render(this.bufferContext, scale);
-//                game.objects.remove(acid.platform_d.db_id);
-//                game.objects.remove(acid.platform_g.db_id);
-//                game.objects.remove(acid.platform_m1.db_id);
-//                game.objects.remove(acid.platform_m2.db_id);
-//                game.objects.remove(acid.db_id);
+//        Platform platform;
+//        int orientation = orientationBloc;
+//        switch (this.selectionBloc.blocAPoser) {
+//            case 0:case 1:case 2:case 3:case 4:case 5:case 6:case 7:case 8:case 9: //Plateforme
+//                platform = new Platform(this.game, pos_clicked, Platform.standardBoxes[this.selectionBloc.blocAPoser], this.selectionBloc.blocAPoser); //peut etre faire differentes tailles de box (dans un tableau)
+//                platform.render(this.bufferContext, scale);
+//                game.objects.remove(platform.db_id);
 //                break;
-//            default: System.out.println("nothing to prev");
-        }
+//            case 10: //Bombe
+//                Bomb bomb = new Bomb(this.game, pos_clicked);
+//                bomb.render(this.bufferContext, scale);
+//                game.objects.remove(bomb.db_id);
+//                break;    
+//            case 11: //Scie circulaire
+//                Saw saw = new Saw(this.game, pos_clicked);
+//                saw.render(this.bufferContext, scale);
+//                game.objects.remove(saw.db_id);
+//                break;
+//            case 12: //Laser
+//                Laser laser = new Laser(this.game, pos_clicked, orientationBloc);
+//                laser.render(this.bufferContext, scale);
+//                game.objects.remove(laser.db_id);
+//                break;
+//            case 13: //Punch
+//                if(orientation >= 4) orientation -= 4;
+//                Punch punch = new Punch(this.game, orientation, pos_clicked);
+//                punch.render(this.bufferContext, scale);//portal.render(this.bufferContext, scale);
+//                game.objects.remove(punch.db_id);
+//                break;
+//            case 14: //Spikes
+//                if(orientation >= 4) orientation -= 4;
+//                Spikes spikes = new Spikes(this.game, orientation, pos_clicked);
+//                spikes.render(this.bufferContext, scale);
+//                game.objects.remove(spikes.db_id);
+//                break;
+////            case 15: //Acid
+////                Acid acid = new Acid(this.game, pos_clicked);
+////                acid.render(this.bufferContext, scale);
+////                game.objects.remove(acid.platform_d.db_id);
+////                game.objects.remove(acid.platform_g.db_id);
+////                game.objects.remove(acid.platform_m1.db_id);
+////                game.objects.remove(acid.platform_m2.db_id);
+////                game.objects.remove(acid.db_id);
+////                break;
+////            default: System.out.println("nothing to prev");
+//        }
+        selectionBloc.objectToPlace.setPosition(pos_clicked);
+        selectionBloc.objectToPlace.setOrientation(orientationBloc);
+//        selectionBloc.objectToPlace.render(this.bufferContext, scale);
     }
     
     public void enterEditionMode(){

@@ -16,6 +16,8 @@ import javax.imageio.ImageIO;
 import java.awt.geom.AffineTransform;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -35,9 +37,9 @@ public class Laser extends Trap {
     int counter =0;
     Game game;
     
-    
-    public Laser(Game game, Vec2 position, int orientation) throws IOException, SQLException {
-        super(game, "laser");
+    public Laser(Game game, Vec2 position, int orientation) throws IOException, SQLException {this(game,position,orientation,-1);}
+    public Laser(Game game, Vec2 position, int orientation, int db_id) throws IOException, SQLException {
+        super(game, "laser", db_id);
         this.game = game;
         this.collision_box = new Box(0, 0, 1, 1).translate(position);
         this.orientation = orientation;
@@ -51,6 +53,12 @@ public class Laser extends Trap {
             img_center = ImageIO.read(new File("./images/laser_centre.png"));
         }
     
+    }
+    
+    @Override
+    public void setOrientation(int orientation){
+        this.orientation = orientation;
+        this.angle = (float) ((Math.PI/4)*(orientation));
     }
     
     //--------------- interface de gestion des collisions -----------------
@@ -121,12 +129,14 @@ public class Laser extends Trap {
         double nearest = 1e20;
         Vec2 stop = vectir.mul(1000);
         for (PObject obj : game.objects.values()) {
-            Vec2 intersection = obj.getCollisionBox().intersectionFirstBorder(start, vectir);
-            if (intersection != null) {
-                double distance = vectir.dot(intersection.sub(start));
-                if (distance >= 0 && distance < nearest) {
-                    nearest = distance;
-                    stop = intersection;
+            if (obj instanceof Platform) {
+                Vec2 intersection = obj.getCollisionBox().intersectionFirstBorder(start, vectir);
+                if (intersection != null) {
+                    double distance = vectir.dot(intersection.sub(start));
+                    if (distance >= 0 && distance < nearest) {
+                        nearest = distance;
+                        stop = intersection;
+                    }
                 }
             }
         }

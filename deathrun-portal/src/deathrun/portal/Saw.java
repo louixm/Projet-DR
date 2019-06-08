@@ -28,8 +28,9 @@ public class Saw extends PObject {
     int step;
     static final String db_type = "saw";
     
-    public Saw(Game game, Vec2 position) throws IOException, SQLException {
-        super(game, db_type);
+    public Saw(Game game, Vec2 position) throws IOException, SQLException {this(game,position,-1);}
+    public Saw(Game game, Vec2 position, int db_id) throws IOException, SQLException {
+        super(game, db_type, db_id);
         this.collision_box = new Box(-1, -1, 1, 1).translate(position);
         setPosition(position);
         
