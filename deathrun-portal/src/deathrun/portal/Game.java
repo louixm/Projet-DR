@@ -403,6 +403,7 @@ public class Game {
                 switch(type){
                     case("saw"): obj = new Saw(this, position); break;
                     case("spikes"): obj = new Spikes(this, orientation, position); break;
+                    case("bomb"): obj = new Bomb(this, position); break;
                     case("laser"): obj = new Laser(this, position, orientation); break;
                     case("punch"): obj = new Punch(this, orientation, position); break;
                     default: try{
