@@ -386,7 +386,11 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
         Random ran = new Random();
         for (int i = 0; i < 3; i++){
             if (ran.nextFloat() < ratio) objectsToPlace[i] = 11 + ran.nextInt(4); //place a trap
-            else objectsToPlace[i] = ran.nextInt(11); //place a platform
+            else { //place a platform
+                int r = ran.nextInt(13);
+                if (r > 10) r = 10; //10, 11, 12 -> bomb, le reste -> platform
+                objectsToPlace[i] = r;
+            } 
         }
         selectionBloc.objectsToPlace = objectsToPlace;
         selectionBloc.setIcons();
