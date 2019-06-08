@@ -60,7 +60,7 @@ public class Player extends PObject {
     
     static SoundPlayer death;
     //static SoundPlayer[] jumpSound = {new SoundPlayer("wheee.mp3", false),new SoundPlayer("guimbarde.mp3", false),new SoundPlayer("hudadahu.mp3", false),new SoundPlayer("japoding.mp3", false)};
-    static SoundPlayer jumpSound = new SoundPlayer("jump.mp3", false);
+    static SoundPlayer jumpSound = new SoundPlayer("metal_jump.mp3", false);
             
     public static int availableId(Game game) {
         int id = -1;
