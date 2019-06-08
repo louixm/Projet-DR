@@ -29,16 +29,21 @@ public class Laser extends Trap {
     int step;
     Vec2 normal ;
     Vec2 vectir; 
+    Vec2 ray_stop;
+    
     boolean dejaJoue = false;
     int counter =0;
+    Game game;
+    
     
     public Laser(Game game, Vec2 position, int orientation) throws IOException, SQLException {
         super(game, "laser");
+        this.game = game;
         this.collision_box = new Box(0, 0, 1, 1).translate(position);
         this.orientation = orientation;
         this.angle = (float) ((Math.PI/4)*(orientation));
+        System.out.println("orientation "+orientation+"   angle "+angle);
 
-        this.vectir = new Vec2(Math.cos(angle),Math.sin(angle));
         setPosition(position);  
         
         if (img_center == null || img_base == null) {
@@ -54,6 +59,7 @@ public class Laser extends Trap {
         return (other instanceof Player)?1:0;
     }
     
+    
     public static int sign(double nombre){
         if(nombre < 0)  return -1;
         else            return +1;
@@ -62,7 +68,10 @@ public class Laser extends Trap {
     @Override
     public void onGameStep(Game game, float dt) {
         if (enabled) {
+            Vec2 start = collision_box.center();
+            double length = ray_stop.sub(start).dot(vectir);
             for (Player p: game.players){
+                /*
                 Vec2 p1 = p.getCollisionBox().p1 ; //point inférieur gauche
                 Vec2 p2 = p.getCollisionBox().p2 ; //point supérieur droit
                 Vec2 p3 = new Vec2(p1.x, p2.y) ; // point inférieur gauche
@@ -86,10 +95,44 @@ public class Laser extends Trap {
                     game.addScoreUponTrapKill(this, p);
                     // Player Killed
                 }
+                */
+                Vec2 intersection = p.getCollisionBox().intersectionFirstBorder(start, vectir);
+                if (intersection != null) {
+                    double distance = intersection.sub(start).dot(vectir);
+                    if (distance > 0 && distance <= length) {
+                        game.addScoreUponTrapKill(this, p);
+                        p.setDead(true);
+                    }
+                }
             }
         }
     }
     
+    @Override
+    void enable(boolean enable, boolean withsync) {
+        super.enable(enable, withsync);
+        if (enable)     update_internals();
+    }
+    
+    void update_internals() {
+        vectir = new Vec2(Math.cos(angle),Math.sin(angle));
+        
+        Vec2 start = collision_box.center();
+        double nearest = 1e20;
+        Vec2 stop = vectir.mul(1000);
+        for (PObject obj : game.objects.values()) {
+            Vec2 intersection = obj.getCollisionBox().intersectionFirstBorder(start, vectir);
+            if (intersection != null) {
+                double distance = vectir.dot(intersection.sub(start));
+                if (distance >= 0 && distance < nearest) {
+                    nearest = distance;
+                    stop = intersection;
+                }
+            }
+        }
+        
+        ray_stop = stop;
+    }
     
     //--------------- interface d'affichage -----------------
     @Override
@@ -127,6 +170,13 @@ public class Laser extends Trap {
         // affichage du rayon
         if (enabled) {
             counter++;
+            canvas.drawLine(
+                    (int) (c.x*scale),
+                    (int) (c.y*scale),
+                    (int) (ray_stop.x*scale),
+                    (int) (ray_stop.y*scale)
+            );
+            /*
             final float length = 1000;
             canvas.drawLine(
                     (int) (c.x*scale),
@@ -134,6 +184,7 @@ public class Laser extends Trap {
                     (int) ((c.x+vectir.x*length)*scale),
                     (int) ((c.y+vectir.y*length)*scale)
             );
+            */
         }
         
         // affichage de la tete
