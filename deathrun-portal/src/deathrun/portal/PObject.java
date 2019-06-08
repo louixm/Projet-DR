@@ -42,6 +42,7 @@ abstract public class PObject {
         this.acceleration = new Vec2();
         
         // ajout dans la table des objets de Game
+        /*
         if (db_id < 0) {
             int max_id = 0;
             for (int key: game.objects.keySet()) {
@@ -51,7 +52,9 @@ abstract public class PObject {
         }
         else
             this.db_id = db_id;
-        
+        */
+        if (db_id < 0)      this.db_id = db_id = game.next_id ++;
+        else                this.db_id = db_id;
         game.objects.put(this.db_id, this);
         
         if (game.sync != null) {
