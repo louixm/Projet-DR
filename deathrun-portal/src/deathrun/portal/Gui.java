@@ -279,9 +279,9 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
             obj.setPosition(pos_clicked);
             obj.setOrientation(orientationBloc);
             if (obj != null){
-            obj.last_sync = game.sync.latest++;
-            obj.syncSet(game.sync, true);
-        }
+                obj.last_sync = game.sync.latest++;
+                obj.syncSet(game.sync, true);
+            }
         this.selectionBloc.blocAPoser = -1;
     }
 

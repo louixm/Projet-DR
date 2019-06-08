@@ -99,7 +99,7 @@ public class SelectionBloc extends javax.swing.JDialog {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
             this.blocAPoser = objectsToPlace[0];
-            this.objectToPlace = createObjectToPlace(objectsToPlace[0]);
+            createObjectToPlace(objectsToPlace[0]);
         } catch (IOException ex) {
             Logger.getLogger(SelectionBloc.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
@@ -111,7 +111,7 @@ public class SelectionBloc extends javax.swing.JDialog {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         try {
             this.blocAPoser = objectsToPlace[1];
-            this.objectToPlace = createObjectToPlace(objectsToPlace[1]);
+            createObjectToPlace(objectsToPlace[1]);
         } catch (IOException ex) {
             Logger.getLogger(SelectionBloc.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
@@ -123,7 +123,7 @@ public class SelectionBloc extends javax.swing.JDialog {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         try {
             this.blocAPoser = objectsToPlace[2];
-            this.objectToPlace = createObjectToPlace(objectsToPlace[2]);
+            createObjectToPlace(objectsToPlace[2]);
         } catch (IOException ex) {
             Logger.getLogger(SelectionBloc.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
@@ -210,24 +210,27 @@ public class SelectionBloc extends javax.swing.JDialog {
         }
     }
 
-    private PObject createObjectToPlace(int i) throws IOException, SQLException {
+    private void createObjectToPlace(int i) throws IOException, SQLException {
         switch (i) {
             //Tests pour savoir quel bloc a été choisi dans la fenetre SelectBloc
             case 0:case 1:case 2:case 3:case 4:case 5:case 6:case 7:case 8:case 9: //Plateforme
-                return new Platform(this.game, new Vec2(0,0), Platform.standardBoxes[i], i);
+                this.objectToPlace = new Platform(this.game, new Vec2(-50,-50), Platform.standardBoxes[i], i); break;
             case 10: //Bombe
-                return new Bomb(this.game, new Vec2(0,0)); 
+                this.objectToPlace = new Bomb(this.game, new Vec2(-50,-50)); break;
             case 11: //Scie circulaire
-                return new Saw(this.game, new Vec2(0,0));
+                this.objectToPlace = new Saw(this.game, new Vec2(-50,-50));break;
             case 12: //Laser                       
-                return new Laser(this.game, new Vec2(0,0), 0);
+                this.objectToPlace = new Laser(this.game, new Vec2(-50,-50), 0);break;
             case 13: //Punch  
-                return new Punch(this.game, 0, new Vec2(0,0));
+                this.objectToPlace = new Punch(this.game, 0, new Vec2(-50,-50));break;
             case 14: //Spikes
-                return new Spikes(this.game, 0, new Vec2(0,0));
+                this.objectToPlace = new Spikes(this.game, 0, new Vec2(-50,-50));break;
             case 15: //Mine
-                return new Explosive(this.game, new Vec2(0,0));
+                this.objectToPlace = new Explosive(this.game, new Vec2(-50,-50));break;
         }
-        return null;
+        if (this.objectToPlace != null){
+            this.objectToPlace.last_sync = game.sync.latest++;
+            this.objectToPlace.syncSet(game.sync, true);
+        }
     }
 }
