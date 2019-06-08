@@ -37,6 +37,8 @@ public class Game {
     public boolean roundEnded = false;
     public boolean editionMode = true;
     
+    public int next_id;
+    
     
     Game() { this(false); }
     Game(boolean sync_enable) {
@@ -48,6 +50,7 @@ public class Game {
                         "5V8HVbDZMtkOHwaX"
                     ));
                 db_last_sync = 0;
+                next_sync = 0;
                 System.out.println("connected to database");
             }
             catch (SQLException err) {
@@ -58,6 +61,7 @@ public class Game {
         prev_time = System.nanoTime();
 	players = new ArrayList<>();
         objects = new HashMap<>();
+        next_id = 0;
     }
     
     public void disconnect() {
@@ -206,12 +210,21 @@ public class Game {
         }
         */
         if (this.sync != null) {
+            
+            // recupérer l'id max
+            PreparedStatement req = this.sync.srv.prepareStatement("SELECT MAX(id) FROM pobjects");
+            ResultSet r = req.executeQuery();
+            r.next();
+            next_id = r.getInt(1) + 1;
+            r.close();
+                    
             if (this.players.isEmpty()){
                 switchToEditionMode(true);
-            } else{    
+            } 
+            else {
                 try {          
-                    PreparedStatement req = this.sync.srv.prepareStatement("SELECT * FROM server");
-                    ResultSet r = req.executeQuery();
+                    req = this.sync.srv.prepareStatement("SELECT * FROM server");
+                    r = req.executeQuery();
                     r.next();
                     int mode = r.getInt("mode");
                     this.editionMode = (mode == 0);
