@@ -113,7 +113,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
                     try {              
                         previsualisationBloc(positionSouris, orientationBloc);
                     } catch (Exception ex) {
-                        Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                        
                     }
                 }
             }
@@ -275,13 +275,11 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
 ////                        obj = (PObject) acid;
 ////                        break;
 //                    }
-            obj = selectionBloc.objectToPlace;
-            obj.setPosition(pos_clicked);
-            obj.setOrientation(orientationBloc);
-            if (obj != null){
-                obj.last_sync = game.sync.latest++;
-                obj.syncSet(game.sync, true);
-            }
+        obj = selectionBloc.objectToPlace;
+        obj.setPosition(pos_clicked);
+        obj.setOrientation(orientationBloc);
+        obj.last_sync = game.sync.latest++;
+        obj.syncSet(game.sync, true);
         this.selectionBloc.blocAPoser = -1;
     }
 
