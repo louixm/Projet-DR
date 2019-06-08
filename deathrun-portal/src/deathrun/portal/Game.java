@@ -406,6 +406,7 @@ public class Game {
                     case("bomb"): obj = new Bomb(this, position,db_id); break;
                     case("laser"): obj = new Laser(this, position, orientation, db_id); break;
                     case("punch"): obj = new Punch(this, orientation, position, db_id); break;
+                    case("explosive"): obj = new Explosive(this, position, db_id); break;
                     default: try{
                         int platformType = Integer.valueOf(type);
                         obj = new Platform(this, position, Platform.standardBoxes[platformType], platformType, db_id);

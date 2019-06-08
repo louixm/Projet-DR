@@ -384,11 +384,11 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
         12 = laser
         13 = punch
         14 = spikes
-        //15 = acid
+        15 = explosive
         */
         Random ran = new Random();
         for (int i = 0; i < 3; i++){
-            if (ran.nextFloat() < ratio) objectsToPlace[i] = 11 + ran.nextInt(4); //place a trap
+            if (ran.nextFloat() < ratio) objectsToPlace[i] = 11 + ran.nextInt(5); //place a trap
             else objectsToPlace[i] = ran.nextInt(11); //place a platform (or bomb)
         }
         selectionBloc.objectsToPlace = objectsToPlace;

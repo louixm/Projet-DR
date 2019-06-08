@@ -59,7 +59,9 @@ public class Player extends PObject {
     BufferedImage current_image;
     
     static SoundPlayer death;
+
     //static SoundPlayer[] jumpSound = {new SoundPlayer("wheee.mp3", false),new SoundPlayer("guimbarde.mp3", false),new SoundPlayer("hudadahu.mp3", false),new SoundPlayer("japoding.mp3", false)};
+
     static SoundPlayer jumpSound = new SoundPlayer("metal_jump.mp3", false);
             
     public static int availableId(Game game) {
@@ -77,8 +79,7 @@ public class Player extends PObject {
         }
         System.out.println("id = " + id);
         return id;
-    }
-    
+    }    
     
     public Player(Game game, String name, int avatar) throws SQLException { this(game, name, avatar, -1); }
     public Player(Game game, String name, int avatar, int db_id) throws SQLException {
@@ -383,7 +384,6 @@ public class Player extends PObject {
             this.dead = dead;
 
             if(withSyncAndTryEndRound){
-                System.out.println("player "+name+" is dead");
                 try {
                     PreparedStatement req = game.sync.srv.prepareStatement("UPDATE players SET state=? WHERE id = ?");
                     req.setInt(1, 1); //state = 0 (en vie), 1 (dead), 2 (exit door)
