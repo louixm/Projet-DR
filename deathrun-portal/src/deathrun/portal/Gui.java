@@ -113,7 +113,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
                     try {              
                         previsualisationBloc(positionSouris, orientationBloc);
                     } catch (Exception ex) {
-                        Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                        
                     }
                 }
             }
