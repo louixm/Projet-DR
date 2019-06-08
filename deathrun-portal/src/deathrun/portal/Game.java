@@ -92,7 +92,7 @@ public class Game {
         
         for (Player player: players) { 
             if (player.disconnected) continue;
-            //if (player.isControled()) 
+//            if (player.isControled()) 
                 player.applyMovementChanges(dt);
             
             // pas de mise a jour de vitesse si pas d'acceleration
