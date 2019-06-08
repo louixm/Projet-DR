@@ -59,27 +59,41 @@ public class Box {
         return new Box(new Vec2(p1.x - w, p1.y - h), new Vec2(p2.x +w, p2.y+h));
     }
 
-    /// retourne le point d'intersection du segment [start end] avec les bords si end est a l'intérieur, sinon retourne end
+    /// retourne le point d'intersection de la demie droite [start, start+t*vectir) avec les bords, sinon retourne en null
     /// note: se fiche de si start est dedans ou pas
-    public Vec2 intersectionBorder(Vec2 start, Vec2 end) {
-        if (contains(end)) {
-            Vec2 v = end.sub(start);
-            double y;
-            y = v.y/v.x * p1.x + start.y;
-            if (p1.y <= y && y <= p2.y)		return new Vec2(p1.x, y);
-            y = v.y/v.x * p2.x + start.y;
-            if (p1.y <= y && y <= p2.y)		return new Vec2(p2.x, y);
+    public Vec2 intersectionBorder(Vec2 start, Vec2 direction) {
+        Vec2 v = direction;
+        double y;
+        y = v.y/v.x * p1.x + start.y;
+        if (p1.y <= y && y <= p2.y)		return new Vec2(p1.x, y);
+        y = v.y/v.x * p2.x + start.y;
+        if (p1.y <= y && y <= p2.y)		return new Vec2(p2.x, y);
 
-            double x;
-            x = v.x/v.y * p1.y + start.x;
-            if (p1.x <= x && x <= p2.x)		return new Vec2(x, p1.y);
-            x = v.x/v.y * p2.y + start.x;
-            if (p1.x <= x && x <= p2.x)		return new Vec2(x, p2.y);
+        double x;
+        x = v.x/v.y * p1.y + start.x;
+        if (p1.x <= x && x <= p2.x)		return new Vec2(x, p1.y);
+        x = v.x/v.y * p2.y + start.x;
+        if (p1.x <= x && x <= p2.x)		return new Vec2(x, p2.y);
 
-            return null;	// ne peut pas arriver normalement mais servira a detecter les bugs
-        }
-        else
-            return end;
+        return null;	// ne peut pas arriver normalement mais servira a detecter les bugs
+        
+    }
+    public Vec2 intersectionFirstBorder(Vec2 start, Vec2 direction) {
+        Vec2 v = direction;
+        double y;
+        y = v.y/v.x * (p1.x-start.x) + start.y;
+        if (v.x >= 0 && p1.y <= y && y <= p2.y)		return new Vec2(p1.x, y);
+        y = v.y/v.x * (p2.x-start.x) + start.y;
+        if (v.x <= 0 && p1.y <= y && y <= p2.y)		return new Vec2(p2.x, y);
+
+        double x;
+        x = v.x/v.y * (p1.y-start.y) + start.x;
+        if (v.y >= 0 && p1.x <= x && x <= p2.x)		return new Vec2(x, p1.y);
+        x = v.x/v.y * (p2.y-start.y) + start.x;
+        if (v.y <= 0 && p1.x <= x && x <= p2.x)		return new Vec2(x, p2.y);
+
+        return null;	// ne peut pas arriver normalement mais servira a detecter les bugs
+        
     }
 
     /// retourne le point de la bordure le plus proche de position

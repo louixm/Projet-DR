@@ -123,8 +123,7 @@ public class Game {
             player.setCollisionDirection(new ArrayList<String>());
             
             // collisions avec les objets
-            for (HashMap.Entry<Integer,PObject> p : objects.entrySet()) {
-                PObject object = p.getValue();
+            for (PObject object: objects.values()) {
                 if (object instanceof Player) continue;
                 int obj_collisionable = object.collisionable(player);
                 int pl_collisionable = player.collisionable(object);
