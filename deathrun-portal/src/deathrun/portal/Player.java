@@ -58,7 +58,7 @@ public class Player extends PObject {
     BufferedImage current_image;
     
     static SoundPlayer death;
-    static SoundPlayer jumpSound = new SoundPlayer("wasted.mp3", false);
+    static SoundPlayer jumpSound = new SoundPlayer("jump.mp3", false);
     
     public static int availableId(Game game) {
         int id = -1;
@@ -439,6 +439,7 @@ public class Player extends PObject {
                  || (this.left && this.collisionDirection.contains("left"))))
             {
                 this.velocity.y = -5;
+                jumpSound.play();
                 if (this.right) this.velocity.x = -12;               
                 else            this.velocity.x = 12;
             }
