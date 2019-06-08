@@ -315,7 +315,7 @@ public class Game {
                 
                 // synchronisation des objets physiques
                 // recupérer les infos du serveur plus récentes que la derniere reception
-                PreparedStatement reqobjects = sync.srv.prepareStatement("SELECT id,x,y,vx,vy,version,type FROM pobjects WHERE version > ? ");
+                PreparedStatement reqobjects = sync.srv.prepareStatement("SELECT id,x,y,vx,vy,orientation,version,type FROM pobjects WHERE version > ? ");
                 reqobjects.setLong(1, db_last_sync);
                 
                 ResultSet robjects = reqobjects.executeQuery();
@@ -345,6 +345,7 @@ public class Game {
                         obj.setPosition(new Vec2(robjects.getInt("x")/1000f, robjects.getInt("y")/1000f));
                         obj.velocity.x = robjects.getDouble("vx");
                         obj.velocity.y = robjects.getDouble("vy");
+                        obj.setOrientation(robjects.getInt("orientation"));
                         //System.out.println("updated object "+id);
                         
                         obj.last_sync = update;
