@@ -98,7 +98,7 @@ public class Explosive extends Trap {
             
             // si le piège est activé
             else {  
-                if (step<=13){
+                if (step<13){
                     // incrementer le compteur de frame
                     step ++;
                     // évolution du numéro de l'immage
