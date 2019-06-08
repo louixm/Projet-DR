@@ -68,8 +68,8 @@ public class Portal extends PObject{
         System.out.println("(sens[0])?1:-1 = " + ((sens[0])?1:-1));
         System.out.println("(sens[1])?1:-1 = " + ((sens[1])?1:-1));
         other.setPosition(other.position.add(otherPortal.position.sub(this.position)).add(new Vec2(
-            ((sens[0])?1:-1) * Math.signum(other.velocity.x/3)*other.getCollisionBox().getWidth(),
-            ((sens[1])?1:-1) * Math.signum(other.velocity.y/3)*other.getCollisionBox().getHeight())
+            ((sens[0])?1:-1) * Math.signum(other.velocity.x)*other.getCollisionBox().getWidth()*1.2,
+            ((sens[1])?1:-1) * Math.signum(other.velocity.y)*other.getCollisionBox().getHeight()*1.2)
         ));
         if (!sens[0]) other.velocity.x = -other.velocity.x;
         if (!sens[1]) other.velocity.y = -other.velocity.y;
