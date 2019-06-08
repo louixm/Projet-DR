@@ -80,9 +80,7 @@ public class Game {
         long ac_time = System.nanoTime();
         float dt = ((float)(ac_time - prev_time))/1e9f;
         
-        //for (PObject p: map.objects)    p.onGameStep(this, dt);
-        for (HashMap.Entry<Integer,PObject> p : objects.entrySet()) p.getValue().onGameStep(this, dt);
-//        for (PObject p: players)        p.onGameStep(this, dt);
+        for (PObject p : objects.values()) p.onGameStep(this, dt);
         if (sync != null) syncUpdate();
         physicStep(dt);
         
