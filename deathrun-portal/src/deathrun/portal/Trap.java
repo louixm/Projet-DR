@@ -112,7 +112,7 @@ public class Trap extends PObject {
         
         // ajouter le piege aux controles de l'utilisateur local
         if (currentcontrol != null) currentcontrol.traps.remove(this);
-        if (user != null)           user.traps.add(this);
+        if (user != null)           user.traps.add(0, this);
         currentcontrol = user;
     }
     

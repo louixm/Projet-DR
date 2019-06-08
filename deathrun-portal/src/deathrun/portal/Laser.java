@@ -5,7 +5,6 @@
  */
 package deathrun.portal;
 
-import static deathrun.portal.Saw.img;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -23,7 +22,8 @@ import java.util.ArrayList;
  * @author pdemiche
  */
 public class Laser extends Trap {
-    static Image img;
+    static Image img_base;
+    static Image img_center;
     float angle ;
     int typePlateforme;
     int step;
@@ -39,10 +39,11 @@ public class Laser extends Trap {
         this.angle = (float) ((Math.PI/4)*(orientation));
 
         this.vectir = new Vec2(Math.cos(angle),Math.sin(angle));
-        setPosition(position);        
+        setPosition(position);  
         
-        if (img == null) {         
-            img = ImageIO.read(new File("./images/laser2.png")); //Laser
+        if (img_center == null || img_base == null) {
+            img_base = ImageIO.read(new File("./images/laser_base.png"));
+            img_center = ImageIO.read(new File("./images/laser_centre.png"));
         }
     
     }
@@ -106,6 +107,24 @@ public class Laser extends Trap {
             dejaJoue = false;
             counter=0;
         }
+        if (counter>100) {
+            enabled=false;
+        }
+        
+        // affichage de la base
+        final double base_w = 1;
+        final double base_h = 1;
+        
+        canvas.drawImage(img_base, 
+                (int) ((c.x-base_w)*scale), 
+                (int) ((c.y-base_h)*scale), 
+                (int) ((c.x+base_w)*scale), 
+                (int) ((c.y+base_h)*scale),
+                0, 0,
+                img_base.getWidth(null), img_base.getHeight(null),
+                null);
+        
+        // affichage du rayon
         if (enabled) {
             counter++;
             final float length = 1000;
@@ -116,21 +135,21 @@ public class Laser extends Trap {
                     (int) ((c.y+vectir.y*length)*scale)
             );
         }
-        if (counter>100) {
-            enabled=false;
-        }
         
+        // affichage de la tete
+        double box_w = scale*collision_box.getWidth();
+        double box_h = scale*collision_box.getHeight();
         AffineTransform transform = new AffineTransform();
-        transform.translate(c.x*scale, c.y*scale);
+        transform.translate(c.x*scale - box_w/2, c.y*scale - box_h/2);
         transform.scale(
-                scale*collision_box.getWidth()/img.getWidth(null),
-                scale*collision_box.getHeight()/img.getHeight(null)
-        );
-        transform.rotate(angle, img.getWidth(null)/2,img.getHeight(null)/2);
-        // affichage de l'image tournée
-        canvas.drawImage(img, 
-            transform,
-            null);
+                box_w/img_center.getWidth(null),
+                box_h/img_center.getHeight(null));
+        transform.rotate(angle, 
+                img_center.getWidth(null)/2, 
+                img_center.getHeight(null)/2);
+        
+        canvas.drawImage(img_center, transform, null);
+        
         //System.out.println(collision_box.center().y);
         super.render(canvas, scale);
         
