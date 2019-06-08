@@ -19,7 +19,7 @@ import javax.imageio.ImageIO;
  */
 public class Explosive extends Trap {
     private Image img;
-    private Image im[];
+    static private Image im[];
     int step;
     double grandissement = 200; //en pixel
     double largeurBox = 1;
@@ -27,7 +27,6 @@ public class Explosive extends Trap {
     
     double ratioLargeurHauteur = 19f/28f;
     static final String db_type = "explosive";
-    Vec2 initPosition;   //posiion initiale
     Vec2 activPosition;   //position quand le piège est sous controle
     long time_next_image;
     long image_duration = 20000000;
@@ -37,7 +36,7 @@ public class Explosive extends Trap {
     public Explosive(Game game, Vec2 position) throws IOException, SQLException {this(game,position,-1);}
     public Explosive(Game game, Vec2 position, int db_id) throws IOException, SQLException {
         super(game, "explosive", db_id);
-        this.initPosition = position;
+        this.position = position;
         collision_box = new Box(0,0,1,1);
         
         step = 0;
@@ -94,7 +93,7 @@ public class Explosive extends Trap {
             if (!enabled){   
                 img = im[0];
                 collision_box = new Box(0,0,largeurBox,largeurBox*ratioLargeurHauteur);
-                collision_box = collision_box.translateToPosition(initPosition);
+                collision_box = collision_box.translateToPosition(position);
             } 
             
             // si le piège est activé
@@ -109,13 +108,13 @@ public class Explosive extends Trap {
                     if (step<=4){
                         double NouvelleLargeur = largeurBox+((step*ratio*grandissement))/scale;
                         collision_box = new Box(0,0 ,NouvelleLargeur,NouvelleLargeur*ratioLargeurHauteur);
-                        activPosition = new Vec2(initPosition.x-(step*ratio*grandissement/(2*scale)),initPosition.y-(step*ratio*grandissement/(2*scale))); 
+                        activPosition = new Vec2(position.x-(step*ratio*grandissement/(2*scale)),position.y-(step*ratio*grandissement/(2*scale))); 
                         collision_box = collision_box.translateToPosition(activPosition);
                     }
                     else{
                         double NouvelleLargeur = largeurBox+((5*ratio*grandissement))/scale;
                         collision_box = new Box(0,0 ,NouvelleLargeur,NouvelleLargeur*ratioLargeurHauteur);
-                        activPosition = new Vec2(initPosition.x-(5*ratio*grandissement/(2*scale)),initPosition.y-(5*ratio*grandissement/(2*scale))); 
+                        activPosition = new Vec2(position.x-(5*ratio*grandissement/(2*scale)),position.y-(5*ratio*grandissement/(2*scale))); 
                         collision_box = collision_box.translateToPosition(activPosition);
                     }
                 }
