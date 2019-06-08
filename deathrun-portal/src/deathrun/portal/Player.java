@@ -368,7 +368,6 @@ public class Player extends PObject {
             this.dead = dead;
 
             if(withSyncAndTryEndRound){
-                System.out.println("player "+name+" is dead");
                 try {
                     PreparedStatement req = game.sync.srv.prepareStatement("UPDATE players SET state=? WHERE id = ?");
                     req.setInt(1, 1); //state = 0 (en vie), 1 (dead), 2 (exit door)
