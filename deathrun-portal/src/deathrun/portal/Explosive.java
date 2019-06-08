@@ -34,8 +34,9 @@ public class Explosive extends Trap {
     
     //boolean dejaJoue = false;
     
-    public Explosive(Game game, Vec2 position) throws IOException, SQLException {
-        super(game, "explosive");
+    public Explosive(Game game, Vec2 position) throws IOException, SQLException {this(game,position,-1);}
+    public Explosive(Game game, Vec2 position, int db_id) throws IOException, SQLException {
+        super(game, "explosive", db_id);
         this.initPosition = position;
         collision_box = new Box(0,0,1,1);
         
@@ -98,7 +99,7 @@ public class Explosive extends Trap {
             
             // si le piège est activé
             else {  
-                if (step<=13){
+                if (step<13){
                     // incrementer le compteur de frame
                     step ++;
                     // évolution du numéro de l'immage
