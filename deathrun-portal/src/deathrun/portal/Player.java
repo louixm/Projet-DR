@@ -59,8 +59,9 @@ public class Player extends PObject {
     BufferedImage current_image;
     
     static SoundPlayer death;
-    static SoundPlayer[] jumpSound = {new SoundPlayer("wheee.mp3", false),new SoundPlayer("guimbarde.mp3", false),new SoundPlayer("hudadahu.mp3", false),new SoundPlayer("japoding.mp3", false)};
-        
+    //static SoundPlayer[] jumpSound = {new SoundPlayer("wheee.mp3", false),new SoundPlayer("guimbarde.mp3", false),new SoundPlayer("hudadahu.mp3", false),new SoundPlayer("japoding.mp3", false)};
+    static SoundPlayer jumpSound = new SoundPlayer("jump.mp3", false);
+            
     public static int availableId(Game game) {
         int id = -1;
         boolean id_found = true;
@@ -433,18 +434,20 @@ public class Player extends PObject {
         if (!(dead || hasReachedExitDoor) && this.jump) {
             if (acceleration.y == 0){
                 this.velocity.y = -6;
-                Random rand = new Random();
-                int track = rand.nextInt(4);
-                jumpSound[track].play();
+                //Random rand = new Random();
+                //int track = rand.nextInt(4);
+                //jumpSound[track].play();
+                jumpSound.play();
             }
             else if (velocity.y > 0 && (
                     (this.right && this.collisionDirection.contains("right")) 
                  || (this.left && this.collisionDirection.contains("left"))))
             {
                 this.velocity.y = -5;
-                Random rand = new Random();
-                int track = rand.nextInt(4);
-                jumpSound[track].play();
+                //Random rand = new Random();
+                //int track = rand.nextInt(4);
+                //jumpSound[track].play();
+                jumpSound.play();
                 if (this.right) this.velocity.x = -12;               
                 else            this.velocity.x = 12;
             }
