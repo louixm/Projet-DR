@@ -33,8 +33,10 @@ public class StartMenu extends javax.swing.JFrame {
      * Creates new form StartMenu
      */
     static Image img;
+    static SoundPlayer backgroundSound= new SoundPlayer("startMenuMusicReloaded.mp3", true);
     
     public StartMenu() {
+        backgroundSound.play();
         initComponents();
         imageSentryBot.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/sentrybot.png").getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT)));
         imageBotBleu.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/robotBleu.png").getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT)));
@@ -210,6 +212,7 @@ public class StartMenu extends javax.swing.JFrame {
         if (pseudo != null) {
             start = true;
             alive = false;
+            backgroundSound.stop();
             dispose();
         }
     }//GEN-LAST:event_startButtonActionPerformed
