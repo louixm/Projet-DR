@@ -57,6 +57,8 @@ public class Bomb extends PObject{
             time_next_image = ac_time + image_duration;
         }
         if (step == 3){
+            SoundPlayer explosion = new SoundPlayer("explosion.mp3", false);
+            explosion.play();
             last_sync++;
             //destruction des objetcs intersectés
             for (HashMap.Entry<Integer,PObject> p : g.objects.entrySet()){
@@ -115,7 +117,6 @@ public class Bomb extends PObject{
     //--------------- interface d'affichage -----------------
     @Override
     public void render(Graphics2D canvas, float scale) {
-     
             canvas.drawImage(img, 
                 (int) (collision_box.p1.x*scale-15*step), 
                 (int) (collision_box.p1.y*scale-15*step), 
