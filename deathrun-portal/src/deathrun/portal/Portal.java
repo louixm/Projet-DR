@@ -64,14 +64,17 @@ public class Portal extends PObject{
     }
     
     @Override public void onCollision(Game g, PObject other) {
-        System.out.println("sens = " + sens[0] + ", " + sens[1]);
-        System.out.println("(sens[0])?1:-1 = " + ((sens[0])?1:-1));
-        System.out.println("(sens[1])?1:-1 = " + ((sens[1])?1:-1));
-        other.setPosition(other.position.add(otherPortal.position.sub(this.position)).add(new Vec2(
-            ((sens[0])?1:-1) * Math.signum(other.velocity.x)*other.getCollisionBox().getWidth()*1.2,
-            ((sens[1])?1:-1) * Math.signum(other.velocity.y)*other.getCollisionBox().getHeight()*1.2)
-        ));
-        if (!sens[0]) other.velocity.x = -other.velocity.x;
-        if (!sens[1]) other.velocity.y = -other.velocity.y;
+        Vec2 c = otherPortal.collision_box.center();
+        double mx;
+        if (other.velocity.x > 0)   mx = size/2;
+        else                        mx = -size/2;
+        double my = - other.getCollisionBox().getHeight()/2;
+        if (!sens[0]) {
+            mx = -mx;
+            other.velocity.x = -other.velocity.x;
+        }
+        Vec2 newpos = c.add(new Vec2(mx, -my));
+        other.setVelocity(other.velocity);
+        other.setPosition(newpos);
     }
 }
