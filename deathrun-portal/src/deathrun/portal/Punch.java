@@ -20,11 +20,7 @@ import javax.imageio.ImageIO;
  */
 public class Punch extends Trap {
     private Image img;
-    private Image im0;
-    private Image im1;
-    private Image im2;
-    private Image im3;
-    private Image im4;
+    private Image im[];
     int typePlateforme;
     int step;
 //    int orientation;  // 0 = tue en descente; 1 = tue à gauche, 2 tue en haut, 3 tue à droite
@@ -42,13 +38,13 @@ public class Punch extends Trap {
         this.initPosition = position; //redondant ?
         collision_box = new Box(0,0 , 1,1);
         
-        
-        im0 = ImageIO.read(new File("./images/punch"+orientation+"_0.png"));
-        im1 = ImageIO.read(new File("./images/punch"+orientation+"_1.png"));
-        im2 = ImageIO.read(new File("./images/punch"+orientation+"_2.png"));
-        im3 = ImageIO.read(new File("./images/punch"+orientation+"_3.png"));
-        im4 = ImageIO.read(new File("./images/punch"+orientation+"_4.png"));
-        
+        im = new Image[] {
+            ImageIO.read(new File("./images/punch"+orientation+"_0.png")),
+            ImageIO.read(new File("./images/punch"+orientation+"_1.png")),
+            ImageIO.read(new File("./images/punch"+orientation+"_2.png")),
+            ImageIO.read(new File("./images/punch"+orientation+"_3.png")),
+            ImageIO.read(new File("./images/punch"+orientation+"_4.png"))
+        };
     }
     
     //--------------- interface de gestion des collisions -----------------
@@ -58,6 +54,28 @@ public class Punch extends Trap {
     }
     //--------------- interface de gestion des collisions -----------------*/
     
+    @Override
+    public void setPosition(Vec2 pos) {
+        super.setPosition(pos);
+        collision_box = collision_box.translateToPosition(pos);
+    }
+    
+    @Override
+    public void setOrientation(int orientation){
+        this.orientation = orientation;
+        if(this.orientation >= 4) this.orientation -= 4;
+        try {
+            im = new Image[] {
+                ImageIO.read(new File("./images/punch"+orientation+"_0.png")),
+                ImageIO.read(new File("./images/punch"+orientation+"_1.png")),
+                ImageIO.read(new File("./images/punch"+orientation+"_2.png")),
+                ImageIO.read(new File("./images/punch"+orientation+"_3.png")),
+                ImageIO.read(new File("./images/punch"+orientation+"_4.png"))
+            };
+        } catch (IOException ex) {
+            Logger.getLogger(Punch.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     
     @Override
     public void onGameStep(Game game, float dt) {
@@ -127,7 +145,7 @@ public class Punch extends Trap {
             
             // si le piège n'est pas activé on met l'image "punch0"
             if (!enabled){   
-                img = im0;
+                img = im[0];
                 step=0;
             } 
             
@@ -145,21 +163,7 @@ public class Punch extends Trap {
                 }else{
                     numImage = 4-(step-(5*fiveMulticator));
                 }
-                if (numImage==0){
-                    img = im0;
-                }
-                if (numImage==1){
-                    img = im1;
-                }
-                if (numImage==2){
-                    img = im2;
-                }
-                if (numImage==3){
-                    img = im3;
-                }
-                if (numImage==4){
-                    img = im4;
-                }
+                img = im[numImage];
                     // condition d'arrêt du cycle
                 if (step == 9){
                     step=0;
@@ -169,10 +173,10 @@ public class Punch extends Trap {
             
             // positionnement de l'image en fonction de sa rotation
             if (orientation == 1){
-                activPosition = new Vec2(initPosition.x-((img.getWidth(null)-im0.getWidth(null))/scale),initPosition.y); 
+                activPosition = new Vec2(initPosition.x-((img.getWidth(null)-im[0].getWidth(null))/scale),initPosition.y); 
             }
             if(orientation == 2){
-                activPosition = new Vec2(initPosition.x,initPosition.y-(img.getHeight(null)-im0.getHeight(null))/scale); 
+                activPosition = new Vec2(initPosition.x,initPosition.y-(img.getHeight(null)-im[0].getHeight(null))/scale); 
             }
             if (orientation == 3 || orientation == 0){
                 activPosition = initPosition; 

@@ -16,6 +16,8 @@ import javax.imageio.ImageIO;
 import java.awt.geom.AffineTransform;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -51,6 +53,12 @@ public class Laser extends Trap {
             img_center = ImageIO.read(new File("./images/laser_centre.png"));
         }
     
+    }
+    
+    @Override
+    public void setOrientation(int orientation){
+        this.orientation = orientation;
+        this.angle = (float) ((Math.PI/4)*(orientation));
     }
     
     //--------------- interface de gestion des collisions -----------------
