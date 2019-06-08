@@ -36,8 +36,11 @@ public class DeathrunPortal {
 //            game.map.objects.add(new Punch(game,1,new Vec2(21,16)));
                                     //audio continue
             
-            SoundPlayer[] backgroundSound = { new SoundPlayer("sabaton-primo-victoria-8-bit.mp3", true), new SoundPlayer("sabaton-the-art-of-war-8-bit.mp3", true),
-                new SoundPlayer("sabaton-coat-of-arms-8-bit.mp3", true),new SoundPlayer("square-hammer-8-bit-tribute-to-ghost-8-bit-universe.mp3", true)};
+            SoundPlayer[] backgroundSound = { 
+                new SoundPlayer("sabaton-primo-victoria-8-bit.mp3", true), 
+                new SoundPlayer("sabaton-the-art-of-war-8-bit.mp3", true),
+                new SoundPlayer("sabaton-coat-of-arms-8-bit.mp3", true),
+                new SoundPlayer("square-hammer-8-bit-tribute-to-ghost-8-bit-universe.mp3", true)};
             Random rand = new Random();
             int track = rand.nextInt(4);
             backgroundSound[track].play();
