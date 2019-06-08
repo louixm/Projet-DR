@@ -27,7 +27,7 @@ public class Trap extends PObject {
     Player takingcontrol = null;
     Player currentcontrol = null;
     long taken_time = 0;
-    final long take_time = 2000;
+    final long take_time = 1000;
     Game game;
     
     long last_trap_sync;    /// numero de version (pour situer son etat de mise a jour par rapport aux données serveur)

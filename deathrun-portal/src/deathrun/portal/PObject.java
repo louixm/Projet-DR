@@ -54,7 +54,7 @@ abstract public class PObject {
             this.db_id = db_id;
         */
         if (db_id < 0)      this.db_id = db_id = game.next_id ++;
-        else                {
+        else {
             this.db_id = db_id;
             game.next_id = Math.max(db_id, game.next_id)+1;
         }
