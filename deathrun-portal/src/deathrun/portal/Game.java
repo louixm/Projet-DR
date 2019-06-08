@@ -300,15 +300,22 @@ public class Game {
                 
                 // synchronisation des objets physiques
                 // recupérer les infos du serveur plus récentes que la derniere reception
-                PreparedStatement reqobjects = sync.srv.prepareStatement("SELECT id,x,y,vx,vy,version FROM pobjects WHERE version > ? ");
+                PreparedStatement reqobjects = sync.srv.prepareStatement("SELECT id,x,y,vx,vy,version,type FROM pobjects WHERE version > ? ");
                 reqobjects.setLong(1, db_last_sync);
                 
                 ResultSet robjects = reqobjects.executeQuery();
                 while (robjects.next()) {
-                    int id = robjects.getInt("id");                    
+                    int id = robjects.getInt("id");  
+                    String type = robjects.getString("type");
                     PObject obj;
-                    if (objects.containsKey(id))    obj = objects.get(id);
-                    else                            obj = syncNewObject(id); 
+                    if (objects.containsKey(id)){
+                        obj = objects.get(id);
+                        if (type.equals("null")){
+                            objects.remove(id);
+                            System.out.println("Removed object " + obj + " still here : " + objects.containsKey(id));
+                            continue;
+                        }
+                    } else obj = syncNewObject(id);
                     
                     if (obj == null) {
                         System.out.println("object "+id+" not found");
