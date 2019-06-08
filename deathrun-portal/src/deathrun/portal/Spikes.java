@@ -27,8 +27,9 @@ public class Spikes extends PObject {
     static final String db_type = "spikes";
     static SoundPlayer spiked;
     
-    public Spikes(Game game, int orientation, Vec2 position) throws IOException, SQLException {
-        super(game, db_type);
+    public Spikes(Game game, int orientation, Vec2 position) throws IOException, SQLException {this(game,orientation,position,-1);}
+    public Spikes(Game game, int orientation, Vec2 position, int db_id) throws IOException, SQLException {
+        super(game, db_type, db_id);
         this.position = position;
         this.orientation = orientation;
         spiked = new SoundPlayer("Pics.mp3", false);

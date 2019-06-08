@@ -37,9 +37,9 @@ public class Laser extends Trap {
     int counter =0;
     Game game;
     
-    
-    public Laser(Game game, Vec2 position, int orientation) throws IOException, SQLException {
-        super(game, "laser");
+    public Laser(Game game, Vec2 position, int orientation) throws IOException, SQLException {this(game,position,orientation,-1);}
+    public Laser(Game game, Vec2 position, int orientation, int db_id) throws IOException, SQLException {
+        super(game, "laser", db_id);
         this.game = game;
         this.collision_box = new Box(0, 0, 1, 1).translate(position);
         this.orientation = orientation;

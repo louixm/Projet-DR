@@ -31,8 +31,9 @@ public class Punch extends Trap {
     
     boolean dejaJoue = false;
     
-    public Punch(Game game, int orientation, Vec2 position) throws IOException, SQLException {
-        super(game, "punch");
+    public Punch(Game game, int orientation, Vec2 position) throws IOException, SQLException {this(game,orientation,position,-1);}
+    public Punch(Game game, int orientation, Vec2 position, int db_id) throws IOException, SQLException {
+        super(game, "punch", db_id);
         this.orientation = orientation;
         this.position = position;
         this.initPosition = position; //redondant ?

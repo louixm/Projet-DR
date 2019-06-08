@@ -401,11 +401,11 @@ public class Game {
                 double vy = r.getDouble("vy");
                 int orientation = r.getInt("orientation");
                 switch(type){
-                    case("saw"): obj = new Saw(this, position); break;
-                    case("spikes"): obj = new Spikes(this, orientation, position); break;
-                    case("bomb"): obj = new Bomb(this, position); break;
-                    case("laser"): obj = new Laser(this, position, orientation); break;
-                    case("punch"): obj = new Punch(this, orientation, position); break;
+                    case("saw"): obj = new Saw(this, position, db_id); break;
+                    case("spikes"): obj = new Spikes(this, orientation, position, db_id); break;
+                    case("bomb"): obj = new Bomb(this, position,db_id); break;
+                    case("laser"): obj = new Laser(this, position, orientation, db_id); break;
+                    case("punch"): obj = new Punch(this, orientation, position, db_id); break;
                     default: try{
                         int platformType = Integer.valueOf(type);
                         obj = new Platform(this, position, Platform.standardBoxes[platformType], platformType, db_id);
