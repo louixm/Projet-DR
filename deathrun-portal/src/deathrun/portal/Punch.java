@@ -34,7 +34,6 @@ public class Punch extends Trap {
     public Punch(Game game, int orientation, Vec2 position) throws IOException, SQLException {this(game,orientation,position,-1);}
     public Punch(Game game, int orientation, Vec2 position, int db_id) throws IOException, SQLException {
         super(game, "punch", db_id);
-        this.orientation = orientation;
         this.position = position;
         this.initPosition = position; //redondant ?
         collision_box = new Box(0,0 , 1,1);
@@ -46,6 +45,8 @@ public class Punch extends Trap {
             ImageIO.read(new File("./images/punch"+orientation+"_3.png")),
             ImageIO.read(new File("./images/punch"+orientation+"_4.png"))
         };
+        
+        setOrientation(orientation);
     }
     
     //--------------- interface de gestion des collisions -----------------
@@ -58,6 +59,7 @@ public class Punch extends Trap {
     @Override
     public void setPosition(Vec2 pos) {
         super.setPosition(pos);
+        this.initPosition = pos;
         collision_box = collision_box.translateToPosition(pos);
     }
     
@@ -67,11 +69,11 @@ public class Punch extends Trap {
         if(this.orientation >= 4) this.orientation -= 4;
         try {
             im = new Image[] {
-                ImageIO.read(new File("./images/punch"+orientation+"_0.png")),
-                ImageIO.read(new File("./images/punch"+orientation+"_1.png")),
-                ImageIO.read(new File("./images/punch"+orientation+"_2.png")),
-                ImageIO.read(new File("./images/punch"+orientation+"_3.png")),
-                ImageIO.read(new File("./images/punch"+orientation+"_4.png"))
+                ImageIO.read(new File("./images/punch"+this.orientation+"_0.png")),
+                ImageIO.read(new File("./images/punch"+this.orientation+"_1.png")),
+                ImageIO.read(new File("./images/punch"+this.orientation+"_2.png")),
+                ImageIO.read(new File("./images/punch"+this.orientation+"_3.png")),
+                ImageIO.read(new File("./images/punch"+this.orientation+"_4.png"))
             };
         } catch (IOException ex) {
             Logger.getLogger(Punch.class.getName()).log(Level.SEVERE, null, ex);
