@@ -328,7 +328,10 @@ public class Game {
                             System.out.println("Removed object " + obj + " still here : " + objects.containsKey(id));
                             continue;
                         }
-                    } else obj = syncNewObject(id);
+                    } else {
+                        if (!type.equals("null")) obj = syncNewObject(id);
+                        else obj = null;
+                    }
                     
                     if (obj == null) {
                         System.out.println("object "+id+" not found");
