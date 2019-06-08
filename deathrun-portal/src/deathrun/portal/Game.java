@@ -271,9 +271,13 @@ public class Game {
                     Player p;
                     if (objects.containsKey(id))    p = getPlayerWithId(id);
                     else                            { p = (Player) syncNewPlayer(id); System.out.println("spawn a player "+id); }
-                    if (!p.isControled()){
-                        p.setState(state);
-                        p.setMovement(movement);
+                    try {
+                        if (!p.isControled()){
+                            p.setState(state);
+                            p.setMovement(movement);
+                        }
+                    } catch (NullPointerException e){
+                        System.out.println("NullPointer for player with id " + id);
                     }
                 }
                 rplayers.close();
