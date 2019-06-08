@@ -59,25 +59,13 @@ public class Player extends PObject {
     BufferedImage current_image;
     
     static SoundPlayer death;
-    static SoundPlayer[] jumpSound = {new SoundPlayer("wheee.mp3", false),new SoundPlayer("guimbarde.mp3", false),new SoundPlayer("hudadahu.mp3", false),new SoundPlayer("japoding.mp3", false)};
-        
-    public static int availableId(Game game) {
-        int id = -1;
-        boolean id_found = true;
-        while (id_found) {
-            id_found = false;
-            for (int i=0; i<game.players.size(); i++) {
-                if (game.players.get(i).db_id == id)    {
-                    id_found = true;
-                    --id;
-                    break;
-                }
-            }
-        }
-        System.out.println("id = " + id);
-        return id;
-    }
-    
+    static SoundPlayer[] jumpSound = {
+        new SoundPlayer("wheee.mp3", false),
+        new SoundPlayer("guimbarde.mp3", false),
+        new SoundPlayer("hudadahu.mp3", false),
+        new SoundPlayer("japoding.mp3", false)
+    };
+      
     
     public Player(Game game, String name, int avatar) throws SQLException { this(game, name, avatar, -1); }
     public Player(Game game, String name, int avatar, int db_id) throws SQLException {
