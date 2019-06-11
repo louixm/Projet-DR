@@ -407,6 +407,7 @@ public class Game {
                 double vy = r.getDouble("vy");
                 int orientation = r.getInt("orientation");
                 switch(type){
+                    case("null"): break;
                     case("saw"): obj = new Saw(this, position, db_id); break;
                     case("spikes"): obj = new Spikes(this, orientation, position, db_id); break;
                     case("bomb"): obj = new Bomb(this, position,db_id); break;
