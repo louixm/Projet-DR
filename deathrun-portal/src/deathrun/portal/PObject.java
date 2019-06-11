@@ -53,7 +53,7 @@ abstract public class PObject {
         else
             this.db_id = db_id;
         */
-        if (db_id < 0)      this.db_id = db_id = game.next_id ++;
+        if (db_id < 0)      this.db_id = game.next_id ++;
         else {
             this.db_id = db_id;
             game.next_id = Math.max(db_id, game.next_id)+1;
@@ -63,12 +63,21 @@ abstract public class PObject {
         
         if (game.sync != null) {
             this.last_sync = 0;      // initialisation du jeu: pas de derniere sync en date
+            PreparedStatement req;
+            ResultSet r;
+            boolean found = false;
             
-            PreparedStatement req = game.sync.srv.prepareStatement("SELECT EXISTS(SELECT id FROM pobjects WHERE id = ?)");
-            req.setInt(1, this.db_id);
-            ResultSet r = req.executeQuery();
-            r.next();
-            if (!r.getBoolean(1)) {
+            do {
+                req = game.sync.srv.prepareStatement("SELECT EXISTS(SELECT id FROM pobjects WHERE id = ?)");
+                req.setInt(1, this.db_id);
+                r = req.executeQuery();
+                r.next();
+                found = r.getBoolean(1);
+                if (db_id < 0 && found)   this.db_id ++;
+                else                      break;
+            } while (true);
+            
+            if (!found) {
                 System.out.println("add pobject "+this.db_id);
                 req = game.sync.srv.prepareStatement("INSERT INTO pobjects VALUES (?,0,0,0,0,0,?,0)");
                 req.setInt(1, this.db_id);
@@ -76,6 +85,7 @@ abstract public class PObject {
                 req.executeUpdate();
                 req.close();
             }
+            
         }
     }
 
