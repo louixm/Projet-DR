@@ -27,7 +27,7 @@ public class Saw extends PObject {
     int typePlateforme;
     int step;
     static final String db_type = "saw";
-    static float size = 2.2f, csize = 1.9f;
+    static float size = 2.1f, csize = 1.8f;
     
     public Saw(Game game, Vec2 position) throws IOException, SQLException {this(game,position,-1);}
     public Saw(Game game, Vec2 position, int db_id) throws IOException, SQLException {
