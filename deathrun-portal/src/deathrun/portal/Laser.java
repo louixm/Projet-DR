@@ -161,7 +161,7 @@ public class Laser extends Trap {
             counter=0;
         }
         if (counter>100) {
-            enabled=false;
+            enable(false, (currentcontrol != null)?currentcontrol.controled:false);
         }
         
         // affichage de la base

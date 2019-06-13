@@ -63,17 +63,22 @@ public class Trap extends PObject {
     
     void enable(boolean enable, boolean withsync) {
         System.out.println("trap "+db_id+" is set "+enable);
+        enabled = enable;
         
         if (withsync && game.sync != null) {
             last_trap_sync = game.sync.latest ++;
+            System.out.println("sync to version "+last_trap_sync);
             
             try {
                 System.out.println("trap "+db_id+" has been sent");
                 // noter le joueur comme pilote du piege dans la base de donnée
-                PreparedStatement req = game.sync.srv.prepareStatement("UPDATE traps SET enabled=?, version=? WHERE id = ?");
+                PreparedStatement req = game.sync.srv.prepareStatement("UPDATE traps SET enabled=?, owner=?, version=? WHERE (id = ? AND version < ?)");
+                int userid = (currentcontrol != null)? currentcontrol.db_id:0;
                 req.setBoolean(1, enable);
-                req.setLong(2, last_trap_sync);
-                req.setInt(3, db_id);
+                req.setInt(2, userid);
+                req.setLong(3, last_trap_sync);
+                req.setInt(4, db_id);
+                req.setLong(5, last_trap_sync);
                 req.executeUpdate();
                 req.close();
                 
@@ -82,7 +87,6 @@ public class Trap extends PObject {
             }
         }
         
-        enabled = enable;
     }
     
     void takeControl(Player user) {
@@ -97,11 +101,13 @@ public class Trap extends PObject {
             last_trap_sync = game.sync.latest ++;
             try {
                 // noter le joueur comme pilote du piege dans la base de donnée
-                PreparedStatement req = game.sync.srv.prepareStatement("UPDATE traps SET owner=?, version=? WHERE id = ?");
+                PreparedStatement req = game.sync.srv.prepareStatement("UPDATE traps SET enabled=?, owner=?, version=? WHERE (id = ? AND version < ?)");
                 int userid = (user != null)? user.db_id:0;
-                req.setInt(1, userid);
-                req.setLong(2, last_trap_sync);
-                req.setInt(3, db_id);
+                req.setBoolean(1, enabled);
+                req.setInt(2, userid);
+                req.setLong(3, last_trap_sync);
+                req.setInt(4, db_id);
+                req.setLong(5, last_trap_sync);
                 req.executeUpdate();
                 req.close();
                 
