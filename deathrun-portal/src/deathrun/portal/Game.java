@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -182,9 +183,8 @@ public class Game {
     
     
     /// se connecte au serveur et construit toutes les instances d'objet correspondant aux objets de la map et aux joueurs
-    void init(int i) throws IOException, SQLException {
-        map = new Map(new Box(0, 0, 40, 20));
-        this.map = this.map.MapInitialization(this, i);
+    void init() throws IOException, SQLException {
+        
         
         syncUpdate();
         /*
@@ -216,9 +216,20 @@ public class Game {
             r.next();
             next_id = r.getInt(1) + 1;
             r.close();
-                    
+            
+            int mapNumber = 0;
             if (this.players.isEmpty()){
                 switchToEditionMode(true);
+                Random randomMap = new Random();
+                try {
+                    PreparedStatement reqmap = this.sync.srv.prepareStatement("UPDATE server SET map=?");
+                    reqmap.setInt(1, randomMap.nextInt(5));
+                    reqmap.executeUpdate();
+                    reqmap.close();    
+                }
+                catch (SQLException err) {
+                    System.out.println("game init:\n"+err);
+                }
             } 
             else {
                 try {          
@@ -226,6 +237,7 @@ public class Game {
                     r = req.executeQuery();
                     r.next();
                     int mode = r.getInt("mode");
+                    mapNumber = r.getInt("map");
                     this.editionMode = (mode == 0);
                     System.out.println("edition mode = " + this.editionMode);
                     r.close();         
@@ -236,6 +248,10 @@ public class Game {
                     System.out.println("init: "+err);
                 }
             }
+            
+            System.out.println("MapNumber: "+mapNumber);
+            map = new Map(new Box(0, 0, 40, 20));
+            this.map = this.map.MapInitialization(this, mapNumber);
         }
     }
     
