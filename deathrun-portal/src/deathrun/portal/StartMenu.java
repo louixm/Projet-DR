@@ -52,7 +52,7 @@ public class StartMenu extends javax.swing.JFrame {
             Logger.getLogger(StartMenu.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("pas d'image");
         }
-        
+        this.setLocationRelativeTo(null);
         alive = true;
         this.addWindowListener(new WindowAdapter() {
             @Override      
@@ -105,14 +105,14 @@ public class StartMenu extends javax.swing.JFrame {
         setResizable(false);
         getContentPane().setLayout(null);
 
-        startButton.setText("Start");
+        startButton.setText("START");
         startButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 startButtonActionPerformed(evt);
             }
         });
         getContentPane().add(startButton);
-        startButton.setBounds(410, 270, 57, 23);
+        startButton.setBounds(370, 270, 110, 23);
 
         labelChoixAvatar.setFont(new java.awt.Font("Trebuchet MS", 3, 18)); // NOI18N
         labelChoixAvatar.setForeground(new java.awt.Color(255, 153, 51));
@@ -139,6 +139,7 @@ public class StartMenu extends javax.swing.JFrame {
         getContentPane().add(jScrollPane2);
         jScrollPane2.setBounds(370, 90, 110, 140);
 
+        labelJoueursConnectes.setFont(new java.awt.Font("Trebuchet MS", 0, 11)); // NOI18N
         labelJoueursConnectes.setForeground(new java.awt.Color(255, 153, 51));
         labelJoueursConnectes.setText("Joueurs connectés");
         getContentPane().add(labelJoueursConnectes);
@@ -179,12 +180,13 @@ public class StartMenu extends javax.swing.JFrame {
         getContentPane().add(jButton1);
         jButton1.setBounds(170, 230, 160, 60);
 
+        Pseudo_label.setFont(new java.awt.Font("Trebuchet MS", 0, 11)); // NOI18N
         Pseudo_label.setForeground(new java.awt.Color(255, 153, 0));
         Pseudo_label.setText("Pseudo :");
         getContentPane().add(Pseudo_label);
         Pseudo_label.setBounds(20, 70, 50, 14);
 
-        Text_Pseudo.setFont(new java.awt.Font("Times New Roman", 0, 10)); // NOI18N
+        Text_Pseudo.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
         Text_Pseudo.setToolTipText("votre nom");
         Text_Pseudo.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -199,7 +201,7 @@ public class StartMenu extends javax.swing.JFrame {
         background.setMinimumSize(new java.awt.Dimension(500, 300));
         background.setPreferredSize(new java.awt.Dimension(500, 300));
         getContentPane().add(background);
-        background.setBounds(0, 0, 500, 300);
+        background.setBounds(0, 0, 530, 330);
 
         statusLabel.setText("status");
         getContentPane().add(statusLabel);

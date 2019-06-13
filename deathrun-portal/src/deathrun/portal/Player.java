@@ -150,8 +150,8 @@ public class Player extends PObject {
         // horloge pour l'affichage des animations
         time_next_image = System.nanoTime() + image_duration;
         time_next_image_death = System.nanoTime() + image_duration_death;
-        System.out.println("avatar = "+avatar);
-        System.out.println("avatars[avatar] = "+avatars[avatar]);
+//        System.out.println("avatar = "+avatar);
+//        System.out.println("avatars[avatar] = "+avatars[avatar]);
         current_image = this.avatars[avatar][0];
         
         //double j = game.map.enter.position.y + game.map.enter.size - this.avatars.getHight();

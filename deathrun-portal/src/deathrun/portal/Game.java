@@ -482,7 +482,7 @@ public class Game {
             while (rplayers.next() && end){
                 int state = rplayers.getInt("state");
                 if (state == 0) end = false;
-                System.out.println("state is "+state);
+//                System.out.println("state is "+state);
             }
             rplayers.close();
         } catch (SQLException ex) {

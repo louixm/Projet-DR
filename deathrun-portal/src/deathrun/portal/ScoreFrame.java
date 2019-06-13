@@ -6,6 +6,8 @@
 package deathrun.portal;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 import java.sql.PreparedStatement;
@@ -17,6 +19,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 
 /**
  *
@@ -31,12 +34,31 @@ public class ScoreFrame extends javax.swing.JDialog {
     //declarations
     private ArrayList<javax.swing.JPanel> progressBars;
     private Game game;
-
-    public ScoreFrame(Game game, java.awt.Frame parent, boolean modal) {
+    
+    
+        
+    public ScoreFrame(Game game, java.awt.Frame parent, boolean modal) throws InterruptedException {
         super(parent, modal);
         this.game = game;
-        initComponents();
+        
+        setMaximumSize(new java.awt.Dimension(500, 350));
+        setMinimumSize(new java.awt.Dimension(500, 350));
+        setResizable(false);
+        getContentPane().setLayout(null);
+    
         initProgressBars(game);
+        initComponents();
+        
+        
+        try {
+            background.setIcon(new javax.swing.ImageIcon(ImageIO.read(new File("./images/fond_4.png"))));
+        } catch (IOException ex) {
+            Logger.getLogger(StartMenu.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("pas d'image");
+        }
+        
+        this.setLocationRelativeTo(null);
+        this.setDefaultCloseOperation(this.DO_NOTHING_ON_CLOSE);
         //TODO: initialise background manually after the progress bars.
 //        try {
 //            background.setIcon(new javax.swing.ImageIcon(ImageIO.read(new File("./images/fond_4.png"))));
@@ -77,15 +99,15 @@ public class ScoreFrame extends javax.swing.JDialog {
         getContentPane().add(jSeparator1);
         jSeparator1.setBounds(440, 40, 20, 190);
         getContentPane().add(background);
-        background.setBounds(0, 0, 500, 300);
+        background.setBounds(0, 0, 500, 350);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void initProgressBars(Game game){
+    private void initProgressBars(Game game) throws InterruptedException{
         
 //        progressBars = new ArrayList<javax.swing.JPanel>();
-        
+        Thread.sleep(100);
         if (game != null) {
             int i = 0;
             for (Player player : game.players){
@@ -112,20 +134,20 @@ public class ScoreFrame extends javax.swing.JDialog {
                                 int type = r.getInt("type");
                                 JPanel score = new JPanel();
                                 if (type == 0) score.setBackground(player.getPlayerColor());
-                                else if (type == 1) score.setBackground(Color.DARK_GRAY);
-                                else score.setBackground(Color.LIGHT_GRAY);
+                                else if (type == 1) score.setBackground(player.getPlayerColor().darker().darker());
+                                else score.setBackground(player.getPlayerColor().brighter().brighter());
                                 getContentPane().add(score);
                                 score.setBounds(nextLocation, 50*i, amount*3, 20);
                                 nextLocation += amount*3;
                                 cumulAmount += amount;
                             }
-                            if (cumulAmount > 100){
+                            if (cumulAmount >= 100){
                                 javax.swing.JLabel victory = new javax.swing.JLabel();
                                 victory.setFont(new java.awt.Font("Trebuchet MS", 1, 26));
-                                victory.setForeground(Color.BLACK);
+                                victory.setForeground(Color.WHITE);
                                 victory.setText(player.name + " won!");
                                 getContentPane().add(victory);
-                                victory.setBounds(100, 125, 300, 22);
+                                victory.setBounds(100, 125, 350, 22);
                                 
                             }
                         } catch (SQLException ex) {
@@ -147,7 +169,7 @@ public class ScoreFrame extends javax.swing.JDialog {
 //
 //                progressBars.add(progressBar);
             
-        
+        pack();
     }
     
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -186,15 +208,19 @@ public class ScoreFrame extends javax.swing.JDialog {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ScoreFrame scoreframe = new ScoreFrame(null, new javax.swing.JFrame(), false);
-                scoreframe.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
+                try {
+                    ScoreFrame scoreframe = new ScoreFrame(null, new javax.swing.JFrame(), false);
+                    scoreframe.addWindowListener(new java.awt.event.WindowAdapter() {
+                        @Override
+                        public void windowClosing(java.awt.event.WindowEvent e) {
+//                        System.exit(0);
+                        }
+                    });
 //                scoreframe.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
-                scoreframe.setVisible(true);
+                    scoreframe.setVisible(true);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(ScoreFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }

@@ -75,6 +75,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
         this.jLabel1.setPreferredSize(new java.awt.Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         this.setContentPane(this.jLabel1);
         this.pack();
+        this.setLocationRelativeTo(null);
         
         // Creation du jeu
         this.controled = controled;

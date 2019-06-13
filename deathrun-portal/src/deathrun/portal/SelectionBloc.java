@@ -6,10 +6,12 @@
 package deathrun.portal;
 
 import java.awt.Image;
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.WindowConstants;
 
@@ -35,7 +37,14 @@ public class SelectionBloc extends javax.swing.JDialog {
         initComponents();
         this.game = game;
         this.player = player;
-        this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        this.setLocationRelativeTo(null);
+        this.setDefaultCloseOperation(this.DO_NOTHING_ON_CLOSE);
+        try {
+            background.setIcon(new javax.swing.ImageIcon(ImageIO.read(new File("./images/fond_4.png"))));
+        } catch (IOException ex) {
+            Logger.getLogger(StartMenu.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("pas d'image");
+        }
         
         // Affichage des images des blocs sur les boutons après redimensionnement
         jButton1.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/patterns/Tile (15).png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
@@ -63,14 +72,17 @@ public class SelectionBloc extends javax.swing.JDialog {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        background = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(450, 250));
         getContentPane().setLayout(null);
 
-        jLabel1.setText("Mode édition : choisissez votre bloc ...");
+        jLabel1.setFont(new java.awt.Font("Trebuchet MS", 0, 14)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 153, 0));
+        jLabel1.setText("Mode édition : choisissez un objet à poser");
         getContentPane().add(jLabel1);
-        jLabel1.setBounds(120, 30, 220, 20);
+        jLabel1.setBounds(70, 30, 280, 20);
 
         buttonGroup1.add(jButton1);
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -98,6 +110,8 @@ public class SelectionBloc extends javax.swing.JDialog {
         });
         getContentPane().add(jButton3);
         jButton3.setBounds(280, 80, 80, 80);
+        getContentPane().add(background);
+        background.setBounds(0, 0, 440, 240);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -185,6 +199,7 @@ public class SelectionBloc extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel background;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
