@@ -373,7 +373,8 @@ public class Player extends PObject {
     }
     
     public void setDead(boolean dead) { setDead(dead, controled); }
-    public void setDead(boolean dead, boolean withSyncAndTryEndRound) {
+    public void setDead(boolean dead, boolean withSyncAndTryEndRound) { setDead(dead, controled, null); }
+    public void setDead(boolean dead, boolean withSyncAndTryEndRound, Trap trap) {
         if (!hasReachedExitDoor){
             if (dead) {
                 avatar = 3; 
@@ -393,6 +394,7 @@ public class Player extends PObject {
                     // execution de la requete
                     req.executeUpdate();
                     req.close();
+                    if (trap != null) game.addScoreUponTrapKill(trap, this);
                 }
                 catch (SQLException err) {
                     System.out.println("sql exception:\n"+err);

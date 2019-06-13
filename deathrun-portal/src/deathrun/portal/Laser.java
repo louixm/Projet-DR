@@ -108,8 +108,8 @@ public class Laser extends Trap {
                 if (intersection != null) {
                     double distance = intersection.sub(start).dot(vectir);
                     if (distance > 0 && distance <= length) {
-                        game.addScoreUponTrapKill(this, p);
-                        p.setDead(true);
+//                        game.addScoreUponTrapKill(this, p);
+                        p.setDead(true, p.isControled(), this);
                     }
                 }
             }

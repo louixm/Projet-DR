@@ -67,7 +67,10 @@ public class Explosive extends Trap {
     
     public void onCollision(Game g, PObject other) { // si le piège est activé, il tue, si non, il ne le fait pas
         if(enabled){
-            ((Player)other).setDead(true);
+            if (other instanceof Player){
+                Player p = (Player) other;
+                p.setDead(true, p.isControled(), this);
+            }
         }
     }
     //-------------------Interface d'affichage--------------------------------
