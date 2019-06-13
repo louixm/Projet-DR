@@ -22,16 +22,18 @@ import java.sql.SQLException;
  * @author pdemiche
  */
 public class Saw extends PObject {
-    Box collision_box;
+    Box collision_box, box;
     static Image img;
     int typePlateforme;
     int step;
     static final String db_type = "saw";
+    static float size = 2.2f, csize = 1.9f;
     
     public Saw(Game game, Vec2 position) throws IOException, SQLException {this(game,position,-1);}
     public Saw(Game game, Vec2 position, int db_id) throws IOException, SQLException {
         super(game, db_type, db_id);
-        this.collision_box = new Box(-1, -1, 1, 1).translate(position);
+        this.box = new Box(position.x, position.y, position.x+size, position.y+size);
+        this.collision_box = new Box(position.x+(size-csize)/2, position.y+(size-csize)/2, position.x+(size+csize)/2, position.y+(size+csize)/2);
         setPosition(position);
         
         if (img == null) {
@@ -43,7 +45,9 @@ public class Saw extends PObject {
     @Override
     public void setPosition(Vec2 pos) {
         super.setPosition(pos);
-        collision_box = collision_box.translateToPosition(pos);
+        box = box.translateToPosition(pos);
+        Vec2 cpos = new Vec2(position.x+(size-csize)/2, position.y+(size-csize)/2);
+        collision_box = collision_box.translateToPosition(cpos);
     }
     
     //--------------- interface de gestion des collisions -----------------
@@ -60,12 +64,12 @@ public class Saw extends PObject {
         // incrementer le compteur de frame
         step ++;
         // assembler la matrice de transformation (scale,rotation,translation)
-        Vec2 c = collision_box.p1;
+        Vec2 c = box.p1;
         AffineTransform transform = new AffineTransform();
         transform.translate(c.x*scale, c.y*scale);
         transform.scale(
-                scale*collision_box.getWidth()/img.getWidth(null),
-                scale*collision_box.getHeight()/img.getHeight(null)
+                scale*box.getWidth()/img.getWidth(null),
+                scale*box.getHeight()/img.getHeight(null)
         );
         transform.rotate(Math.PI / 40 * step,img.getWidth(null)/2,img.getHeight(null)/2);
         // affichage de l'image tournée
