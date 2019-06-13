@@ -185,6 +185,32 @@ public class Game {
     /// se connecte au serveur et construit toutes les instances d'objet correspondant aux objets de la map et aux joueurs
     void init() throws IOException, SQLException {
         
+        int mapNumber = -1;
+        try {          
+            PreparedStatement req = this.sync.srv.prepareStatement("SELECT * FROM server");
+            ResultSet r = req.executeQuery();
+            r.next();
+            mapNumber = r.getInt("map");
+            r.close();         
+        } catch (SQLException err) {
+            System.out.println("init: "+err);
+        }
+        if (mapNumber == -1){
+            Random randomMap = new Random();
+            try {
+                PreparedStatement reqmap = this.sync.srv.prepareStatement("UPDATE server SET map=?");
+                mapNumber = randomMap.nextInt(5);
+                reqmap.setInt(1, mapNumber);
+                reqmap.executeUpdate();
+                reqmap.close();    
+            }
+            catch (SQLException err) {
+                System.out.println("game init:\n"+err);
+            }
+        }
+        System.out.println("MapNumber: "+mapNumber);
+        map = new Map(new Box(0, 0, 40, 20));
+        this.map = this.map.MapInitialization(this, mapNumber);
         
         syncUpdate();
         /*
@@ -217,19 +243,9 @@ public class Game {
             next_id = r.getInt(1) + 1;
             r.close();
             
-            int mapNumber = 0;
+            
             if (this.players.isEmpty()){
                 switchToEditionMode(true);
-                Random randomMap = new Random();
-                try {
-                    PreparedStatement reqmap = this.sync.srv.prepareStatement("UPDATE server SET map=?");
-                    reqmap.setInt(1, randomMap.nextInt(5));
-                    reqmap.executeUpdate();
-                    reqmap.close();    
-                }
-                catch (SQLException err) {
-                    System.out.println("game init:\n"+err);
-                }
             } 
             else {
                 try {          
@@ -237,7 +253,6 @@ public class Game {
                     r = req.executeQuery();
                     r.next();
                     int mode = r.getInt("mode");
-                    mapNumber = r.getInt("map");
                     this.editionMode = (mode == 0);
                     System.out.println("edition mode = " + this.editionMode);
                     r.close();         
@@ -249,9 +264,7 @@ public class Game {
                 }
             }
             
-            System.out.println("MapNumber: "+mapNumber);
-            map = new Map(new Box(0, 0, 40, 20));
-            this.map = this.map.MapInitialization(this, mapNumber);
+            
         }
     }
     
@@ -489,6 +502,9 @@ public class Game {
             // effacement des pieges
             req = this.sync.srv.prepareStatement("DELETE FROM traps");
             req.executeUpdate();
+            req = this.sync.srv.prepareStatement("UPDATE server SET map=?");
+            req.setInt(1, -1);
+            req.executeUpdate();  
 
             System.out.println("Purged everything from db");
             req.close();
