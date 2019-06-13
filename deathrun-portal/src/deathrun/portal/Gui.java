@@ -107,7 +107,10 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
                 jLabel1.repaint();
                 if (game.editionMode) {
                     if (controled.readyToGo) tryToGo();
-                    else if (!selectionBloc.chosenObject && !selectionBloc.isVisible()) enterEditionMode();
+                    else {
+                        controled.syncReady(false);
+                        if (!selectionBloc.chosenObject && !selectionBloc.isVisible() && game.scoresClosed) enterEditionMode();
+                    }
                     try {              
                         previsualisationBloc(positionSouris, orientationBloc);
                     } catch (Exception ex) {

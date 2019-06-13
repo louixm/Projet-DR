@@ -35,11 +35,12 @@ public class Game {
     public final double gravity = 9.81;
     
     public boolean roundEnded = false;
+    public boolean scoresClosed = true;
     public boolean editionMode = true;
     
     public int next_id;
-    
-    
+
+
     Game() { this(false); }
     Game(boolean sync_enable) {
         if (sync_enable) {
@@ -442,12 +443,14 @@ public class Game {
         for (Player player : this.players){
             if (!(player.dead || player.hasReachedExitDoor || player.disconnected)) return;
         }
+        scoresClosed = false;
         setEndRoundScores();
         roundEnded = true;
 //        switchToEditionMode(true);
         Player controled = null;
         for (Player p : this.players)if (p.isControled()) controled = p;
         controled.syncReady(false);
+        switchToEditionMode(true);
         ScoreFrame scoreFrame = new ScoreFrame(this, new javax.swing.JFrame(), false);
         scoreFrame.show();
     }

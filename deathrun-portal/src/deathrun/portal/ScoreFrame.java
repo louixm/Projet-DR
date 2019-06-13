@@ -151,7 +151,8 @@ public class ScoreFrame extends javax.swing.JDialog {
     }
     
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        game.switchToEditionMode(true);
+//        game.switchToEditionMode(true);
+        game.scoresClosed = true;
         dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
