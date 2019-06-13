@@ -108,8 +108,6 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
                 if (game.editionMode) {
                     if (controled.readyToGo) tryToGo();
                     else enterEditionMode();
-                }
-                if (game.editionMode){
                     try {              
                         previsualisationBloc(positionSouris, orientationBloc);
                     } catch (Exception ex) {
@@ -352,7 +350,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
     }
     
     public void enterEditionMode(){
-        controled.syncReady(false);
+        
         int nbPlayersWhoReachedDoor = 0, nbPlayersWhoDied = 0;
         for (Player p: game.players){
             if (!p.disconnected && p.hasReachedExitDoor) nbPlayersWhoReachedDoor++;

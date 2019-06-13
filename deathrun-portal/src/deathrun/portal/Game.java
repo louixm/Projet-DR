@@ -442,6 +442,9 @@ public class Game {
         setEndRoundScores();
         roundEnded = true;
 //        switchToEditionMode(true);
+        Player controled = null;
+        for (Player p : this.players)if (p.isControled()) controled = p;
+        controled.syncReady(false);
         ScoreFrame scoreFrame = new ScoreFrame(this, new javax.swing.JFrame(), false);
         scoreFrame.show();
     }

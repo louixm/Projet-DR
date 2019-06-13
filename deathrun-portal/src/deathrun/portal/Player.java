@@ -86,6 +86,7 @@ public class Player extends PObject {
         super(game, "player", db_id);
         //super(game, name, availableId(game));  // creer en ajoutant a la fin
         this.game = game;
+        if (game.editionMode) this.syncReady(false);
         this.name = name; 
         this.avatar = avatar;
         this.baseAvatar = avatar;
