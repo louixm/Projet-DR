@@ -438,8 +438,9 @@ public class Game {
     }
     
   
-    public void tryEndRound(){
+    public void tryEndRound() throws IOException{
         if (roundEnded) return;
+        syncUpdate(true);
         for (Player player : this.players){
             if (!(player.dead || player.hasReachedExitDoor || player.disconnected)) return;
         }
