@@ -29,9 +29,8 @@ public class DeathrunPortal {
             //game.purgeTraps();
             Player controled;
             //try {
-            //Random rand = new Random();
-            //int choixMap = rand.nextInt(4)+1;
-            game.init(4);// choix de la map 1, 2, 3, 4	// connecte au serveur et construit tous les objets tels que dans la base de donnnées
+            Random rand = new Random();
+            game.init();// choix de la map 1, 2, 3, 4	// connecte au serveur et construit tous les objets tels que dans la base de donnnées
             //TODO: check dans la db players et ajouter au jeu tous ceux deja existants
 //            game.map.objects.add(new Punch(game,1,new Vec2(21,16)));
                                     //audio continue
@@ -41,7 +40,7 @@ public class DeathrunPortal {
                 new SoundPlayer("sabaton-the-art-of-war-8-bit.mp3", true),
                 new SoundPlayer("sabaton-coat-of-arms-8-bit.mp3", true),
                 new SoundPlayer("square-hammer-8-bit-tribute-to-ghost-8-bit-universe.mp3", true)};
-            Random rand = new Random();
+            
             int track = rand.nextInt(4);
             backgroundSound[track].play();
             
