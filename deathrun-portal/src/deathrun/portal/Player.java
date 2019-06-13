@@ -373,8 +373,8 @@ public class Player extends PObject {
         this.jump = jump;  
     }
     
-    public void setDead(boolean dead) { setDead(dead, controled, false); }
-    public void setDead(boolean dead, boolean withSync, Trap trap) { setDead(dead, controled, false, trap); }
+    public void setDead(boolean dead) { setDead(dead, controled, controled); }
+    public void setDead(boolean dead, boolean withSync, Trap trap) { setDead(dead, controled, controled, trap); }
     public void setDead(boolean dead, boolean withSync, boolean tryEndRound) { setDead(dead, controled, tryEndRound, null); }
     public void setDead(boolean dead, boolean withSync, boolean tryEndRound, Trap trap) {
         if (!hasReachedExitDoor){
