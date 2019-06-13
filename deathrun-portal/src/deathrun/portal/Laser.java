@@ -127,7 +127,7 @@ public class Laser extends Trap {
         
         Vec2 start = collision_box.center();
         double nearest = 1e20;
-        Vec2 stop = vectir.mul(1000);
+        Vec2 stop = vectir.mul(1000).add(start);
         for (PObject obj : game.objects.values()) {
             if (obj instanceof Platform) {
                 Vec2 intersection = obj.getCollisionBox().intersectionFirstBorder(start, vectir);
