@@ -526,6 +526,7 @@ public class Player extends PObject {
     
     //sycReady : synchronise les joueurs prêts à jouer ou non quand on est en mode édition (on utilise un état -1 pour les non prêts)
     public void syncReady(boolean ready){
+        readyToGo = ready;
         if (game.sync != null && controled) {
             try {
                 PreparedStatement req = game.sync.srv.prepareStatement("UPDATE players SET state=? WHERE id = ?");

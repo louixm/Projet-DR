@@ -107,7 +107,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
                 jLabel1.repaint();
                 if (game.editionMode) {
                     if (controled.readyToGo) tryToGo();
-                    else enterEditionMode();
+                    else if (!selectionBloc.chosenObject && !selectionBloc.isVisible()) enterEditionMode();
                     try {              
                         previsualisationBloc(positionSouris, orientationBloc);
                     } catch (Exception ex) {
@@ -206,12 +206,14 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
             //        }
             //    });
             //}
-            else*/ if(e.getButton()==1 && this.selectionBloc.blocAPoser != -1){
+            else*/ if(e.getButton()==1 && this.selectionBloc.chosenObject && !this.selectionBloc.placedObject){
                 try { //Si un clic gauche a été effectué et qu'on a déjà choisi un bloc, alors le bloc est posé
                     poserObjet(pos_clicked, orientationBloc);
 //                    controled.readyToGo = true;
                     controled.setState(0);
+                    controled.readyToGo = true;
                     controled.syncReady(true);
+                    selectionBloc.placedObject = true;
                     
                 } catch (SQLException ex) {
                     Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
@@ -279,13 +281,15 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
         obj.last_sync = game.sync.latest++;
         obj.syncSet(game.sync, true);
         
-        this.selectionBloc.blocAPoser = -1;
+        
+        
+//        this.selectionBloc.blocAPoser = -1;
     }
 
     @Override
     public void mouseMoved(MouseEvent e) { //Permet d'obtenir la position de la souris après qu'elle ait bougée
         if (editMode || game.editionMode) {
-            if (this.selectionBloc.blocAPoser != -1){
+            if (this.selectionBloc.chosenObject){
                 Vec2 pos_clicked = new Vec2(e.getX()/(float)scale, (e.getY()-window_header_size)/(float)scale);
                 this.positionSouris = pos_clicked;
             }
@@ -344,9 +348,11 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
 ////                break;
 ////            default: System.out.println("nothing to prev");
 //        }
-        selectionBloc.objectToPlace.setPosition(pos_clicked);
-        selectionBloc.objectToPlace.setOrientation(orientationBloc);
-//        selectionBloc.objectToPlace.render(this.bufferContext, scale);
+        if (selectionBloc.chosenObject){
+            selectionBloc.objectToPlace.setPosition(pos_clicked);
+            selectionBloc.objectToPlace.setOrientation(orientationBloc);
+    //        selectionBloc.objectToPlace.render(this.bufferContext, scale);
+        }
     }
     
     public void enterEditionMode(){
@@ -393,6 +399,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
             } //place a platform (or bomb)
         }
         selectionBloc.objectsToPlace = objectsToPlace;
+        selectionBloc.placedObject = false;
         selectionBloc.setIcons();
         selectionBloc.setVisible(true);
         selectionBloc.addWindowListener(new java.awt.event.WindowAdapter() { //Attente de la fermeture de la fenetre de selection de bloc
@@ -401,7 +408,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
                 selectionBloc.dispose();
             }
         });
-        if (selectionBloc.blocAPoser != 1) controled.readyToGo = true;
+//        controled.readyToGo = true;
     }
 
     private void tryToGo() {
@@ -438,6 +445,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
             controled.setLeft(false);
             controled.setRight(false);
             controled.setJump(false);
+            selectionBloc.chosenObject = false;
         }
     }
     

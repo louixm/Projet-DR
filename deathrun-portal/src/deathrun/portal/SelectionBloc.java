@@ -23,6 +23,8 @@ public class SelectionBloc extends javax.swing.JDialog {
     public PObject objectToPlace;
     public Player player;
     public Game game;
+    public boolean chosenObject = false;
+    public boolean placedObject = false;
     
     /**
      * Creates new form SelectionBloc
@@ -100,8 +102,9 @@ public class SelectionBloc extends javax.swing.JDialog {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
-            this.blocAPoser = objectsToPlace[0];
+//            this.blocAPoser = objectsToPlace[0];
             createObjectToPlace(objectsToPlace[0]);
+            this.chosenObject = true;
         } catch (IOException ex) {
             Logger.getLogger(SelectionBloc.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
@@ -112,8 +115,9 @@ public class SelectionBloc extends javax.swing.JDialog {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         try {
-            this.blocAPoser = objectsToPlace[1];
+//            this.blocAPoser = objectsToPlace[1];
             createObjectToPlace(objectsToPlace[1]);
+            this.chosenObject = true;
         } catch (IOException ex) {
             Logger.getLogger(SelectionBloc.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
@@ -124,8 +128,9 @@ public class SelectionBloc extends javax.swing.JDialog {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         try {
-            this.blocAPoser = objectsToPlace[2];
+//            this.blocAPoser = objectsToPlace[2];
             createObjectToPlace(objectsToPlace[2]);
+            this.chosenObject = true;
         } catch (IOException ex) {
             Logger.getLogger(SelectionBloc.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
