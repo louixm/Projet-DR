@@ -217,6 +217,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
                     controled.readyToGo = true;
                     controled.syncReady(true);
                     selectionBloc.placedObject = true;
+                    selectionBloc.objectsToPlace = null;
                     
                 } catch (SQLException ex) {
                     Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
@@ -360,48 +361,50 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
     
     public void enterEditionMode(){
         
-        int nbPlayersWhoReachedDoor = 0, nbPlayersWhoDied = 0;
-        for (Player p: game.players){
-            if (!p.disconnected && p.hasReachedExitDoor) nbPlayersWhoReachedDoor++;
-            if (!p.disconnected && p.dead) nbPlayersWhoDied++;
+        if (selectionBloc.objectsToPlace == null){
+            int nbPlayersWhoReachedDoor = 0, nbPlayersWhoDied = 0;
+            for (Player p: game.players){
+                if (!p.disconnected && p.hasReachedExitDoor) nbPlayersWhoReachedDoor++;
+                if (!p.disconnected && p.dead) nbPlayersWhoDied++;
+            }
+            float ratio; //ratio réussite/total
+            try{
+                ratio = (1f+nbPlayersWhoReachedDoor)/(2f+nbPlayersWhoReachedDoor+nbPlayersWhoDied);
+            } catch (Exception e){
+                ratio = 0.5f; //ne devrait jamais arriver
+            }
+            System.out.println("ratio = " + ratio);
+
+            int[] objectsToPlace = {0,0,0};
+            /*
+            0 = plateforme type 0
+            1 = plateforme type 1
+            2 = plateforme type 2
+            3 = plateforme type 3
+            4 = plateforme type 4
+            5 = plateforme type 5
+            6 = plateforme type 6
+            7 = plateforme type 7
+            8 = plateforme type 8
+            9 = plateforme type 9
+            10 = bomb
+            11 = saw
+            12 = laser
+            13 = punch
+            14 = spikes
+            15 = explosive
+            */
+            Random ran = new Random();
+            for (int i = 0; i < 3; i++){
+                if (ran.nextFloat() < ratio) objectsToPlace[i] = 11 + ran.nextInt(5); //place a trap
+                else {
+                    int r = ran.nextInt(12);
+                    if (r > 10) r = 10; //for bombs
+                    objectsToPlace[i] = r;
+                } //place a platform (or bomb)
+            }
+            selectionBloc.objectsToPlace = objectsToPlace;
         }
-        float ratio; //ratio réussite/total
-        try{
-            ratio = (1f+nbPlayersWhoReachedDoor)/(2f+nbPlayersWhoReachedDoor+nbPlayersWhoDied);
-        } catch (Exception e){
-            ratio = 0.5f; //ne devrait jamais arriver
-        }
-        System.out.println("ratio = " + ratio);
-        
-        int[] objectsToPlace = {0,0,0};
-        /*
-        0 = plateforme type 0
-        1 = plateforme type 1
-        2 = plateforme type 2
-        3 = plateforme type 3
-        4 = plateforme type 4
-        5 = plateforme type 5
-        6 = plateforme type 6
-        7 = plateforme type 7
-        8 = plateforme type 8
-        9 = plateforme type 9
-        10 = bomb
-        11 = saw
-        12 = laser
-        13 = punch
-        14 = spikes
-        15 = explosive
-        */
-        Random ran = new Random();
-        for (int i = 0; i < 3; i++){
-            if (ran.nextFloat() < ratio) objectsToPlace[i] = 11 + ran.nextInt(5); //place a trap
-            else {
-                int r = ran.nextInt(12);
-                if (r > 10) r = 10; //for bombs
-                objectsToPlace[i] = r;
-            } //place a platform (or bomb)
-        }
-        selectionBloc.objectsToPlace = objectsToPlace;
         selectionBloc.placedObject = false;
         selectionBloc.setIcons();
         selectionBloc.setVisible(true);

@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
+import javax.swing.WindowConstants;
 
 /**
  *
@@ -34,6 +35,7 @@ public class SelectionBloc extends javax.swing.JDialog {
         initComponents();
         this.game = game;
         this.player = player;
+        this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         
         // Affichage des images des blocs sur les boutons après redimensionnement
         jButton1.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/patterns/Tile (15).png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
@@ -170,6 +172,7 @@ public class SelectionBloc extends javax.swing.JDialog {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 SelectionBloc dialog = new SelectionBloc(null, null, new javax.swing.JFrame(), false);
+                dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
