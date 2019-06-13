@@ -21,15 +21,17 @@ public class SelectionBloc extends javax.swing.JDialog {
     public int blocAPoser = -1; //Entier permettant de savoir quel bloc a été choisi par le joueur
     public int[] objectsToPlace;
     public PObject objectToPlace;
+    public Player player;
     public Game game;
     
     /**
      * Creates new form SelectionBloc
      */
-    public SelectionBloc(Game game, java.awt.Frame parent, boolean modal) {
+    public SelectionBloc(Game game, Player player, java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         this.game = game;
+        this.player = player;
         
         // Affichage des images des blocs sur les boutons après redimensionnement
         jButton1.setIcon(new javax.swing.ImageIcon(new javax.swing.ImageIcon("./images/patterns/Tile (15).png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
@@ -162,7 +164,7 @@ public class SelectionBloc extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                SelectionBloc dialog = new SelectionBloc(null, new javax.swing.JFrame(), false);
+                SelectionBloc dialog = new SelectionBloc(null, null, new javax.swing.JFrame(), false);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -211,22 +213,24 @@ public class SelectionBloc extends javax.swing.JDialog {
     }
 
     private void createObjectToPlace(int i) throws IOException, SQLException {
+        int num_players = game.players.size();
+        int new_id = game.next_id + (num_players - game.next_id % num_players) + game.players.indexOf(player);
         switch (i) {
             //Tests pour savoir quel bloc a été choisi dans la fenetre SelectBloc
             case 0:case 1:case 2:case 3:case 4:case 5:case 6:case 7:case 8:case 9: //Plateforme
-                this.objectToPlace = new Platform(this.game, new Vec2(-50,-50), Platform.standardBoxes[i], i); break;
+                this.objectToPlace = new Platform(this.game, new Vec2(-50,-50), Platform.standardBoxes[i], i, new_id); break;
             case 10: //Bombe
-                this.objectToPlace = new Bomb(this.game, new Vec2(-50,-50)); break;
+                this.objectToPlace = new Bomb(this.game, new Vec2(-50,-50), new_id); break;
             case 11: //Scie circulaire
-                this.objectToPlace = new Saw(this.game, new Vec2(-50,-50));break;
+                this.objectToPlace = new Saw(this.game, new Vec2(-50,-50), new_id);break;
             case 12: //Laser                       
-                this.objectToPlace = new Laser(this.game, new Vec2(-50,-50), 0);break;
+                this.objectToPlace = new Laser(this.game, new Vec2(-50,-50), 0, new_id);break;
             case 13: //Punch  
-                this.objectToPlace = new Punch(this.game, 0, new Vec2(-50,-50));break;
+                this.objectToPlace = new Punch(this.game, 0, new Vec2(-50,-50), new_id);break;
             case 14: //Spikes
-                this.objectToPlace = new Spikes(this.game, 0, new Vec2(-50,-50));break;
+                this.objectToPlace = new Spikes(this.game, 0, new Vec2(-50,-50), new_id);break;
             case 15: //Mine
-                this.objectToPlace = new Explosive(this.game, new Vec2(-50,-50));break;
+                this.objectToPlace = new Explosive(this.game, new Vec2(-50,-50), new_id);break;
         }
         if (this.objectToPlace != null){
             this.objectToPlace.last_sync = game.sync.latest++;

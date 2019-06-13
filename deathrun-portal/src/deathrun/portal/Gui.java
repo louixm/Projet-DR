@@ -80,7 +80,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
         this.controled = controled;
         this.game = game;
         
-        this.selectionBloc = new SelectionBloc(game, new javax.swing.JFrame(), false);
+        this.selectionBloc = new SelectionBloc(this.game, this.controled, new javax.swing.JFrame(), false);
         
         try {
             this.background = ImageIO.read(new File("images/fond_1.png"));
@@ -192,8 +192,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
         Vec2 pos_clicked = new Vec2(e.getX()/(float)scale, (e.getY()-window_header_size)/(float)scale);
         // prise de controle des pieges
         if (e.getButton() == 1) {   // clic gauche
-            for (HashMap.Entry<Integer,PObject> p : game.objects.entrySet()) {
-                PObject object = p.getValue();
+            for (PObject object : game.objects.values()) {
                 if (object instanceof Trap && ((Trap)object).collision_box.contains(pos_clicked))
                     ((Trap)object).takeControl(controled);
             }
