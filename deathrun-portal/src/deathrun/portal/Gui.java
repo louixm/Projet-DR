@@ -292,7 +292,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
     @Override
     public void mouseMoved(MouseEvent e) { //Permet d'obtenir la position de la souris après qu'elle ait bougée
         if (editMode || game.editionMode) {
-            if (this.selectionBloc.chosenObject){
+            if (this.selectionBloc.chosenObject && !this.selectionBloc.placedObject){
                 Vec2 pos_clicked = new Vec2(e.getX()/(float)scale, (e.getY()-window_header_size)/(float)scale);
                 this.positionSouris = pos_clicked;
             }
@@ -351,7 +351,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
 ////                break;
 ////            default: System.out.println("nothing to prev");
 //        }
-        if (selectionBloc.chosenObject){
+        if (selectionBloc.chosenObject && !selectionBloc.placedObject){
             selectionBloc.objectToPlace.setPosition(pos_clicked);
             selectionBloc.objectToPlace.setOrientation(orientationBloc);
     //        selectionBloc.objectToPlace.render(this.bufferContext, scale);
