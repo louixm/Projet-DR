@@ -310,6 +310,7 @@ public class Game {
                         trap.enable(enabled, false);
                         trap.last_trap_sync = update;
                         if (update < last_update)  last_update = update;
+                        if (update >= sync.latest)  sync.latest = update+1;
                     }
                 }
                 
@@ -332,7 +333,7 @@ public class Game {
                         }
                     } else {
                         if (!type.equals("null")) obj = syncNewObject(id);
-                        else obj = null;
+                        else continue;
                     }
                     
                     if (obj == null) {
@@ -350,6 +351,7 @@ public class Game {
                         
                         obj.last_sync = update;
                         if (update < last_update)  last_update = update;
+                        if (update >= sync.latest)  sync.latest = update+1;
                     }
                 }
                 robjects.close();
@@ -414,13 +416,14 @@ public class Game {
                     case("laser"): obj = new Laser(this, position, orientation, db_id); break;
                     case("punch"): obj = new Punch(this, orientation, position, db_id); break;
                     case("explosive"): obj = new Explosive(this, position, db_id); break;
-                    default: try{
-                        int platformType = Integer.valueOf(type);
-                        obj = new Platform(this, position, Platform.standardBoxes[platformType], platformType, db_id);
-                    } catch(NumberFormatException e) {
-                        System.out.println("Unknown object tried to be added");
-                        obj = null;
-                    }
+                    default: 
+                        try{
+                            int platformType = Integer.valueOf(type);
+                            obj = new Platform(this, position, Platform.standardBoxes[platformType], platformType, db_id);
+                        } catch(NumberFormatException e) {
+                            System.out.println("Unknown object tried to be added");
+                            obj = null;
+                        }
                 }
                 System.out.println("added object " + db_id);
                 r.close();
@@ -459,6 +462,9 @@ public class Game {
             req.executeUpdate();
             // effacement de la table de joueurs
             req = this.sync.srv.prepareStatement("DELETE FROM players");
+            req.executeUpdate();
+            // effacement des pieges
+            req = this.sync.srv.prepareStatement("DELETE FROM traps");
             req.executeUpdate();
 
             System.out.println("Purged everything from db");
