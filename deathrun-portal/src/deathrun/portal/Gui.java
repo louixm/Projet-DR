@@ -210,6 +210,8 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
             //    });
             //}
             else*/ if(e.getButton()==1 && this.selectionBloc.chosenObject && !this.selectionBloc.placedObject){
+                
+                pos_clicked = new Vec2(e.getX()/(float)scale - selectionBloc.objectToPlace.getCollisionBox().getWidth()/2f, (e.getY()-window_header_size)/(float)scale - selectionBloc.objectToPlace.getCollisionBox().getHeight()/2f);
                 try { //Si un clic gauche a été effectué et qu'on a déjà choisi un bloc, alors le bloc est posé
                     poserObjet(pos_clicked, orientationBloc);
 //                    controled.readyToGo = true;
@@ -294,7 +296,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
     public void mouseMoved(MouseEvent e) { //Permet d'obtenir la position de la souris après qu'elle ait bougée
         if (editMode || game.editionMode) {
             if (this.selectionBloc.chosenObject && !this.selectionBloc.placedObject){
-                Vec2 pos_clicked = new Vec2(e.getX()/(float)scale, (e.getY()-window_header_size)/(float)scale);
+                Vec2 pos_clicked = new Vec2(e.getX()/(float)scale - selectionBloc.objectToPlace.getCollisionBox().getWidth()/2f, (e.getY()-window_header_size)/(float)scale - selectionBloc.objectToPlace.getCollisionBox().getHeight()/2f);
                 this.positionSouris = pos_clicked;
             }
         }
