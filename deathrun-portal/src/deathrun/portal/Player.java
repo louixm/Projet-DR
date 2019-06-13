@@ -373,10 +373,9 @@ public class Player extends PObject {
         this.jump = jump;  
     }
     
-    public void setDead(boolean dead) { setDead(dead, controled, controled); }
-    public void setDead(boolean dead, boolean withSync, Trap trap) { setDead(dead, controled, controled, trap); }
-    public void setDead(boolean dead, boolean withSync, boolean tryEndRound) { setDead(dead, controled, tryEndRound, null); }
-    public void setDead(boolean dead, boolean withSync, boolean tryEndRound, Trap trap) {
+    public void setDead(boolean dead) { setDead(dead, controled); }
+    public void setDead(boolean dead, boolean withSyncAndTryEndRound) { setDead(dead, controled, null); }
+    public void setDead(boolean dead, boolean withSyncAndTryEndRound, Trap trap) {
         if (!hasReachedExitDoor){
             boolean becomesDead = false;
             if (dead) {
@@ -390,7 +389,7 @@ public class Player extends PObject {
 
             this.dead = dead;
 
-            if(withSync){
+            if(withSyncAndTryEndRound){
                 try {
                     PreparedStatement req = game.sync.srv.prepareStatement("UPDATE players SET state=? WHERE id = ?");
                     req.setInt(1, 1); //state = 0 (en vie), 1 (dead), 2 (exit door)
@@ -407,7 +406,7 @@ public class Player extends PObject {
                 }
 
             }
-            if (tryEndRound) game.tryEndRound();
+            game.tryEndRound();
         }
     }
     
@@ -491,11 +490,11 @@ public class Player extends PObject {
     public void setState(int state){
         switch(state){
             case -1: System.out.println("Player " + this.name + " not ready..."); break;
-            case 0: this.setDead(false, false, true); this.hasReachedExitDoor = false; this.disconnected = false; break;
-            case 1: this.setDead(true, false, true); this.hasReachedExitDoor = false; this.disconnected = false; break;
-            case 2: this.setDead(false, false, true); this.hasReachedExitDoor = true; this.disconnected = false; break;
-            case 3: this.setDead(false, false, true); this.hasReachedExitDoor = false; this.disconnected = true; break;
-            case 4: this.setDead(true, false, true); this.hasReachedExitDoor = false; this.disconnected = true; break;
+            case 0: this.setDead(false, false); this.hasReachedExitDoor = false; this.disconnected = false; break;
+            case 1: this.setDead(true, false); this.hasReachedExitDoor = false; this.disconnected = false; break;
+            case 2: this.setDead(false, false); this.hasReachedExitDoor = true; this.disconnected = false; break;
+            case 3: this.setDead(false, false); this.hasReachedExitDoor = false; this.disconnected = true; break;
+            case 4: this.setDead(true, false); this.hasReachedExitDoor = false; this.disconnected = true; break;
             default:
                 System.out.println("unknown player state "+state);
         }

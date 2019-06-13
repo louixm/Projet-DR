@@ -469,7 +469,7 @@ public class Game {
   
     public void tryEndRound(){
         if (roundEnded) return;
-//        syncUpdate(true);
+        //faire avec la db
         for (Player player : this.players){
             if (!(player.dead || player.hasReachedExitDoor || player.disconnected)) return;
         }
