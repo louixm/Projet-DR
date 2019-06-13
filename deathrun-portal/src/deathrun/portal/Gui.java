@@ -448,6 +448,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
         }
         
         if (go) {
+            System.out.println("Go");
             game.switchToEditionMode(false);
             controled.readyToGo = false;
             controled.setLeft(false);

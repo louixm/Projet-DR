@@ -187,7 +187,7 @@ public class Punch extends Trap {
             
             
             // Redimensionnement de la box de collision
-            collision_box = new Box(0,0 , img.getWidth(null)/scale,img.getHeight(null)/scale); //la dimension de la box est celle de l'image
+            collision_box = new Box(0,0 , img.getWidth(null)/scale, img.getHeight(null)/scale); //la dimension de la box est celle de l'image
             collision_box = collision_box.translateToPosition(activPosition);
             }
             time_next_image = ac_time + image_duration;
@@ -198,8 +198,8 @@ public class Punch extends Trap {
         canvas.drawImage(img, 
                     (int) (collision_box.p1.x*scale), 
                     (int) (collision_box.p1.y*scale), 
-                    (int) ((img.getWidth(null))+collision_box.p1.x*scale),   
-                    (int) ((img.getHeight(null))+collision_box.p1.y*scale),  
+                    (int) (collision_box.p2.x*scale), 
+                    (int) (collision_box.p2.y*scale), 
                     0, 0,
                     img.getWidth(null), img.getHeight(null),
                     null);

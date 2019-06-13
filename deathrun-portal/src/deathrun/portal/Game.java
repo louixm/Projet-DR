@@ -468,21 +468,38 @@ public class Game {
     
   
     public void tryEndRound(){
+//        Player p2 = null; p2.dead = true;
         if (roundEnded) return;
-        //faire avec la db
-        for (Player player : this.players){
-            if (!(player.dead || player.hasReachedExitDoor || player.disconnected)) return;
+//        //faire avec la db
+//        for (Player player : this.players){
+//            if (!(player.dead || player.hasReachedExitDoor || player.disconnected)) return;
+//        }
+        boolean end = true;
+        try {
+            PreparedStatement reqplayers = this.sync.srv.prepareStatement("SELECT state FROM players");
+
+            ResultSet rplayers = reqplayers.executeQuery();
+            while (rplayers.next() && end){
+                int state = rplayers.getInt("state");
+                if (state == 0) end = false;
+                System.out.println("state is "+state);
+            }
+            rplayers.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
         }
-        scoresClosed = false;
-        setEndRoundScores();
-        roundEnded = true;
-//        switchToEditionMode(true);
-        Player controled = null;
-        for (Player p : this.players)if (p.isControled()) controled = p;
-        controled.syncReady(false);
-        switchToEditionMode(true);
-        ScoreFrame scoreFrame = new ScoreFrame(this, new javax.swing.JFrame(), false);
-        scoreFrame.show();
+        if (end){
+            scoresClosed = false;
+            setEndRoundScores();
+            roundEnded = true;
+    //        switchToEditionMode(true);
+            Player controled = null;
+            for (Player p : this.players)if (p.isControled()) controled = p;
+            controled.syncReady(false);
+            switchToEditionMode(true);
+            ScoreFrame scoreFrame = new ScoreFrame(this, new javax.swing.JFrame(), false);
+            scoreFrame.show();
+        }
     }
           
     public void purge(){

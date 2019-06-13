@@ -392,7 +392,8 @@ public class Player extends PObject {
             if(withSyncAndTryEndRound){
                 try {
                     PreparedStatement req = game.sync.srv.prepareStatement("UPDATE players SET state=? WHERE id = ?");
-                    req.setInt(1, 1); //state = 0 (en vie), 1 (dead), 2 (exit door)
+                    if (dead) req.setInt(1, 1); //state = 0 (en vie), 1 (dead), 2 (exit door)
+                    else req.setInt(1, 0);
                     // id de l'objet a modifier
                     req.setInt(2, db_id);
 
@@ -543,6 +544,7 @@ public class Player extends PObject {
             catch (SQLException err) {
                 System.out.println("sql exception:\n"+err);
             }
+//            System.out.println("state of "+ this.name + " is "+ready+ ", dead : "+this.dead);
         }
     }
     
