@@ -467,7 +467,7 @@ public class Game {
     }
     
   
-    public void tryEndRound(){
+    public void tryEndRound() throws InterruptedException{
 //        Player p2 = null; p2.dead = true;
         if (roundEnded) return;
 //        //faire avec la db
