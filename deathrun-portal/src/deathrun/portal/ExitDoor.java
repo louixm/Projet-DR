@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 /**
  *
@@ -81,7 +83,11 @@ public class ExitDoor extends PObject{
                     yeahBoi.play();
                     enJeu=false;
                 }
-                g.tryEndRound();
+                try {
+                    g.tryEndRound();
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(ExitDoor.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
     }

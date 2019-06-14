@@ -407,7 +407,11 @@ public class Player extends PObject {
                 }
 
             }
-            game.tryEndRound();
+            try {
+                game.tryEndRound();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
     
