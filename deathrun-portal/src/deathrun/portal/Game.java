@@ -486,7 +486,9 @@ public class Game {
             }
             rplayers.close();
         } catch (SQLException ex) {
+            System.out.println("tryEndRound: "+ex);
             Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+            end = false;
         }
         if (end){
             scoresClosed = false;
@@ -494,11 +496,13 @@ public class Game {
             roundEnded = true;
     //        switchToEditionMode(true);
             Player controled = null;
-            for (Player p : this.players)if (p.isControled()) controled = p;
-            controled.syncReady(false);
-            switchToEditionMode(true);
-            ScoreFrame scoreFrame = new ScoreFrame(this, new javax.swing.JFrame(), false);
-            scoreFrame.show();
+            for (Player p : this.players)    if (p.isControled()) controled = p;
+            if (controled != null) {
+                controled.syncReady(false);
+                switchToEditionMode(true);
+                ScoreFrame scoreFrame = new ScoreFrame(this, new javax.swing.JFrame(), false);
+                scoreFrame.show();
+            }
         }
     }
           
