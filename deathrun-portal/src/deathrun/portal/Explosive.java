@@ -121,7 +121,7 @@ public class Explosive extends Trap {
                         collision_box = collision_box.translateToPosition(activPosition);
                     }
                 }
-                // condition d'arrêt du cycle
+                // Suppression de l'explosif de la base de données
                 else{
                     last_sync++;
                     step=0;

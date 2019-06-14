@@ -155,7 +155,6 @@ public class Map {
             m.objects.add(new Acid(g,largeuracide, new Vec2(b.getWidth()-(1.5*l)-(1.5*largeuracide),b.getHeight()-1.5*largeuracide)));
             m.objects.add(new Spikes(g,2,new Vec2(1.5*l+2*largeuracide,b.getHeight()-1))); // 1=hauteur des piques
             m.objects.add(new Spikes(g,2,new Vec2(b.getWidth()-(1.5*l)-(2*largeuracide)-3,b.getHeight()-1))); // 1=hauteur des piques,  3=largeur
-            //m.objects.add(new Punch(g,1, new Vec2(2,3)));
 
             
             //Murs centraux
