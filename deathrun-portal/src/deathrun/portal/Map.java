@@ -64,7 +64,7 @@ public class Map {
             m.objects.add(port2);
             
             //pieges
-//            m.objects.add(new Acid(g,2, new Vec2(5,13)));
+            m.objects.add(new Acid(g,2, new Vec2(5,13)));
 //            m.objects.add(new Saw(g, g.map.size.center().sub(new Vec2(1, 1))));
 //            m.objects.add(new Laser(g,new Vec2(0, 11), 1));
 //            m.objects.add(new Punch(g,2,new Vec2(21,16)));
@@ -100,7 +100,7 @@ public class Map {
         }
         else if (mapNumber == 1){
             //portails
-            Portal port = new Portal(g,new Vec2(13, 1), new boolean[] {true,true});
+            Portal port = new Portal(g,new Vec2(1, 1), new boolean[] {true,true});
             Portal port2 = new Portal(g,new Vec2(b.getWidth()-3,3), new boolean[] {true,true});
             port.otherPortal = port2;
             port2.otherPortal = port;
@@ -108,29 +108,23 @@ public class Map {
             m.objects.add(port2);
             
             //mer acide
-            m.objects.add(new Acid(g,b.getWidth(), new Vec2(0,b.getHeight()-1)));
+            m.objects.add(new Acid(g,b.getWidth(), new Vec2(0,b.getHeight()-1),false));
             
-            
-            
-//            m.objects.add(new Saw(g, g.map.size.center().sub(new Vec2(1, 1))));
-//            m.objects.add(new Laser(g,new Vec2(0, 11), 1));
-//            m.objects.add(new Punch(g,2,new Vec2(21,16)));
-
-//            m.objects.add(new Explosive(g, new Vec2(5,2)));
-
-            
-            //Croix centrale
+            //Mur central
             m.objects.add(new Platform(g, new Vec2(-1+b.getWidth()/2,b.getHeight()/4),1,b.getHeight()/2,6));
             
             //entree
-            m.enter.setPosition(new Vec2(0, 0));
+            m.enter.setPosition(new Vec2(0, b.getHeight()-4));
             m.objects.add(m.enter);
-            m.objects.add(new Platform(g, new Vec2(0,m.enter.size),4,1,3));
+            m.objects.add(new Platform(g, new Vec2(0,b.getHeight()-1),4,1,3));
             
             //sortie
             m.exit.setPosition(new Vec2(b.getWidth()-3, b.getHeight()-4));
             m.objects.add(m.exit);
-                                                 
+
+            //plateformes
+            m.objects.add(new Platform(g, new Vec2(5,b.getHeight()/2),4,1,3));
+            m.objects.add(new Platform(g, new Vec2(b.getWidth()-5,b.getHeight()/2),4,1,3));
         }
         
                 else if (mapNumber == 2){

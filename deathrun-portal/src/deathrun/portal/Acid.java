@@ -28,6 +28,7 @@ public class Acid extends PObject {
     static Image img;
     static Image im[];
     int typePlateforme;
+    boolean walled;
     
     int step;
     int increment;
@@ -39,11 +40,11 @@ public class Acid extends PObject {
     long time_next_image;
     long image_duration = 400000000;
     
-    
-    public Acid(Game game, double taille, Vec2 position) throws IOException, SQLException {
+    public Acid(Game game, double taille, Vec2 position) throws IOException, SQLException{this(game,taille,position,true);}
+    public Acid(Game game, double taille, Vec2 position, boolean walled) throws IOException, SQLException {
         super(game, db_type);
         if (img == null) {
-            img = ImageIO.read(new File("./images/Acid_i.png")); //Acid
+            img = ImageIO.read(new File("./images/Acid_i.png"));
         }
         
         im = new Image[] {
@@ -62,15 +63,17 @@ public class Acid extends PObject {
         
         this.position = pos;
         
-        Vec2 positionG = pos;
-        Vec2 positionM1 = new Vec2(pos.x,pos.y+(collision_box.getHeight()));
-        Vec2 positionM2 = new Vec2(positionM1.x+(collision_box.getWidth()),positionM1.y);
-        Vec2 positionD = new Vec2(positionM2.x+(collision_box.getWidth()/2),positionG.y);
-        
-        this.platform_g = new Platform(game,positionG, collision_box.getWidth()/2, collision_box.getHeight(),9); 
-        this.platform_m1 = new Platform(game,positionM1, collision_box.getWidth(), collision_box.getHeight()/2,7);
-        this.platform_m2 = new Platform(game,positionM2, collision_box.getWidth(), collision_box.getHeight()/2,7);
-        this.platform_d = new Platform(game,positionD, collision_box.getWidth()/2, collision_box.getHeight(),8);
+        if (walled){
+            Vec2 positionG = pos;
+            Vec2 positionM1 = new Vec2(pos.x,pos.y+(collision_box.getHeight()));
+            Vec2 positionM2 = new Vec2(positionM1.x+(collision_box.getWidth()),positionM1.y);
+            Vec2 positionD = new Vec2(positionM2.x+(collision_box.getWidth()/2),positionG.y);
+
+            this.platform_g = new Platform(game,positionG, collision_box.getWidth()/2, collision_box.getHeight(),9); 
+            this.platform_m1 = new Platform(game,positionM1, collision_box.getWidth(), collision_box.getHeight()/2,7);
+            this.platform_m2 = new Platform(game,positionM2, collision_box.getWidth(), collision_box.getHeight()/2,7);
+            this.platform_d = new Platform(game,positionD, collision_box.getWidth()/2, collision_box.getHeight(),8);
+        }
         
         long ac_time = System.nanoTime();
         time_next_image = ac_time + image_duration;
@@ -133,13 +136,13 @@ public class Acid extends PObject {
         double ratio = (collision_box.getWidth()*scale)/largeurImage;
         // ---------------affichage de PObject ----------------------      
         canvas.drawImage(img, 
-                    (int) (platform_g.position.x*scale), 
-                    (int) ((platform_g.position.y*scale)-(decalage*ratio)), 
-                    (int) ((platform_d.position.x+collision_box.getWidth()/2)*scale),   
-                    (int) ((platform_m1.position.y+collision_box.getHeight()/2)*scale),  
+                    (int) ((position.x)*scale), 
+                    (int) ((position.y*scale)-(decalage*ratio)), 
+                    (int) ((position.x+2*(collision_box.getWidth()))*scale),   
+                    (int) ((position.y+3*collision_box.getHeight()/2)*scale),  
                     0, 0,
                     img.getWidth(null), img.getHeight(null),
                     null);
         super.render(canvas, scale);
-    }
+    }   
 }
