@@ -169,7 +169,7 @@ public class ScoreFrame extends javax.swing.JDialog {
                                 victory.setForeground(Color.WHITE);
                                 victory.setText(player.name + " won!");
                                 getContentPane().add(victory);
-                                victory.setBounds(100, 125, 400, 35);
+                                victory.setBounds(100, 120, 400, 35);
                                 win = true;
                             }
                         } catch (SQLException ex) {
