@@ -136,13 +136,13 @@ public class ScoreFrame extends javax.swing.JDialog {
                                 JPanel score = new JPanel();
                                 int[] rgb1 = {playerColor.getRed(),playerColor.getGreen(), playerColor.getBlue()};
                                 for (int j = 0; j < 3; j++){
-                                    rgb1[j] += 60;
+                                    rgb1[j] += 80;
                                     if (rgb1[j] > 255) rgb1[j] = 255;
                                 }
                                 Color lighterPlayerColor = new Color(rgb1[0],rgb1[1],rgb1[2]);
                                 int[] rgb2 = {playerColor.getRed(),playerColor.getGreen(), playerColor.getBlue()};
                                 for (int j = 0; j < 3; j++){
-                                    rgb2[j] -= 60;
+                                    rgb2[j] -= 80;
                                     if (rgb2[j] < 0) rgb2[j] = 0;
                                 }
                                 Color darkerPlayerColor = new Color(rgb2[0],rgb2[1],rgb2[2]);
