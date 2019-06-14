@@ -34,6 +34,7 @@ public class ScoreFrame extends javax.swing.JDialog {
     //declarations
     private ArrayList<javax.swing.JPanel> progressBars;
     private Game game;
+    public boolean win = false;
     
     
         
@@ -44,6 +45,7 @@ public class ScoreFrame extends javax.swing.JDialog {
         setMaximumSize(new java.awt.Dimension(500, 350));
         setMinimumSize(new java.awt.Dimension(500, 350));
         setResizable(false);
+        setTitle("Scoreboard");
         getContentPane().setLayout(null);
     
         initProgressBars(game);
@@ -95,9 +97,11 @@ public class ScoreFrame extends javax.swing.JDialog {
         getContentPane().add(jButton2);
         jButton2.setBounds(207, 270, 60, 23);
 
+        jSeparator1.setForeground(new java.awt.Color(255, 255, 255));
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
+        jSeparator1.setOpaque(true);
         getContentPane().add(jSeparator1);
-        jSeparator1.setBounds(440, 40, 20, 190);
+        jSeparator1.setBounds(440, 40, 3, 210);
         getContentPane().add(background);
         background.setBounds(0, 0, 500, 350);
 
@@ -162,8 +166,8 @@ public class ScoreFrame extends javax.swing.JDialog {
                                 victory.setForeground(Color.WHITE);
                                 victory.setText(player.name + " won!");
                                 getContentPane().add(victory);
-                                victory.setBounds(100, 125, 350, 22);
-                                
+                                victory.setBounds(100, 125, 400, 35);
+                                win = true;
                             }
                         } catch (SQLException ex) {
                             Logger.getLogger(ScoreFrame.class.getName()).log(Level.SEVERE, null, ex);

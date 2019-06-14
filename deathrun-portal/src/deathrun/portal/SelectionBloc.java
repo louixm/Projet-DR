@@ -35,6 +35,7 @@ public class SelectionBloc extends javax.swing.JDialog {
     public SelectionBloc(Game game, Player player, java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        setTitle("Selection");
         this.game = game;
         this.player = player;
         this.setLocationRelativeTo(null);
