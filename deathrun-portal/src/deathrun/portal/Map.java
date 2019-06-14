@@ -21,7 +21,8 @@ public class Map {
     public EnterDoor enter;
     
     public int next_id = 0;
-    
+    static int sea = 0;
+                
     Map(Box size) { 
         this.size = size; 
         this.objects = new ArrayList<PObject>();
@@ -101,29 +102,34 @@ public class Map {
         else if (mapNumber == 1){
             //portails
             Portal port = new Portal(g,new Vec2(1, 1), new boolean[] {true,true});
-            Portal port2 = new Portal(g,new Vec2(b.getWidth()-3,3), new boolean[] {true,true});
+            Portal port2 = new Portal(g,new Vec2(b.getWidth()-3,1), new boolean[] {true,true});
             port.otherPortal = port2;
             port2.otherPortal = port;
             m.objects.add(port);
             m.objects.add(port2);
             
             //mer acide
-            m.objects.add(new Acid(g,b.getWidth(), new Vec2(0,b.getHeight()-1),false));
+            m.objects.add(new Acid(g,b.getWidth(), new Vec2(0,b.getHeight()-1.5),false));
+            for (int sea = 0; sea < b.getWidth()/3; sea++){
+                m.objects.add(new Acid(g,3, new Vec2(3*sea,b.getHeight()-1.5),false));
+            }
             
-            //Mur central
-            m.objects.add(new Platform(g, new Vec2(-1+b.getWidth()/2,b.getHeight()/4),1,b.getHeight()/2,6));
+            //Gamma central
+            m.objects.add(new Platform(g, new Vec2(-5.5+b.getWidth()/2,b.getHeight()/4),1,b.getHeight()/2,6));
+            m.objects.add(new Platform(g, new Vec2(-5.5+b.getWidth()/2,b.getHeight()/4),10,1,3));
+            m.objects.add(new Platform(g, new Vec2(4.5+b.getWidth()/2,b.getHeight()/4),1,5,6));
             
             //entree
-            m.enter.setPosition(new Vec2(0, b.getHeight()-4));
+            m.enter.setPosition(new Vec2(0, b.getHeight()-5));
             m.objects.add(m.enter);
-            m.objects.add(new Platform(g, new Vec2(0,b.getHeight()-1),4,1,3));
+            m.objects.add(new Platform(g, new Vec2(0,b.getHeight()-2),4,1,3));
             
             //sortie
             m.exit.setPosition(new Vec2(b.getWidth()-3, b.getHeight()-4));
             m.objects.add(m.exit);
 
             //plateformes
-            m.objects.add(new Platform(g, new Vec2(5,b.getHeight()/2),4,1,3));
+            m.objects.add(new Platform(g, new Vec2(5.5,b.getHeight()/2),4,1,3));
             m.objects.add(new Platform(g, new Vec2(b.getWidth()-5,b.getHeight()/2),4,1,3));
         }
         
