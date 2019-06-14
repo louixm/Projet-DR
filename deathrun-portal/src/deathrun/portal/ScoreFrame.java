@@ -97,9 +97,11 @@ public class ScoreFrame extends javax.swing.JDialog {
         getContentPane().add(jButton2);
         jButton2.setBounds(207, 270, 60, 23);
 
+        jSeparator1.setForeground(new java.awt.Color(255, 255, 255));
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
+        jSeparator1.setOpaque(true);
         getContentPane().add(jSeparator1);
-        jSeparator1.setBounds(440, 40, 20, 190);
+        jSeparator1.setBounds(440, 40, 3, 210);
         getContentPane().add(background);
         background.setBounds(0, 0, 500, 350);
 
