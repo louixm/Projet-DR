@@ -441,7 +441,7 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
                     } catch (NullPointerException e){
                         System.out.println("NullPointer for player with id " + id);
                     }
-                if (state == -1) go = false;
+                if (state < 0) go = false;
             }
             rplayers.close();
         } catch (SQLException ex) {
