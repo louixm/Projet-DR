@@ -28,7 +28,7 @@ public class SelectionBloc extends javax.swing.JDialog {
     public Game game;
     public boolean chosenObject = false;
     public boolean placedObject = false;
-    
+    private static Image img;
     /**
      * Creates new form SelectionBloc
      */
@@ -41,7 +41,9 @@ public class SelectionBloc extends javax.swing.JDialog {
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(this.DO_NOTHING_ON_CLOSE);
         try {
-            background.setIcon(new javax.swing.ImageIcon(ImageIO.read(new File("./images/fond_4.png"))));
+            img = ImageIO.read(new File("./images/fond_4.png"));
+            background.setIcon(new javax.swing.ImageIcon(img));
+            background.setLocation((getWidth()-img.getWidth(null))/2, (getHeight()-img.getHeight(null))/2);
         } catch (IOException ex) {
             Logger.getLogger(StartMenu.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("pas d'image");
@@ -76,7 +78,7 @@ public class SelectionBloc extends javax.swing.JDialog {
         background = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(450, 250));
+        setMinimumSize(new java.awt.Dimension(420, 250));
         getContentPane().setLayout(null);
 
         jLabel1.setFont(new java.awt.Font("Trebuchet MS", 0, 14)); // NOI18N
@@ -112,7 +114,7 @@ public class SelectionBloc extends javax.swing.JDialog {
         getContentPane().add(jButton3);
         jButton3.setBounds(280, 80, 80, 80);
         getContentPane().add(background);
-        background.setBounds(0, 0, 440, 240);
+        background.setBounds(0, 0, 1020, 540);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
