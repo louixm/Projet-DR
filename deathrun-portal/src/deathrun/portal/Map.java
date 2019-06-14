@@ -128,22 +128,16 @@ public class Map {
         }
         
         else if (mapNumber == 2){
-            // parametres  fondamentaux
-            int nbPlatform=4;   //doit être un diviseur de 360;
-            int pas = 360/nbPlatform;  // en dégré
-            double rayon = 3*b.getHeight()/8;
             
+            // parametres  fondamentaux
             double l = 3;
             double h = 1;
             
-            Vec2 v0 = new Vec2((b.getWidth()-l)/2,b.getHeight()-2*h);
-            Vec2 v1 = new Vec2((b.getWidth()-l)/2,b.getHeight()/2-1.5*h);
-            
-            Platform p0 = new Platform(g,v0,l,h,3);
+            Platform p0 = new Platform(g,new Vec2((b.getWidth()-l)/2,b.getHeight()-2*h),l,h,3);
             
             //portails
             Portal port = new Portal(g,new Vec2(0, 0), new boolean[] {true,true});
-            Portal port2 = new Portal(g,v1, new boolean[] {true,true});//new Vec2(13.5,7)
+            Portal port2 = new Portal(g,new Vec2((b.getWidth()-l)/2,b.getHeight()/2-1.5*h), new boolean[] {true,true});//new Vec2(13.5,7)
             port.otherPortal = port2;
             port2.otherPortal = port;
             m.objects.add(port);
@@ -155,10 +149,10 @@ public class Map {
             m.objects.add(new Acid(g,largeuracide, new Vec2(b.getWidth()-(1.5*l)-(1.5*largeuracide),b.getHeight()-1.5*largeuracide)));
             m.objects.add(new Spikes(g,2,new Vec2(1.5*l+2*largeuracide,b.getHeight()-1))); // 1=hauteur des piques
             m.objects.add(new Spikes(g,2,new Vec2(b.getWidth()-(1.5*l)-(2*largeuracide)-3,b.getHeight()-1))); // 1=hauteur des piques,  3=largeur
+            m.objects.add(new Punch(g,1, new Vec2(2,3)));
 
             
-            //Cercle centrale
-            
+            //Murs centraux
             m.objects.add(new Platform(g, new Vec2(-7+b.getWidth()/2,b.getHeight()/4),1,b.getHeight()/2,6));
             m.objects.add(new Platform(g, new Vec2(6+b.getWidth()/2,b.getHeight()/4),1,b.getHeight()/2,6));
             m.objects.add(new Platform(g, new Vec2((b.getWidth()/2)-(l/4),0),0.5*l,6*h,4));
@@ -167,6 +161,7 @@ public class Map {
             m.objects.add(new Platform(g, new Vec2(0,(b.getHeight()-h)/2),l,h,2));
             m.objects.add(new Platform(g, new Vec2(0,b.getHeight()-6*h),0.5*l,6*h,4));
             m.objects.add(new Platform(g, new Vec2(0.5*l,b.getHeight()-4*h),l,4*h,5));
+            
             m.enter.setPosition(new Vec2(0, ((b.getHeight()-h)/2)-m.enter.size));
             m.objects.add(m.enter);
             
@@ -177,15 +172,6 @@ public class Map {
             
             m.exit.setPosition(new Vec2(b.getWidth()-m.exit.size, ((b.getHeight()-h)/2)-m.exit.size));
             m.objects.add(m.exit);
-            
-            
-            /*//cote gauche
-            m.objects.add(new Platform(g, new Vec2(0,b.getHeight()/2),5,1,3));
-            m.objects.add(new Platform(g, new Vec2(1,b.getHeight()-1),b.getWidth()/3,1,3));
-            
-            //cote droit
-            m.objects.add(new Platform(g, new Vec2(5+b.getWidth()/2,5),5,1,3));
-            m.objects.add(new Platform(g, new Vec2(b.getWidth()-13,b.getHeight()-1),10,1,3));*/
                                      
         }
                 else if (mapNumber == 3){
