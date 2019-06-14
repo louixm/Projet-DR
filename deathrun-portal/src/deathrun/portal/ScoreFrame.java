@@ -7,6 +7,7 @@ package deathrun.portal;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +35,8 @@ public class ScoreFrame extends javax.swing.JDialog {
     //declarations
     private ArrayList<javax.swing.JPanel> progressBars;
     private Game game;
-    
+    public boolean win = false;
+    private static Image img;
     
         
     public ScoreFrame(Game game, java.awt.Frame parent, boolean modal) throws InterruptedException {
@@ -44,6 +46,7 @@ public class ScoreFrame extends javax.swing.JDialog {
         setMaximumSize(new java.awt.Dimension(500, 350));
         setMinimumSize(new java.awt.Dimension(500, 350));
         setResizable(false);
+        setTitle("Scoreboard");
         getContentPane().setLayout(null);
     
         initProgressBars(game);
@@ -51,7 +54,9 @@ public class ScoreFrame extends javax.swing.JDialog {
         
         
         try {
-            background.setIcon(new javax.swing.ImageIcon(ImageIO.read(new File("./images/fond_4.png"))));
+            img = ImageIO.read(new File("./images/fond_4.png"));
+            background.setIcon(new javax.swing.ImageIcon(img));
+            background.setLocation((getWidth()-img.getWidth(null))/2-10, (getHeight()-img.getHeight(null))/2-30);
         } catch (IOException ex) {
             Logger.getLogger(StartMenu.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("pas d'image");
@@ -82,7 +87,7 @@ public class ScoreFrame extends javax.swing.JDialog {
         background = new javax.swing.JLabel();
 
         setMaximumSize(new java.awt.Dimension(500, 350));
-        setMinimumSize(new java.awt.Dimension(500, 350));
+        setMinimumSize(new java.awt.Dimension(500, 340));
         setResizable(false);
         getContentPane().setLayout(null);
 
@@ -95,11 +100,13 @@ public class ScoreFrame extends javax.swing.JDialog {
         getContentPane().add(jButton2);
         jButton2.setBounds(207, 270, 60, 23);
 
+        jSeparator1.setForeground(new java.awt.Color(255, 255, 255));
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
+        jSeparator1.setOpaque(true);
         getContentPane().add(jSeparator1);
-        jSeparator1.setBounds(440, 40, 20, 190);
+        jSeparator1.setBounds(440, 40, 3, 210);
         getContentPane().add(background);
-        background.setBounds(0, 0, 500, 350);
+        background.setBounds(0, 0, 1030, 590);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -162,8 +169,8 @@ public class ScoreFrame extends javax.swing.JDialog {
                                 victory.setForeground(Color.WHITE);
                                 victory.setText(player.name + " won!");
                                 getContentPane().add(victory);
-                                victory.setBounds(100, 125, 350, 22);
-                                
+                                victory.setBounds(100, 125, 400, 35);
+                                win = true;
                             }
                         } catch (SQLException ex) {
                             Logger.getLogger(ScoreFrame.class.getName()).log(Level.SEVERE, null, ex);

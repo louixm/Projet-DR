@@ -32,7 +32,7 @@ public class StartMenu extends javax.swing.JFrame {
     /**
      * Creates new form StartMenu
      */
-    static Image img;
+    static Image img, imgBg;
     static SoundPlayer backgroundSound= new SoundPlayer("startMenuMusicReloaded.mp3", true);
     
     public StartMenu() {
@@ -47,7 +47,9 @@ public class StartMenu extends javax.swing.JFrame {
         //    Logger.getLogger(StartMenu.class.getName()).log(Level.SEVERE, null, ex);
         //}
         try {
-            background.setIcon(new javax.swing.ImageIcon(ImageIO.read(new File("./images/fond_4.png"))));
+            imgBg = ImageIO.read(new File("./images/fond_4.png"));
+            background.setIcon(new javax.swing.ImageIcon(imgBg));
+            background.setLocation((getWidth()-imgBg.getWidth(null))/2, (getHeight()-imgBg.getHeight(null))/2);
         } catch (IOException ex) {
             Logger.getLogger(StartMenu.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("pas d'image");
@@ -201,7 +203,7 @@ public class StartMenu extends javax.swing.JFrame {
         background.setMinimumSize(new java.awt.Dimension(500, 300));
         background.setPreferredSize(new java.awt.Dimension(500, 300));
         getContentPane().add(background);
-        background.setBounds(0, 0, 530, 330);
+        background.setBounds(0, 0, 920, 560);
 
         statusLabel.setText("status");
         getContentPane().add(statusLabel);
