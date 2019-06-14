@@ -408,6 +408,7 @@ public class Player extends PObject {
 
             }
             try {
+                System.out.println("try to end");
                 game.tryEndRound();
             } catch (InterruptedException ex) {
                 Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
@@ -494,7 +495,7 @@ public class Player extends PObject {
     
     public void setState(int state){
         switch(state){
-            case -1: System.out.println("Player " + this.name + " not ready..."); break;
+            case -1: case -2: case -3: System.out.println("Player " + this.name + " not ready..."); break;
             case 0: this.setDead(false, false); this.hasReachedExitDoor = false; this.disconnected = false; break;
             case 1: this.setDead(true, false); this.hasReachedExitDoor = false; this.disconnected = false; break;
             case 2: this.setDead(false, false); this.hasReachedExitDoor = true; this.disconnected = false; break;
@@ -537,7 +538,11 @@ public class Player extends PObject {
             try {
                 PreparedStatement req = game.sync.srv.prepareStatement("UPDATE players SET state=? WHERE id = ?");
                 if (ready) req.setInt(1, 0); 
-                else req.setInt(1, -1); 
+                else {
+                    if (dead) req.setInt(1, -1);
+                    else if (hasReachedExitDoor) req.setInt(1, -2);
+                    else req.setInt(1, -3);
+                } 
                 // id de l'objet a modifier
                 req.setInt(2, db_id);
 

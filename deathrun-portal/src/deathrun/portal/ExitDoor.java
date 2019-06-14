@@ -63,7 +63,7 @@ public class ExitDoor extends PObject{
         if (other instanceof Player) {
             Player player = (Player) other;
             if (!player.disconnected && !player.dead){
-                System.out.println("player "+player.name+" reached the door");
+//                System.out.println("player "+player.name+" reached the door");
                 try {
                         PreparedStatement req = g.sync.srv.prepareStatement("UPDATE players SET state=? WHERE id = ?");
                         req.setInt(1, 2); //state = 0 (en vie), 1 (dead), 2 (exit door)

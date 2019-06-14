@@ -473,15 +473,18 @@ public class Game {
 //        //faire avec la db
 //        for (Player player : this.players){
 //            if (!(player.dead || player.hasReachedExitDoor || player.disconnected)) return;
-//        }
+//        }       
         boolean end = true;
+        HashMap<Integer,Integer> playersAndStates = new HashMap<>();
         try {
-            PreparedStatement reqplayers = this.sync.srv.prepareStatement("SELECT state FROM players");
+            PreparedStatement reqplayers = this.sync.srv.prepareStatement("SELECT id, state FROM players");
 
             ResultSet rplayers = reqplayers.executeQuery();
             while (rplayers.next() && end){
+                int id = rplayers.getInt("id");
                 int state = rplayers.getInt("state");
                 if (state == 0) end = false;
+                playersAndStates.put(id, Math.abs(state));
 //                System.out.println("state is "+state);
             }
             rplayers.close();
@@ -492,7 +495,7 @@ public class Game {
         }
         if (end){
             scoresClosed = false;
-            setEndRoundScores();
+            setEndRoundScores(playersAndStates);
             roundEnded = true;
     //        switchToEditionMode(true);
             Player controled = null;
@@ -583,16 +586,32 @@ public class Game {
         this.editionMode = edition;
     }
 
-    private void setEndRoundScores() {
+    private void setEndRoundScores(HashMap<Integer,Integer> playersAndStates) {
         ArrayList<Player> hasReached = new ArrayList<Player>();
         ArrayList<Player> hasDied = new ArrayList<Player>();
-        for (Player player : this.players){
-            if (!player.disconnected){
-                if (player.dead) hasDied.add(player);
-                if (player.hasReachedExitDoor) hasReached.add(player);
+//        for (Player player : this.players){
+//            if (!player.disconnected){
+//                if (player.dead) {
+//                    hasDied.add(player);
+//                    System.out.println("*** " + player.name + " is dead");
+//                }
+//                if (player.hasReachedExitDoor) {hasReached.add(player); System.out.println("*** " + player.name + " has reached");}
+//            }
+//        }
+        for (HashMap.Entry<Integer,Integer> p : playersAndStates.entrySet()){
+            Player player = this.getPlayerWithId(p.getKey());
+            int state = p.getValue();
+            if (state == 1) {
+                hasDied.add(player);
+                System.out.println("*** " + player.name + " is dead");
             }
+            if (state == 2) {
+                hasReached.add(player); 
+                System.out.println("*** " + player.name + " has reached");
+            }
+            else System.out.println("****** " + player.name + " has state " + state);
         }
-        if (!hasDied.isEmpty()){ // on ajoute les scores que pour le joueur contrôlé
+            if (!hasDied.isEmpty()){ // on ajoute les scores que pour le joueur contrôlé
             for (Player p : hasReached){
                 if (p.isControled()) addScore(p, 0, 10);
             }

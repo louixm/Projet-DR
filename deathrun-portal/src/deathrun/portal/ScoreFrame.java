@@ -117,7 +117,8 @@ public class ScoreFrame extends javax.swing.JDialog {
                     int nextLocation = 140;
                     javax.swing.JLabel playerName = new javax.swing.JLabel();
                     playerName.setFont(new java.awt.Font("Trebuchet MS", 1, 16));
-                    playerName.setForeground(player.getPlayerColor());
+                    Color playerColor = player.getPlayerColor();
+                    playerName.setForeground(playerColor);
                     playerName.setText(player.name);
                     getContentPane().add(playerName);
                     playerName.setBounds(15, 50*i, 120, 18);
@@ -133,9 +134,23 @@ public class ScoreFrame extends javax.swing.JDialog {
                                 int amount = r.getInt("amount");
                                 int type = r.getInt("type");
                                 JPanel score = new JPanel();
+                                int[] rgb1 = {playerColor.getRed(),playerColor.getGreen(), playerColor.getBlue()};
+                                for (int j = 0; j < 3; j++){
+                                    rgb1[j] += 60;
+                                    if (rgb1[j] > 255) rgb1[j] = 255;
+                                }
+                                Color lighterPlayerColor = new Color(rgb1[0],rgb1[1],rgb1[2]);
+                                int[] rgb2 = {playerColor.getRed(),playerColor.getGreen(), playerColor.getBlue()};
+                                for (int j = 0; j < 3; j++){
+                                    rgb2[j] -= 60;
+                                    if (rgb2[j] < 0) rgb2[j] = 0;
+                                }
+                                Color darkerPlayerColor = new Color(rgb2[0],rgb2[1],rgb2[2]);
                                 if (type == 0) score.setBackground(player.getPlayerColor());
-                                else if (type == 1) score.setBackground(player.getPlayerColor().darker().darker());
-                                else score.setBackground(player.getPlayerColor().brighter().brighter());
+//                                else if (type == 1) score.setBackground(player.getPlayerColor().darker().darker());
+//                                else score.setBackground(player.getPlayerColor().brighter().brighter());
+                                else if (type == 1) score.setBackground(darkerPlayerColor);
+                                else score.setBackground(lighterPlayerColor);
                                 getContentPane().add(score);
                                 score.setBounds(nextLocation, 50*i, amount*3, 20);
                                 nextLocation += amount*3;
