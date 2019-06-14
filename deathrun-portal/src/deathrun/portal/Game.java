@@ -210,7 +210,7 @@ public class Game {
         }
         System.out.println("MapNumber: "+mapNumber);
         map = new Map(new Box(0, 0, 40, 20));
-        this.map = this.map.MapInitialization(this, mapNumber);
+        this.map = this.map.MapInitialization(this, 2);
         
         syncUpdate();
         /*
