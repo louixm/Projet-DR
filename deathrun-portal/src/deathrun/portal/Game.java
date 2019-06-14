@@ -199,7 +199,8 @@ public class Game {
             Random randomMap = new Random();
             try {
                 PreparedStatement reqmap = this.sync.srv.prepareStatement("UPDATE server SET map=?");
-                mapNumber = randomMap.nextInt(5);
+                //mapNumber = randomMap.nextInt(5);
+                mapNumber = 1;
                 reqmap.setInt(1, mapNumber);
                 reqmap.executeUpdate();
                 reqmap.close();    

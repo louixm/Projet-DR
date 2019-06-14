@@ -64,7 +64,7 @@ public class Map {
             m.objects.add(port2);
             
             //pieges
-            m.objects.add(new Acid(g,2, new Vec2(5,13)));
+//            m.objects.add(new Acid(g,2, new Vec2(5,13)));
 //            m.objects.add(new Saw(g, g.map.size.center().sub(new Vec2(1, 1))));
 //            m.objects.add(new Laser(g,new Vec2(0, 11), 1));
 //            m.objects.add(new Punch(g,2,new Vec2(21,16)));
@@ -101,14 +101,17 @@ public class Map {
         else if (mapNumber == 1){
             //portails
             Portal port = new Portal(g,new Vec2(13, 1), new boolean[] {true,true});
-            Portal port2 = new Portal(g,new Vec2(13,16), new boolean[] {true,true});
+            Portal port2 = new Portal(g,new Vec2(b.getWidth()-3,3), new boolean[] {true,true});
             port.otherPortal = port2;
             port2.otherPortal = port;
             m.objects.add(port);
             m.objects.add(port2);
             
-            //pieges
-            m.objects.add(new Acid(g,2, new Vec2(5,13)));
+            //mer acide
+            m.objects.add(new Acid(g,b.getWidth(), new Vec2(0,b.getHeight()-1)));
+            
+            
+            
 //            m.objects.add(new Saw(g, g.map.size.center().sub(new Vec2(1, 1))));
 //            m.objects.add(new Laser(g,new Vec2(0, 11), 1));
 //            m.objects.add(new Punch(g,2,new Vec2(21,16)));
@@ -118,29 +121,16 @@ public class Map {
             
             //Croix centrale
             m.objects.add(new Platform(g, new Vec2(-1+b.getWidth()/2,b.getHeight()/4),1,b.getHeight()/2,6));
-            m.objects.add(new Platform(g, new Vec2((b.getWidth()/2)-5,b.getHeight()/2),10,1,1));
             
             //entree
             m.enter.setPosition(new Vec2(0, 0));
             m.objects.add(m.enter);
-            m.objects.add(new Platform(g, new Vec2(0,m.enter.size),10,1,3));
+            m.objects.add(new Platform(g, new Vec2(0,m.enter.size),4,1,3));
             
             //sortie
-            m.exit.setPosition(new Vec2(b.getWidth()-3, 10));
+            m.exit.setPosition(new Vec2(b.getWidth()-3, b.getHeight()-4));
             m.objects.add(m.exit);
-            m.objects.add(new Platform(g, new Vec2(b.getWidth()-5,10-m.exit.size/2),1,m.exit.size,6));
-            m.objects.add(new Platform(g, new Vec2(b.getWidth()-5,10-m.exit.size/2),5,1,3));
-            m.objects.add(new Platform(g, new Vec2(b.getWidth()-3,10+m.exit.size),3,1,3));
-            
-            
-            //cote gauche
-            m.objects.add(new Platform(g, new Vec2(0,b.getHeight()/2),5,1,3));
-            m.objects.add(new Platform(g, new Vec2(1,b.getHeight()-1),b.getWidth()/3,1,3));
-            
-            //cote droit
-            m.objects.add(new Platform(g, new Vec2(5+b.getWidth()/2,5),5,1,3));
-            m.objects.add(new Platform(g, new Vec2(b.getWidth()-13,b.getHeight()-1),10,1,3));
-                                     
+                                                 
         }
         
                 else if (mapNumber == 2){
@@ -153,7 +143,7 @@ public class Map {
             m.objects.add(port2);
             
             //pieges
-            m.objects.add(new Acid(g,2, new Vec2(5,13)));
+            //m.objects.add(new Acid(g,2, new Vec2(5,13)));
 //            m.objects.add(new Saw(g, g.map.size.center().sub(new Vec2(1, 1))));
 //            m.objects.add(new Laser(g,new Vec2(0, 11), 1));
 //            m.objects.add(new Punch(g,2,new Vec2(21,16)));
@@ -197,7 +187,7 @@ public class Map {
             m.objects.add(port2);
             
             //pieges
-            m.objects.add(new Acid(g,2, new Vec2(5,13)));
+            //m.objects.add(new Acid(g,2, new Vec2(5,13)));
 //            m.objects.add(new Saw(g, g.map.size.center().sub(new Vec2(1, 1))));
 //            m.objects.add(new Laser(g,new Vec2(0, 11), 1));
 //            m.objects.add(new Punch(g,2,new Vec2(21,16)));
