@@ -185,34 +185,7 @@ public class Game {
     /// se connecte au serveur et construit toutes les instances d'objet correspondant aux objets de la map et aux joueurs
     void init() throws IOException, SQLException {
         
-        int mapNumber = -1;
-        try {          
-            PreparedStatement req = this.sync.srv.prepareStatement("SELECT * FROM server");
-            ResultSet r = req.executeQuery();
-            r.next();
-            mapNumber = r.getInt("map");
-            r.close();         
-        } catch (SQLException err) {
-            System.out.println("init: "+err);
-        }
-        if (mapNumber == -1){
-            Random randomMap = new Random();
-            try {
-                PreparedStatement reqmap = this.sync.srv.prepareStatement("UPDATE server SET map=?");
-                mapNumber = randomMap.nextInt(5);
-                //mapNumber = 4;
-                reqmap.setInt(1, mapNumber);
-                reqmap.executeUpdate();
-                reqmap.close();    
-            }
-            catch (SQLException err) {
-                System.out.println("game init:\n"+err);
-            }
-        }
-        System.out.println("MapNumber: "+mapNumber);
-        map = new Map(new Box(0, 0, 40, 20));
-        this.map = this.map.MapInitialization(this, mapNumber);
-        
+        initMap();
         syncUpdate();
         /*
         if (this.sync != null) {
@@ -639,5 +612,37 @@ public class Game {
     public void addScoreUponTrapKill(Trap trap, Player player){
 //        if (trap.currentcontrol != null && trap.currentcontrol.isControled() && !player.dead && !player.equals(trap.currentcontrol)) this.addScore(trap.currentcontrol, 1, 5);
         if (trap.currentcontrol != null && !player.equals(trap.currentcontrol)) this.addScore(trap.currentcontrol, 1, 5);
+    }
+    
+    private void initMap() throws IOException, SQLException {initMap(-1);}
+    private void initMap(int mapNumber) throws IOException, SQLException {
+        if (mapNumber == -1){
+            try {          
+                PreparedStatement req = this.sync.srv.prepareStatement("SELECT * FROM server");
+                ResultSet r = req.executeQuery();
+                r.next();
+                mapNumber = r.getInt("map");
+                r.close();         
+            } catch (SQLException err) {
+                System.out.println("init: "+err);
+            }
+        }
+        if (mapNumber == -1){
+            Random randomMap = new Random();
+            try {
+                PreparedStatement reqmap = this.sync.srv.prepareStatement("UPDATE server SET map=?");
+                mapNumber = randomMap.nextInt(5);
+                //mapNumber = 4;
+                reqmap.setInt(1, mapNumber);
+                reqmap.executeUpdate();
+                reqmap.close();    
+            }
+            catch (SQLException err) {
+                System.out.println("game init:\n"+err);
+            }
+        }
+        System.out.println("MapNumber: "+mapNumber);
+        map = new Map(new Box(0, 0, 40, 20));
+        this.map = this.map.MapInitialization(this, mapNumber);
     }
 }

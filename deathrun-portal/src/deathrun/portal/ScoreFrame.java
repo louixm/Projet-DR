@@ -34,6 +34,7 @@ public class ScoreFrame extends javax.swing.JDialog {
     //declarations
     private ArrayList<javax.swing.JPanel> progressBars;
     private Game game;
+    public boolean win = false;
     
     
         
@@ -163,7 +164,7 @@ public class ScoreFrame extends javax.swing.JDialog {
                                 victory.setText(player.name + " won!");
                                 getContentPane().add(victory);
                                 victory.setBounds(100, 125, 350, 22);
-                                
+                                win = true;
                             }
                         } catch (SQLException ex) {
                             Logger.getLogger(ScoreFrame.class.getName()).log(Level.SEVERE, null, ex);
