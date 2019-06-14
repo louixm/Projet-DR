@@ -45,6 +45,7 @@ public class ScoreFrame extends javax.swing.JDialog {
         setMaximumSize(new java.awt.Dimension(500, 350));
         setMinimumSize(new java.awt.Dimension(500, 350));
         setResizable(false);
+        setTitle("Scoreboard");
         getContentPane().setLayout(null);
     
         initProgressBars(game);
@@ -163,7 +164,7 @@ public class ScoreFrame extends javax.swing.JDialog {
                                 victory.setForeground(Color.WHITE);
                                 victory.setText(player.name + " won!");
                                 getContentPane().add(victory);
-                                victory.setBounds(100, 125, 350, 22);
+                                victory.setBounds(100, 125, 400, 35);
                                 win = true;
                             }
                         } catch (SQLException ex) {
