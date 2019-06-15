@@ -92,7 +92,7 @@ public class StartMenu extends javax.swing.JFrame {
         imageBotOrange = new javax.swing.JButton();
         imageSentryBot = new javax.swing.JButton();
         imageBotBleu = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        Purge = new javax.swing.JButton();
         Pseudo_label = new javax.swing.JLabel();
         Text_Pseudo = new javax.swing.JTextField();
         background = new javax.swing.JLabel();
@@ -171,16 +171,16 @@ public class StartMenu extends javax.swing.JFrame {
         getContentPane().add(imageBotBleu);
         imageBotBleu.setBounds(120, 130, 80, 70);
 
-        jButton1.setBackground(new java.awt.Color(255, 0, 51));
-        jButton1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jButton1.setText("PURGE");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        Purge.setBackground(new java.awt.Color(255, 0, 51));
+        Purge.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        Purge.setText("PURGE");
+        Purge.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                PurgeActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1);
-        jButton1.setBounds(170, 230, 160, 60);
+        getContentPane().add(Purge);
+        Purge.setBounds(170, 230, 160, 60);
 
         Pseudo_label.setFont(new java.awt.Font("Trebuchet MS", 0, 11)); // NOI18N
         Pseudo_label.setForeground(new java.awt.Color(255, 153, 0));
@@ -241,7 +241,7 @@ public class StartMenu extends javax.swing.JFrame {
         pseudo = Text_Pseudo.getText();
     }//GEN-LAST:event_Text_PseudoKeyReleased
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void PurgeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PurgeActionPerformed
         // TODO add your handling code here:
         try {
             sync = new Sync(DriverManager.getConnection(
@@ -260,7 +260,7 @@ public class StartMenu extends javax.swing.JFrame {
         catch (SQLException err) {
             System.out.println("sql connection error, fail to init game:\n\t"+err);
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_PurgeActionPerformed
 
     /**
      * @param args the command line arguments
@@ -299,12 +299,12 @@ public class StartMenu extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Pseudo_label;
+    private javax.swing.JButton Purge;
     private javax.swing.JTextField Text_Pseudo;
     private javax.swing.JLabel background;
     private javax.swing.JButton imageBotBleu;
     private javax.swing.JButton imageBotOrange;
     private javax.swing.JButton imageSentryBot;
-    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel labelChoixAvatar;
