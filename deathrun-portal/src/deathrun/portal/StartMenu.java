@@ -96,7 +96,6 @@ public class StartMenu extends javax.swing.JFrame {
         Pseudo_label = new javax.swing.JLabel();
         Text_Pseudo = new javax.swing.JTextField();
         background = new javax.swing.JLabel();
-        statusLabel = new javax.swing.JLabel();
 
         jTextField1.setText("jTextField1");
 
@@ -172,7 +171,7 @@ public class StartMenu extends javax.swing.JFrame {
         imageBotBleu.setBounds(120, 130, 80, 70);
 
         Purge.setBackground(new java.awt.Color(255, 0, 51));
-        Purge.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        Purge.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         Purge.setText("PURGE");
         Purge.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -180,7 +179,7 @@ public class StartMenu extends javax.swing.JFrame {
             }
         });
         getContentPane().add(Purge);
-        Purge.setBounds(170, 230, 160, 60);
+        Purge.setBounds(10, 270, 80, 20);
 
         Pseudo_label.setFont(new java.awt.Font("Trebuchet MS", 0, 11)); // NOI18N
         Pseudo_label.setForeground(new java.awt.Color(255, 153, 0));
@@ -204,10 +203,6 @@ public class StartMenu extends javax.swing.JFrame {
         background.setPreferredSize(new java.awt.Dimension(500, 300));
         getContentPane().add(background);
         background.setBounds(0, 0, 920, 560);
-
-        statusLabel.setText("status");
-        getContentPane().add(statusLabel);
-        statusLabel.setBounds(50, 250, 260, 14);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -312,7 +307,6 @@ public class StartMenu extends javax.swing.JFrame {
     private javax.swing.JLabel labelJoueursConnectes;
     private javax.swing.JList<String> listeJoueurs;
     private javax.swing.JButton startButton;
-    private javax.swing.JLabel statusLabel;
     // End of variables declaration//GEN-END:variables
 
     private void updateList() {
