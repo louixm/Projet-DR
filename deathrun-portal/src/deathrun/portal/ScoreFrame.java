@@ -37,6 +37,7 @@ public class ScoreFrame extends javax.swing.JDialog {
     private Game game;
     public boolean win = false;
     private static Image img;
+    private int extend = 0;
     
         
     public ScoreFrame(Game game, java.awt.Frame parent, boolean modal) throws InterruptedException {
@@ -52,6 +53,11 @@ public class ScoreFrame extends javax.swing.JDialog {
         initProgressBars(game);
         initComponents();
         
+        if (extend > 0){
+            this.setMinimumSize(new java.awt.Dimension((int) this.getMinimumSize().getWidth(),(int) this.getMinimumSize().getHeight()+50*extend));
+            this.jButton2.setLocation(this.jButton2.getLocation().x, this.jButton2.getLocation().y+50*extend);
+            this.jSeparator1.setBounds(440, 40, 3, 210+50*extend);
+        }
         
         try {
             img = ImageIO.read(new File("./images/fond_4.png"));
@@ -86,7 +92,7 @@ public class ScoreFrame extends javax.swing.JDialog {
         jSeparator1 = new javax.swing.JSeparator();
         background = new javax.swing.JLabel();
 
-        setMaximumSize(new java.awt.Dimension(500, 350));
+        setMaximumSize(new java.awt.Dimension(500, 700));
         setMinimumSize(new java.awt.Dimension(500, 340));
         setResizable(false);
         getContentPane().setLayout(null);
@@ -120,6 +126,7 @@ public class ScoreFrame extends javax.swing.JDialog {
             for (Player player : game.players){
                 if (!player.disconnected){
                     i++;
+                    if (i > 4) extend++;
                     ArrayList<JPanel> progress = new ArrayList<JPanel>();
                     int nextLocation = 140;
                     javax.swing.JLabel playerName = new javax.swing.JLabel();
