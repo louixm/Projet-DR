@@ -1,6 +1,8 @@
 package deathrun.portal;
 
 import static deathrun.portal.Platform.img;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -107,7 +109,21 @@ public class Gui extends JFrame implements KeyListener, MouseListener, MouseMoti
                 render(bufferContext);
                 jLabel1.repaint();
                 if (game.editionMode) {
-                    if (controled.readyToGo) tryToGo();
+                    if (controled.readyToGo){
+                        String waiting = "En attente de ";
+                        boolean firstPlayerToDisplay = true;
+                        for (Player p : game.players){
+                            if (!p.readyToGo){
+                                if (!firstPlayerToDisplay) waiting += ", ";
+                                else firstPlayerToDisplay = false;
+                                waiting +=  p.name;
+                            }          
+                        }
+                        waiting += "...";
+                        bufferContext.setColor(Color.WHITE);
+                        if (!firstPlayerToDisplay) controled.drawCenteredString(bufferContext, waiting, game.map.size, -22, new Font("Trebuchet MS", Font.BOLD, 18), scale);
+                        tryToGo();
+                    }
                     else {
                         controled.syncReady(false);
                         if (!selectionBloc.chosenObject && !selectionBloc.isVisible() && game.scoresClosed) enterEditionMode();

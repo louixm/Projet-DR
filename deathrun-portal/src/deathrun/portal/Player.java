@@ -495,12 +495,12 @@ public class Player extends PObject {
     
     public void setState(int state){
         switch(state){
-            case -1: case -2: case -3: System.out.println("Player " + this.name + " not ready..."); break;
-            case 0: this.setDead(false, false); this.hasReachedExitDoor = false; this.disconnected = false; break;
-            case 1: this.setDead(true, false); this.hasReachedExitDoor = false; this.disconnected = false; break;
-            case 2: this.setDead(false, false); this.hasReachedExitDoor = true; this.disconnected = false; break;
-            case 3: this.setDead(false, false); this.hasReachedExitDoor = false; this.disconnected = true; break;
-            case 4: this.setDead(true, false); this.hasReachedExitDoor = false; this.disconnected = true; break;
+            case -1: case -2: case -3: this.readyToGo = false; System.out.println("Player " + this.name + " not ready..."); break;
+            case 0: this.setDead(false, false); this.hasReachedExitDoor = false; this.disconnected = false; this.readyToGo = true; break;
+            case 1: this.setDead(true, false); this.hasReachedExitDoor = false; this.disconnected = false; this.readyToGo = true; break;
+            case 2: this.setDead(false, false); this.hasReachedExitDoor = true; this.disconnected = false; this.readyToGo = true; break;
+            case 3: this.setDead(false, false); this.hasReachedExitDoor = false; this.disconnected = true; this.readyToGo = true; break;
+            case 4: this.setDead(true, false); this.hasReachedExitDoor = false; this.disconnected = true; this.readyToGo = true; break;
             default:
                 System.out.println("unknown player state "+state);
         }
